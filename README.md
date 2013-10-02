@@ -20,9 +20,16 @@ dashboard
 
 ### Build the project ###
 
-    $ cd <project-folder>
+    $ cd <project-home>
     $ gradle --info clean build
     ...
     BUILD SUCCESSFUL
     Total time: 12.903 secs
     $
+
+### Shut down Redis ###
+
+    $ cd <redis-home>
+    $ src/redis-cli
+    redis 127.0.0.1:6379> SHUTDOWN
+    redis 127.0.0.1:6379> QUIT
