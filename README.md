@@ -11,7 +11,7 @@ dashboard
     $ <ctrl-z>
     $ bg
 
-## Verify that the Redis server is functioning at 127.0.0.1:6379 ##
+## Test the Redis server ##
 
     $ src/redis-cli
     redis 127.0.0.1:6379> PING
@@ -22,3 +22,7 @@ dashboard
 
     $ cd <project-folder>
     $ gradle --info clean build
+    ...
+    BUILD SUCCESSFUL
+    Total time: 12.903 secs
+    $
