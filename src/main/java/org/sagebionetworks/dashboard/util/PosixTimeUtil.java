@@ -7,7 +7,7 @@ package org.sagebionetworks.dashboard.util;
 public class PosixTimeUtil {
 
     public static final long MINUTE = 60L;
-    public static final long MINUTE_3 = MINUTE * 3L;
+    public static final long MINUTE_3 = MINUTE * 3L; // 3 minutes
     public static final long HOUR = MINUTE * 60L;
     public static final long DAY = HOUR * 24L;
 
