@@ -21,17 +21,16 @@ public class RedisKey {
     }
 
     public static class NameSpace {
+        /** The set of names. */
+        public static final String NAME = "name";
         /** The set of IDs. */
         public static final String ID = "id";
         /** Synapse clients. */
         public static final String CLIENT = "c";
     }
 
-    /** The set of IDs. */
-    public static final String ID = NameSpace.ID;
-
-    /** Client name --> ID mappings */
-    public static final String CLIENT_ID = NameSpace.CLIENT + SEPARATOR + NameSpace.ID;
-    /** Client ID --> name mappings */
-    public static final String ID_CLIENT = NameSpace.ID + SEPARATOR + NameSpace.CLIENT;
+    /** Name --> ID mappings */
+    public static final String NAME_ID = NameSpace.NAME + SEPARATOR + NameSpace.ID;
+    /** ID --> name mappings */
+    public static final String ID_NAME = NameSpace.ID + SEPARATOR + NameSpace.NAME;
 }
