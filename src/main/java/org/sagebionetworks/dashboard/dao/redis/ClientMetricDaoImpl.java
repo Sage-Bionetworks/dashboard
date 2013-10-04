@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 import org.sagebionetworks.dashboard.dao.ClientMetricDao;
 import org.sagebionetworks.dashboard.model.DataPoint;
 import org.sagebionetworks.dashboard.model.redis.RedisKey.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.RedisKey.Metric;
+import org.sagebionetworks.dashboard.model.redis.RedisKey.Statistic;
 import org.sagebionetworks.dashboard.model.redis.RedisKey.NameSpace;
 import org.sagebionetworks.dashboard.model.redis.RedisKeyAssembler;
 import org.sagebionetworks.dashboard.util.PosixTimeUtil;
@@ -54,7 +54,7 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
 
         RedisKeyAssembler keyAssembler = null;
         // n
-        keyAssembler = new RedisKeyAssembler(Metric.N, aggregation, NameSpace.CLIENT);
+        keyAssembler = new RedisKeyAssembler(Statistic.N, aggregation, NameSpace.CLIENT);
         String key = keyAssembler.getKey(clientId, timestamp);
         if (!redisTemplate.hasKey(key)) {
             valueOps.set(key, Long.toString(1L), EXPIRE_DAYS, TimeUnit.DAYS);
@@ -62,7 +62,7 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
             valueOps.increment(key, 1L);
         }
         // sum
-        keyAssembler = new RedisKeyAssembler(Metric.SUM, aggregation, NameSpace.CLIENT);
+        keyAssembler = new RedisKeyAssembler(Statistic.SUM, aggregation, NameSpace.CLIENT);
         key = keyAssembler.getKey(clientId, timestamp);
         if (!redisTemplate.hasKey(key)) {
             valueOps.set(key, Long.toString(latency), EXPIRE_DAYS, TimeUnit.DAYS);
@@ -70,7 +70,7 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
             valueOps.increment(key, latency);
         }
         // max
-        keyAssembler = new RedisKeyAssembler(Metric.MAX, aggregation, NameSpace.CLIENT);
+        keyAssembler = new RedisKeyAssembler(Statistic.MAX, aggregation, NameSpace.CLIENT);
         key = keyAssembler.getKey(clientId, timestamp);
         if (!redisTemplate.hasKey(key)) {
             valueOps.set(key, Long.toString(latency), EXPIRE_DAYS, TimeUnit.DAYS);

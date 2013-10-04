@@ -7,7 +7,7 @@ public class RedisKey {
 
     public static final String SEPARATOR = ":";
 
-    public static class Metric {
+    public static class Statistic {
         public static final String N = "n";
         public static final String SUM = "s";
         public static final String AVG = "a";

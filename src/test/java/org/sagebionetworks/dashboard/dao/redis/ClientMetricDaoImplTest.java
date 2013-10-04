@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.ClientMetricDao;
 import org.sagebionetworks.dashboard.model.DataPoint;
 import org.sagebionetworks.dashboard.model.redis.RedisKey.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.RedisKey.Metric;
+import org.sagebionetworks.dashboard.model.redis.RedisKey.Statistic;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
@@ -82,7 +82,7 @@ public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
         final long start = dt.getMillis() / 1000L;
         dt = new DateTime(2005, 3, 1, 0, 0, 0, 0, DateTimeZone.UTC);
         final long end = dt.getMillis() / 1000L;
-        List<DataPoint> sumListM3 = clientMetricDao.getMetrics(python, start, end, Metric.SUM, Aggregation.MINUTE3);
+        List<DataPoint> sumListM3 = clientMetricDao.getMetrics(python, start, end, Statistic.SUM, Aggregation.MINUTE3);
         assertEquals(4, sumListM3.size());
         DataPoint dp = sumListM3.get(0);
         assertEquals("1107855000", dp.getTimestamp());
@@ -97,7 +97,7 @@ public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
         assertEquals("1108118520", dp.getTimestamp());
         assertEquals("3", dp.getValue());
 
-        List<DataPoint> sumListHour = clientMetricDao.getMetrics(python, start, end, Metric.SUM, Aggregation.HOUR);
+        List<DataPoint> sumListHour = clientMetricDao.getMetrics(python, start, end, Statistic.SUM, Aggregation.HOUR);
         assertEquals(3, sumListHour.size());
         dp = sumListHour.get(0);
         assertEquals("1107853200", dp.getTimestamp());
@@ -109,7 +109,7 @@ public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
         assertEquals("1108116000", dp.getTimestamp());
         assertEquals("3", dp.getValue());
 
-        List<DataPoint> sumListDay = clientMetricDao.getMetrics(python, start, end, Metric.SUM, Aggregation.DAY);
+        List<DataPoint> sumListDay = clientMetricDao.getMetrics(python, start, end, Statistic.SUM, Aggregation.DAY);
         assertEquals(2, sumListDay.size());
         dp = sumListDay.get(0);
         assertEquals("1107820800", dp.getTimestamp());
@@ -118,7 +118,7 @@ public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
         assertEquals("1108080000", dp.getTimestamp());
         assertEquals("3", dp.getValue());
 
-        List<DataPoint> nListDay = clientMetricDao.getMetrics(python, start, end, Metric.N, Aggregation.DAY);
+        List<DataPoint> nListDay = clientMetricDao.getMetrics(python, start, end, Statistic.N, Aggregation.DAY);
         assertEquals(2, nListDay.size());
         dp = nListDay.get(0);
         assertEquals("1107820800", dp.getTimestamp());
@@ -127,7 +127,7 @@ public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
         assertEquals("1108080000", dp.getTimestamp());
         assertEquals("1", dp.getValue());
 
-        List<DataPoint> maxListDay = clientMetricDao.getMetrics(python, start, end, Metric.MAX, Aggregation.DAY);
+        List<DataPoint> maxListDay = clientMetricDao.getMetrics(python, start, end, Statistic.MAX, Aggregation.DAY);
         assertEquals(2, maxListDay.size());
         dp = maxListDay.get(0);
         assertEquals("1107820800", dp.getTimestamp());
