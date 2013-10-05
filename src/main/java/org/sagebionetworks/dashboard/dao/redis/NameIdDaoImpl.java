@@ -5,6 +5,8 @@ import static org.sagebionetworks.dashboard.model.redis.RedisKey.NAME_ID;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.util.RandomIdGenerator;
@@ -29,8 +31,7 @@ public class NameIdDaoImpl implements NameIdDao {
         BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
         String id = nameIdHash.get(name);
         if (id == null) {
-            generateId(name);
-            id = nameIdHash.get(name);
+            return generateId(name);
         }
         return id;
     }
@@ -41,18 +42,53 @@ public class NameIdDaoImpl implements NameIdDao {
         return idNameHash.get(id);
     }
 
+    private BoundHashOperations<String, String, String> getNameIdHash() {
+        return redisTemplate.boundHashOps(NAME_ID);
+    }
+
+    private BoundHashOperations<String, String, String> getIdNameHash() {
+        return redisTemplate.boundHashOps(ID_NAME);
+    }
+
     /**
      * Generates a new ID for the name and updates the mappings.
      */
-    private void generateId(final String name) {
+    private String generateId(final String name) {
 
-        redisTemplate.execute(new SessionCallback<String>() {
+        SessionCallback<String> callback = new SessionCallback<String>() {
+
             @Override
             public <K, V> String execute(RedisOperations<K, V> operations) throws DataAccessException {
 
-                // Get the operations
                 @SuppressWarnings("unchecked")
                 RedisOperations<String, String> ops = (RedisOperations<String, String>) operations;
+                List<Object> results = null;
+                final int retryLimit = 10;
+                final long delay = 10;
+                int i = 0;
+                while (results == null && i < retryLimit) {
+                    try {
+                        Thread.sleep(delay << i);
+                    } catch (InterruptedException e) {
+                        new RuntimeException(e);
+                    }
+                    results = tryGenerateId(ops);
+                    i++;
+                }
+                if (results == null) {
+                    throw new RuntimeException("ID generation for " + name +
+                            " failed after max number of retries.");
+                }
+                BoundHashOperations<String, String, String> nameIdHash = ops.boundHashOps(NAME_ID);
+                String id = nameIdHash.get(name);
+                if (id == null) {
+                    throw new RuntimeException("ID not set in Redis for " + name);
+                }
+                return id;
+            }
+
+            private List<Object> tryGenerateId(RedisOperations<String, String> ops) {
+
                 BoundHashOperations<String, String, String> nameIdHash = ops.boundHashOps(NAME_ID);
                 BoundHashOperations<String, String, String> idNameHash = ops.boundHashOps(ID_NAME);
 
@@ -66,13 +102,13 @@ public class NameIdDaoImpl implements NameIdDao {
                 String id = nameIdHash.get(name);
                 if (id != null) {
                     ops.unwatch();
-                    return id;
+                    return Collections.emptyList();
                 }
 
                 // Try generating a new ID
                 id = idGenerator.newId();
                 int i = 0;
-                while (idNameHash.hasKey(id) && i < 3) {
+                while (idNameHash.hasKey(id) && i < 5) {
                     id = idGenerator.newId();
                     i++;
                 }
@@ -85,16 +121,11 @@ public class NameIdDaoImpl implements NameIdDao {
                 ops.multi();
                 nameIdHash.put(name, id);
                 idNameHash.put(id, name);
-                ops.exec();
-                return id;
-            }});
-    }
+                List<Object> results = ops.exec();
+                return results;
+            }
+        };
 
-    private BoundHashOperations<String, String, String> getNameIdHash() {
-        return redisTemplate.boundHashOps(NAME_ID);
-    }
-
-    private BoundHashOperations<String, String, String> getIdNameHash() {
-        return redisTemplate.boundHashOps(ID_NAME);
+        return redisTemplate.execute(callback);
     }
 }
