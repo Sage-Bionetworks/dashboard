@@ -32,9 +32,9 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
 
     @Override
     public void addMetric(final String clientId, final DateTime timestamp, final long latency) {
-        addMetricAtAggregation(clientId, timestamp, latency, minute_3);
-        addMetricAtAggregation(clientId, timestamp, latency, hour);
-        addMetricAtAggregation(clientId, timestamp, latency, day);
+        addAggregation(minute_3, clientId, timestamp, latency);
+        addAggregation(hour, clientId, timestamp, latency);
+        addAggregation(day, clientId, timestamp, latency);
     }
 
     @Override
@@ -84,53 +84,52 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
         return Collections.unmodifiableList(data);
     }
 
-    private void addMetricAtAggregation(final String clientId, final DateTime timestamp,
-            final long latency, final Aggregation aggregation) {
+    private void addAggregation(final Aggregation aggregation,
+            final String clientId, final DateTime timestamp, final long latency) {
 
-        long t = -1L;
-        switch(aggregation) {
+        // n
+        String key = getKey(n, aggregation, clientId, timestamp);
+        valueOps.increment(key, 1L);
+        // sum
+        key = getKey(sum, aggregation, clientId, timestamp);
+        valueOps.increment(key, latency);
+        // max -- best effort to avoid race conditions
+        final String maxKey = getKey(max, aggregation, clientId, timestamp);
+        String strMax = valueOps.get(maxKey);
+        long currMax = strMax == null ? -1L : Long.parseLong(strMax);
+        long newMax = latency;
+        int i = 0;
+        while (currMax < newMax && i < 5) {
+            // in case some other client set the max in the middle
+            strMax = valueOps.getAndSet(maxKey, Long.toString(newMax));
+            currMax = newMax;
+            newMax = strMax == null ? -1L : Long.parseLong(strMax);
+            i++;
+        }
+    }
+
+    private String getKey(final Statistic stat, final Aggregation aggr,
+            final String clientId, final DateTime timestamp) {
+
+        long ts = -1L;
+        switch(aggr) {
             case minute_3:
-                t = PosixTimeUtil.floorToMinute3(timestamp);
+                ts = PosixTimeUtil.floorToMinute3(timestamp);
                 break;
             case hour:
-                t = PosixTimeUtil.floorToHour(timestamp);
+                ts = PosixTimeUtil.floorToHour(timestamp);
                 break;
             case day:
-                t = PosixTimeUtil.floorToDay(timestamp);
+                ts = PosixTimeUtil.floorToDay(timestamp);
                 break;
             default:
-                throw new RuntimeException("Aggregation " + aggregation + " not supported.");
+                throw new RuntimeException("Aggregation " + aggr + " not supported.");
         }
 
-        KeyAssembler keyAssembler = null;
-        // n
-        keyAssembler = new KeyAssembler(n, aggregation, client);
-        String key = keyAssembler.getKey(clientId, t);
-        if (!redisTemplate.hasKey(key)) {
-            valueOps.set(key, Long.toString(1L), EXPIRE_DAYS, TimeUnit.DAYS);
-        } else {
-            valueOps.increment(key, 1L);
-        }
-        // sum
-        keyAssembler = new KeyAssembler(sum, aggregation, client);
-        key = keyAssembler.getKey(clientId, t);
-        if (!redisTemplate.hasKey(key)) {
-            valueOps.set(key, Long.toString(latency), EXPIRE_DAYS, TimeUnit.DAYS);
-        } else {
-            valueOps.increment(key, latency);
-        }
-        // max
-        keyAssembler = new KeyAssembler(max, aggregation, client);
-        key = keyAssembler.getKey(clientId, t);
-        if (!redisTemplate.hasKey(key)) {
-            valueOps.set(key, Long.toString(latency), EXPIRE_DAYS, TimeUnit.DAYS);
-        } else {
-            String maxVal = valueOps.get(key);
-            long max = Long.parseLong(maxVal);
-            if (max < latency) {
-                valueOps.set(key, Long.toString(latency));
-            }
-        }
+        KeyAssembler keyAssembler = new KeyAssembler(stat, aggr, client);
+        String key = keyAssembler.getKey(clientId, ts);
+        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
+        return key;
     }
 
     @Resource
