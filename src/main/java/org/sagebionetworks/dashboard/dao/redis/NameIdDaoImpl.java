@@ -8,23 +8,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.util.RandomIdGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SessionCallback;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("nameIdDao")
 public class NameIdDaoImpl implements NameIdDao {
-
-    private final RandomIdGenerator idGenerator = new RandomIdGenerator();
-
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public String getId(final String name) {
@@ -128,4 +124,9 @@ public class NameIdDaoImpl implements NameIdDao {
 
         return redisTemplate.execute(callback);
     }
+
+    private final RandomIdGenerator idGenerator = new RandomIdGenerator();
+
+    @Resource
+    private StringRedisTemplate redisTemplate;
 }

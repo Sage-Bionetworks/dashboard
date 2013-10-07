@@ -12,29 +12,66 @@ import javax.annotation.Resource;
 import org.sagebionetworks.dashboard.dao.ClientMetricDao;
 import org.sagebionetworks.dashboard.model.DataPoint;
 import org.sagebionetworks.dashboard.model.redis.RedisKey.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.RedisKey.Statistic;
 import org.sagebionetworks.dashboard.model.redis.RedisKey.NameSpace;
+import org.sagebionetworks.dashboard.model.redis.RedisKey.Statistic;
 import org.sagebionetworks.dashboard.model.redis.RedisKeyAssembler;
 import org.sagebionetworks.dashboard.util.PosixTimeUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("clientMetricDao")
 public class ClientMetricDaoImpl implements ClientMetricDao {
-
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-
-    @Resource(name="redisTemplate")
-    private ValueOperations<String, String> valueOps;
 
     @Override
     public void addMetric(final String clientId, final long latency, final long posixTime) {
         addMetricAtAggregation(clientId, latency, posixTime, Aggregation.MINUTE3);
         addMetricAtAggregation(clientId, latency, posixTime, Aggregation.HOUR);
         addMetricAtAggregation(clientId, latency, posixTime, Aggregation.DAY);
+    }
+
+    @Override
+    public List<DataPoint> getMetrics(final String clientId, final long posixStart, final long posixEnd,
+            final String metric, final String aggregation) {
+
+        long from = -1L;
+        long to = -1L;
+        long step = -1L;
+        if (Aggregation.MINUTE3.equals(aggregation)) {
+            from = PosixTimeUtil.floorToMinute3(posixStart);
+            to = PosixTimeUtil.floorToMinute3(posixEnd);
+            step = PosixTimeUtil.MINUTE_3;
+        } else if (Aggregation.HOUR.equals(aggregation)) {
+            from = PosixTimeUtil.floorToHour(posixStart);
+            to = PosixTimeUtil.floorToHour(posixEnd);
+            step = PosixTimeUtil.HOUR;
+        } else if (Aggregation.DAY.equals(aggregation)) {
+            from = PosixTimeUtil.floorToDay(posixStart);
+            to = PosixTimeUtil.floorToDay(posixEnd);
+            step = PosixTimeUtil.DAY;
+        }
+        if (from < 0) {
+            throw new RuntimeException("Incorrect aggregation: " + aggregation);
+        }
+
+        RedisKeyAssembler keyAssembler = new RedisKeyAssembler(metric, aggregation, NameSpace.CLIENT);
+        List<String> timestamps = new ArrayList<String>();
+        List<String> keys = new ArrayList<String>();
+        for (long i = from; i <= to; i += step) {
+            timestamps.add(Long.toString(i));
+            keys.add(keyAssembler.getKey(clientId, i));
+        }
+
+        List<String> values = valueOps.multiGet(keys);
+        List<DataPoint> data = new ArrayList<DataPoint>();
+        for (int i = 0; i < values.size(); i++) {
+            String value = values.get(i);
+            if (value != null) {
+                data.add(new DataPoint(value, timestamps.get(i)));
+            }
+        }
+
+        return Collections.unmodifiableList(data);
     }
 
     private void addMetricAtAggregation(final String clientId, final long latency,
@@ -83,47 +120,9 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
         }
     }
 
-    @Override
-    public List<DataPoint> getMetrics(final String clientId, final long posixStart, final long posixEnd,
-            final String metric, final String aggregation) {
+    @Resource
+    private StringRedisTemplate redisTemplate;
 
-        long from = -1L;
-        long to = -1L;
-        long step = -1L;
-        if (Aggregation.MINUTE3.equals(aggregation)) {
-            from = PosixTimeUtil.floorToMinute3(posixStart);
-            to = PosixTimeUtil.floorToMinute3(posixEnd);
-            step = PosixTimeUtil.MINUTE_3;
-        } else if (Aggregation.HOUR.equals(aggregation)) {
-            from = PosixTimeUtil.floorToHour(posixStart);
-            to = PosixTimeUtil.floorToHour(posixEnd);
-            step = PosixTimeUtil.HOUR;
-        } else if (Aggregation.DAY.equals(aggregation)) {
-            from = PosixTimeUtil.floorToDay(posixStart);
-            to = PosixTimeUtil.floorToDay(posixEnd);
-            step = PosixTimeUtil.DAY;
-        }
-        if (from < 0) {
-            throw new RuntimeException("Incorrect aggregation: " + aggregation);
-        }
-
-        RedisKeyAssembler keyAssembler = new RedisKeyAssembler(metric, aggregation, NameSpace.CLIENT);
-        List<String> timestamps = new ArrayList<String>();
-        List<String> keys = new ArrayList<String>();
-        for (long i = from; i <= to; i += step) {
-            timestamps.add(Long.toString(i));
-            keys.add(keyAssembler.getKey(clientId, i));
-        }
-
-        List<String> values = valueOps.multiGet(keys);
-        List<DataPoint> data = new ArrayList<DataPoint>();
-        for (int i = 0; i < values.size(); i++) {
-            String value = values.get(i);
-            if (value != null) {
-                data.add(new DataPoint(value, timestamps.get(i)));
-            }
-        }
-
-        return Collections.unmodifiableList(data);
-    }
+    @Resource(name="redisTemplate")
+    private ValueOperations<String, String> valueOps;
 }
