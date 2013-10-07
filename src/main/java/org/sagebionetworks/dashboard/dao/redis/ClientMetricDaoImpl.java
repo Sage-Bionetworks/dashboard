@@ -93,18 +93,22 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
         // sum
         key = getKey(sum, aggregation, metricId, timestamp);
         valueOps.increment(key, latency);
-        // max -- best effort to avoid race conditions
+        // max -- optimistically work around race conditions
         final String maxKey = getKey(max, aggregation, metricId, timestamp);
         String strMax = valueOps.get(maxKey);
-        long currMax = strMax == null ? -1L : Long.parseLong(strMax);
-        long newMax = latency;
+        long redisMax = strMax == null ? -1L : Long.parseLong(strMax);
+        long max = latency;
         int i = 0;
-        while (currMax < newMax && i < 5) {
+        while (redisMax < max && i < 5) {
             // in case some other client set the max in the middle
-            strMax = valueOps.getAndSet(maxKey, Long.toString(newMax));
-            currMax = newMax;
-            newMax = strMax == null ? -1L : Long.parseLong(strMax);
+            strMax = valueOps.getAndSet(maxKey, Long.toString(max));
+            redisMax = max;
+            max = strMax == null ? -1L : Long.parseLong(strMax);
             i++;
+        }
+        if (redisMax < max) {
+            throw new RuntimeException(
+                    "Failed to set the max after 5 retries due to possible race conditions.");
         }
     }
 
