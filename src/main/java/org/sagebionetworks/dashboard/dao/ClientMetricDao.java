@@ -12,8 +12,25 @@ import org.sagebionetworks.dashboard.model.redis.Statistic;
  */
 public interface ClientMetricDao {
 
-    void addMetric(String clientId, DateTime timestamp, long latency);
+    /**
+     * Adds a metric of latency.
+     *
+     * @param clientId   The ID of the client metric.
+     * @param timestamp  The time when this metric was recorded.
+     * @param latency    Latency in milliseconds.
+     */
+    void addLatencyMetric(String metricId, DateTime timestamp, long latency);
 
-    List<DataPoint> getMetrics(String clientId, DateTime from, DateTime to,
+    /**
+     * Gets the metric as a time series.
+     *
+     * @param metricId      The ID of the client metric.
+     * @param from          Time range of the metric. This is the starting point.
+     * @param to            Time range of the metric. This is the ending point.
+     * @param statistic     Statistic n, sum, average, or max.
+     * @param aggregation   Aggregation by minute, hour, or day.
+     * @return
+     */
+    List<DataPoint> getMetric(String metricId, DateTime from, DateTime to,
             Statistic statistic, Aggregation aggregation);
 }

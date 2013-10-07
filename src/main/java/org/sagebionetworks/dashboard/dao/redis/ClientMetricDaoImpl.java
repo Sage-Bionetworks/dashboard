@@ -31,14 +31,14 @@ import org.springframework.stereotype.Repository;
 public class ClientMetricDaoImpl implements ClientMetricDao {
 
     @Override
-    public void addMetric(final String clientId, final DateTime timestamp, final long latency) {
-        addAggregation(minute_3, clientId, timestamp, latency);
-        addAggregation(hour, clientId, timestamp, latency);
-        addAggregation(day, clientId, timestamp, latency);
+    public void addLatencyMetric(final String metricId, final DateTime timestamp, final long latency) {
+        addAggregation(minute_3, metricId, timestamp, latency);
+        addAggregation(hour, metricId, timestamp, latency);
+        addAggregation(day, metricId, timestamp, latency);
     }
 
     @Override
-    public List<DataPoint> getMetrics(final String clientId, final DateTime from, final DateTime to,
+    public List<DataPoint> getMetric(final String metricId, final DateTime from, final DateTime to,
             final Statistic statistic, final Aggregation aggregation) {
 
         long start = -1L;
@@ -69,7 +69,7 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
         List<String> keys = new ArrayList<String>();
         for (long i = start; i <= end; i += step) {
             timestamps.add(Long.toString(i));
-            keys.add(keyAssembler.getKey(clientId, i));
+            keys.add(keyAssembler.getKey(metricId, i));
         }
 
         List<String> values = valueOps.multiGet(keys);
@@ -85,16 +85,16 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
     }
 
     private void addAggregation(final Aggregation aggregation,
-            final String clientId, final DateTime timestamp, final long latency) {
+            final String metricId, final DateTime timestamp, final long latency) {
 
         // n
-        String key = getKey(n, aggregation, clientId, timestamp);
+        String key = getKey(n, aggregation, metricId, timestamp);
         valueOps.increment(key, 1L);
         // sum
-        key = getKey(sum, aggregation, clientId, timestamp);
+        key = getKey(sum, aggregation, metricId, timestamp);
         valueOps.increment(key, latency);
         // max -- best effort to avoid race conditions
-        final String maxKey = getKey(max, aggregation, clientId, timestamp);
+        final String maxKey = getKey(max, aggregation, metricId, timestamp);
         String strMax = valueOps.get(maxKey);
         long currMax = strMax == null ? -1L : Long.parseLong(strMax);
         long newMax = latency;
