@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <context:component-scan base-package="
+            org.sagebionetworks.dashboard.dao.redis,
+            org.sagebionetworks.dashboard.service" />
+
+    <bean id="jedisConnFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+            p:host-name="127.0.0.1"
+            p:port="6379"
+            p:use-pool="true" />
+
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate"
+            p:connection-factory-ref="jedisConnFactory" />
+
+</beans>
