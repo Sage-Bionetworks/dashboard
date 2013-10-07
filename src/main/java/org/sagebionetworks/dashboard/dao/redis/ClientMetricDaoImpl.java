@@ -113,7 +113,7 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
     }
 
     private String getKey(final Statistic stat, final Aggregation aggr,
-            final String clientId, final DateTime timestamp) {
+            final String metricId, final DateTime timestamp) {
 
         long ts = -1L;
         switch(aggr) {
@@ -131,7 +131,7 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
         }
 
         KeyAssembler keyAssembler = new KeyAssembler(stat, aggr, client);
-        String key = keyAssembler.getKey(clientId, ts);
+        String key = keyAssembler.getKey(metricId, ts);
         redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         return key;
     }

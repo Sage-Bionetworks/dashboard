@@ -4,7 +4,7 @@ import static org.sagebionetworks.dashboard.model.redis.Key.SEPARATOR;
 
 /**
  * Assembles Redis keys at runtime in the format of
- * {statistic}:{aggregation}:{name-space}:{id}:{time-stamp}.
+ * {statistic}:{aggregation}:{name-space}:{metric}:{time-stamp}.
  */
 public class KeyAssembler {
 
@@ -12,8 +12,8 @@ public class KeyAssembler {
         prefix = statistic + SEPARATOR + aggregation + SEPARATOR + nameSpace;
     }
 
-    public String getKey(String clientId, long flooredPosixTime) {
-        return prefix + SEPARATOR + clientId + SEPARATOR + flooredPosixTime;
+    public String getKey(String metricId, long flooredPosixTime) {
+        return prefix + SEPARATOR + metricId + SEPARATOR + flooredPosixTime;
     }
 
     private final String prefix;
