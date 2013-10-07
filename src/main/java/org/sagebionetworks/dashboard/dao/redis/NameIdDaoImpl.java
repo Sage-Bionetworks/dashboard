@@ -97,8 +97,11 @@ public class NameIdDaoImpl implements NameIdDao {
                 // If an ID is already assigned before watching, return it
                 String id = nameIdHash.get(name);
                 if (id != null) {
-                    ops.unwatch();
-                    return Collections.emptyList();
+                    String name = idNameHash.get(id);
+                    if (name != null) {
+                        ops.unwatch();
+                        return Collections.emptyList();
+                    }
                 }
 
                 // Try generating a new ID

@@ -56,9 +56,9 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
     @Test
     public void testMultiThread() throws Exception {
 
-        // Test that we can gracefully handle 100 threads
+        // Test that we can gracefully handle 200 threads
         // trying update the name-id mappings at the same time
-        final int nThreads = 128;
+        final int nThreads = 200;
         Callable<String> task = new Callable<String>() {
             @Override
             public String call() throws Exception {
@@ -68,26 +68,29 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
         };
         List<Callable<String>> tasks = Collections.nCopies(nThreads, task);
         ExecutorService executor = Executors.newFixedThreadPool(nThreads);
-        executor.invokeAll(tasks);
 
-        // Validate
-        BoundHashOperations<String, String, String> nameIdHash = redisTemplate.boundHashOps(Key.NAME_ID);
-        BoundHashOperations<String, String, String> idNameHash = redisTemplate.boundHashOps(Key.ID_NAME);
-        Map<String, String> nameIdEntries = nameIdHash.entries();
-        int i = 0;
-        while (nameIdEntries.size() < nThreads && i < 5) {
-            Thread.sleep(10L);
-            nameIdEntries = nameIdHash.entries();
-            i++;
-        }
-        assertEquals(nThreads, nameIdEntries.size());
-        Map<String, String> idNameEntries = idNameHash.entries();
-        assertEquals(nThreads, idNameEntries.size());
-        for (Entry<String, String> entry : idNameEntries.entrySet()) {
-            assertNotNull(entry.getKey());
-            assertFalse(entry.getKey().isEmpty());
-            assertNotNull(entry.getValue());
-            assertFalse(entry.getValue().isEmpty());
+        try {
+            executor.invokeAll(tasks);
+            BoundHashOperations<String, String, String> nameIdHash = redisTemplate.boundHashOps(Key.NAME_ID);
+            BoundHashOperations<String, String, String> idNameHash = redisTemplate.boundHashOps(Key.ID_NAME);
+            Map<String, String> nameIdEntries = nameIdHash.entries();
+            int i = 0;
+            while (nameIdEntries.size() < nThreads && i < 5) {
+                Thread.sleep(200L);
+                nameIdEntries = nameIdHash.entries();
+                i++;
+            }
+            assertEquals(nThreads, nameIdEntries.size());
+            Map<String, String> idNameEntries = idNameHash.entries();
+            assertEquals(nThreads, idNameEntries.size());
+            for (Entry<String, String> entry : idNameEntries.entrySet()) {
+                assertNotNull(entry.getKey());
+                assertFalse(entry.getKey().isEmpty());
+                assertNotNull(entry.getValue());
+                assertFalse(entry.getValue().isEmpty());
+            }
+        } finally {
+            executor.shutdownNow();
         }
     }
 }
