@@ -1,10 +1,13 @@
 package org.sagebionetworks.dashboard.util;
 
+import org.joda.time.DateTime;
+
 /**
- * Measured as the number of seconds that have elapsed since
- * 00:00:00 Coordinated Universal Time (UTC), Thursday, 1 January 1970.
+ * POSIX time is measured as the number of seconds that have elapsed since
+ * 00:00:00 Coordinated Universal Time (UTC), Thursday, 1 January 1970. Note
+ * that one second is the minimal scale we keep track of the metrics.
  */
-public class PosixTimeUtil {
+public final class PosixTimeUtil {
 
     public static final long MINUTE = 60L;
     public static final long MINUTE_3 = MINUTE * 3L; // 3 minutes
@@ -26,4 +29,26 @@ public class PosixTimeUtil {
     public static long floorToDay(long posixTime) {
         return (posixTime / DAY) * DAY;
     }
+
+    public static long floorToMinute(DateTime dateTime) {
+        return floorToMinute(getPosixTime(dateTime));
+    }
+
+    public static long floorToMinute3(DateTime dateTime) {
+        return floorToMinute3(getPosixTime(dateTime));
+    }
+
+    public static long floorToHour(DateTime dateTime) {
+        return floorToHour(getPosixTime(dateTime));
+    }
+
+    public static long floorToDay(DateTime dateTime) {
+        return floorToDay(getPosixTime(dateTime));
+    }
+
+    private static long getPosixTime(DateTime dateTime) {
+        return dateTime.getMillis() / 1000L;
+    }
+
+    private PosixTimeUtil() {};
 }

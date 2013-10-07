@@ -1,6 +1,13 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
+import static org.sagebionetworks.dashboard.model.redis.Aggregation.day;
+import static org.sagebionetworks.dashboard.model.redis.Aggregation.hour;
+import static org.sagebionetworks.dashboard.model.redis.Aggregation.minute_3;
+import static org.sagebionetworks.dashboard.model.redis.NameSpace.client;
 import static org.sagebionetworks.dashboard.model.redis.RedisConstants.EXPIRE_DAYS;
+import static org.sagebionetworks.dashboard.model.redis.Statistic.max;
+import static org.sagebionetworks.dashboard.model.redis.Statistic.n;
+import static org.sagebionetworks.dashboard.model.redis.Statistic.sum;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,12 +16,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
+import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.ClientMetricDao;
 import org.sagebionetworks.dashboard.model.DataPoint;
-import org.sagebionetworks.dashboard.model.redis.RedisKey.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.RedisKey.NameSpace;
-import org.sagebionetworks.dashboard.model.redis.RedisKey.Statistic;
-import org.sagebionetworks.dashboard.model.redis.RedisKeyAssembler;
+import org.sagebionetworks.dashboard.model.redis.Aggregation;
+import org.sagebionetworks.dashboard.model.redis.KeyAssembler;
+import org.sagebionetworks.dashboard.model.redis.Statistic;
 import org.sagebionetworks.dashboard.util.PosixTimeUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -24,40 +31,43 @@ import org.springframework.stereotype.Repository;
 public class ClientMetricDaoImpl implements ClientMetricDao {
 
     @Override
-    public void addMetric(final String clientId, final long latency, final long posixTime) {
-        addMetricAtAggregation(clientId, latency, posixTime, Aggregation.MINUTE3);
-        addMetricAtAggregation(clientId, latency, posixTime, Aggregation.HOUR);
-        addMetricAtAggregation(clientId, latency, posixTime, Aggregation.DAY);
+    public void addMetric(final String clientId, final DateTime timestamp, final long latency) {
+        addMetricAtAggregation(clientId, timestamp, latency, minute_3);
+        addMetricAtAggregation(clientId, timestamp, latency, hour);
+        addMetricAtAggregation(clientId, timestamp, latency, day);
     }
 
     @Override
-    public List<DataPoint> getMetrics(final String clientId, final long posixStart, final long posixEnd,
-            final String metric, final String aggregation) {
+    public List<DataPoint> getMetrics(final String clientId, final DateTime from, final DateTime to,
+            final Statistic statistic, final Aggregation aggregation) {
 
-        long from = -1L;
-        long to = -1L;
+        long start = -1L;
+        long end = -1L;
         long step = -1L;
-        if (Aggregation.MINUTE3.equals(aggregation)) {
-            from = PosixTimeUtil.floorToMinute3(posixStart);
-            to = PosixTimeUtil.floorToMinute3(posixEnd);
-            step = PosixTimeUtil.MINUTE_3;
-        } else if (Aggregation.HOUR.equals(aggregation)) {
-            from = PosixTimeUtil.floorToHour(posixStart);
-            to = PosixTimeUtil.floorToHour(posixEnd);
-            step = PosixTimeUtil.HOUR;
-        } else if (Aggregation.DAY.equals(aggregation)) {
-            from = PosixTimeUtil.floorToDay(posixStart);
-            to = PosixTimeUtil.floorToDay(posixEnd);
-            step = PosixTimeUtil.DAY;
-        }
-        if (from < 0) {
-            throw new RuntimeException("Incorrect aggregation: " + aggregation);
+        switch (aggregation) {
+            case minute_3:
+                 start = PosixTimeUtil.floorToMinute3(from);
+                 end = PosixTimeUtil.floorToMinute3(to);
+                 step = PosixTimeUtil.MINUTE_3;
+                 break;
+            case hour:
+                start = PosixTimeUtil.floorToHour(from);
+                end = PosixTimeUtil.floorToHour(to);
+                step = PosixTimeUtil.HOUR;
+                break;
+            case day:
+                start = PosixTimeUtil.floorToDay(from);
+                end = PosixTimeUtil.floorToDay(to);
+                step = PosixTimeUtil.DAY;
+                break;
+            default:
+                throw new RuntimeException("Aggregation " + aggregation + " not supported.");
         }
 
-        RedisKeyAssembler keyAssembler = new RedisKeyAssembler(metric, aggregation, NameSpace.CLIENT);
+        KeyAssembler keyAssembler = new KeyAssembler(statistic, aggregation, client);
         List<String> timestamps = new ArrayList<String>();
         List<String> keys = new ArrayList<String>();
-        for (long i = from; i <= to; i += step) {
+        for (long i = start; i <= end; i += step) {
             timestamps.add(Long.toString(i));
             keys.add(keyAssembler.getKey(clientId, i));
         }
@@ -74,41 +84,44 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
         return Collections.unmodifiableList(data);
     }
 
-    private void addMetricAtAggregation(final String clientId, final long latency,
-            final long posixTime, final String aggregation) {
+    private void addMetricAtAggregation(final String clientId, final DateTime timestamp,
+            final long latency, final Aggregation aggregation) {
 
-        long timestamp = -1;
-        if (Aggregation.MINUTE3.equals(aggregation)) {
-            timestamp = PosixTimeUtil.floorToMinute3(posixTime);
-        } else if (Aggregation.HOUR.equals(aggregation)) {
-            timestamp = PosixTimeUtil.floorToHour(posixTime);
-        } else if (Aggregation.DAY.equals(aggregation)) {
-            timestamp = PosixTimeUtil.floorToDay(posixTime);
-        }
-        if (timestamp < 0) {
-            throw new RuntimeException("Incorrect aggregation: " + aggregation);
+        long t = -1L;
+        switch(aggregation) {
+            case minute_3:
+                t = PosixTimeUtil.floorToMinute3(timestamp);
+                break;
+            case hour:
+                t = PosixTimeUtil.floorToHour(timestamp);
+                break;
+            case day:
+                t = PosixTimeUtil.floorToDay(timestamp);
+                break;
+            default:
+                throw new RuntimeException("Aggregation " + aggregation + " not supported.");
         }
 
-        RedisKeyAssembler keyAssembler = null;
+        KeyAssembler keyAssembler = null;
         // n
-        keyAssembler = new RedisKeyAssembler(Statistic.N, aggregation, NameSpace.CLIENT);
-        String key = keyAssembler.getKey(clientId, timestamp);
+        keyAssembler = new KeyAssembler(n, aggregation, client);
+        String key = keyAssembler.getKey(clientId, t);
         if (!redisTemplate.hasKey(key)) {
             valueOps.set(key, Long.toString(1L), EXPIRE_DAYS, TimeUnit.DAYS);
         } else {
             valueOps.increment(key, 1L);
         }
         // sum
-        keyAssembler = new RedisKeyAssembler(Statistic.SUM, aggregation, NameSpace.CLIENT);
-        key = keyAssembler.getKey(clientId, timestamp);
+        keyAssembler = new KeyAssembler(sum, aggregation, client);
+        key = keyAssembler.getKey(clientId, t);
         if (!redisTemplate.hasKey(key)) {
             valueOps.set(key, Long.toString(latency), EXPIRE_DAYS, TimeUnit.DAYS);
         } else {
             valueOps.increment(key, latency);
         }
         // max
-        keyAssembler = new RedisKeyAssembler(Statistic.MAX, aggregation, NameSpace.CLIENT);
-        key = keyAssembler.getKey(clientId, timestamp);
+        keyAssembler = new KeyAssembler(max, aggregation, client);
+        key = keyAssembler.getKey(clientId, t);
         if (!redisTemplate.hasKey(key)) {
             valueOps.set(key, Long.toString(latency), EXPIRE_DAYS, TimeUnit.DAYS);
         } else {

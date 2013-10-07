@@ -2,6 +2,12 @@ package org.sagebionetworks.dashboard.dao.redis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.sagebionetworks.dashboard.model.redis.Aggregation.day;
+import static org.sagebionetworks.dashboard.model.redis.Aggregation.hour;
+import static org.sagebionetworks.dashboard.model.redis.Aggregation.minute_3;
+import static org.sagebionetworks.dashboard.model.redis.Statistic.max;
+import static org.sagebionetworks.dashboard.model.redis.Statistic.n;
+import static org.sagebionetworks.dashboard.model.redis.Statistic.sum;
 
 import java.util.List;
 
@@ -11,8 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.ClientMetricDao;
 import org.sagebionetworks.dashboard.model.DataPoint;
-import org.sagebionetworks.dashboard.model.redis.RedisKey.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.RedisKey.Statistic;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
@@ -32,57 +36,46 @@ public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
         final String python = "python";
         long latency = 11L;
         DateTime dt = new DateTime(2005, 2, 8, 9, 30, 51, 31, DateTimeZone.UTC);
-        long posixTime = dt.getMillis() / 1000L;
-        clientMetricDao.addMetric(python, latency, posixTime);
+        clientMetricDao.addMetric(python, dt, latency);
 
         latency = 5L;
         dt = dt.plusMinutes(1);
-        posixTime = dt.getMillis() / 1000L;
-        clientMetricDao.addMetric(python, latency, posixTime);
+        clientMetricDao.addMetric(python, dt, latency);
 
         latency = 1L;
         dt = dt.plusMinutes(11);
-        posixTime = dt.getMillis() / 1000L;
-        clientMetricDao.addMetric(python, latency, posixTime);
+        clientMetricDao.addMetric(python, dt, latency);
 
         latency = 7L;
         dt = dt.plusHours(1);
-        posixTime = dt.getMillis() / 1000L;
-        clientMetricDao.addMetric(python, latency, posixTime);
+        clientMetricDao.addMetric(python, dt, latency);
 
         latency = 2L;
         dt = dt.plusMinutes(2);
-        posixTime = dt.getMillis() / 1000L;
-        clientMetricDao.addMetric(python, latency, posixTime);
+        clientMetricDao.addMetric(python, dt, latency);
 
         latency = 3L;
         dt = dt.plusDays(3);
-        posixTime = dt.getMillis() / 1000L;
-        clientMetricDao.addMetric(python, latency, posixTime);
+        clientMetricDao.addMetric(python, dt, latency);
 
         // this one is out of range
         latency = 13L;
         dt = dt.plusMonths(1);
-        posixTime = dt.getMillis() / 1000L;
-        clientMetricDao.addMetric(python, latency, posixTime);
+        clientMetricDao.addMetric(python, dt, latency);
 
         // Metrics for R
         final String r = "r";
         latency = 101L;
         dt = new DateTime(2005, 2, 21, 11, 32, 51, 31, DateTimeZone.UTC);
-        posixTime = dt.getMillis() / 1000L;
-        clientMetricDao.addMetric(r, latency, posixTime);
+        clientMetricDao.addMetric(r, dt, latency);
 
         latency = 79L;
         dt = dt.plusHours(1);
-        posixTime = dt.getMillis() / 1000L;
-        clientMetricDao.addMetric(r, latency, posixTime);
+        clientMetricDao.addMetric(r, dt, latency);
 
-        dt = new DateTime(2005, 2, 1, 0, 0, 0, 0, DateTimeZone.UTC);
-        final long start = dt.getMillis() / 1000L;
-        dt = new DateTime(2005, 3, 1, 0, 0, 0, 0, DateTimeZone.UTC);
-        final long end = dt.getMillis() / 1000L;
-        List<DataPoint> sumListM3 = clientMetricDao.getMetrics(python, start, end, Statistic.SUM, Aggregation.MINUTE3);
+        final DateTime start = new DateTime(2005, 2, 1, 0, 0, 0, 0, DateTimeZone.UTC);
+        final DateTime end = new DateTime(2005, 3, 1, 0, 0, 0, 0, DateTimeZone.UTC);
+        List<DataPoint> sumListM3 = clientMetricDao.getMetrics(python, start, end, sum, minute_3);
         assertEquals(4, sumListM3.size());
         DataPoint dp = sumListM3.get(0);
         assertEquals("1107855000", dp.getTimestamp());
@@ -97,7 +90,7 @@ public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
         assertEquals("1108118520", dp.getTimestamp());
         assertEquals("3", dp.getValue());
 
-        List<DataPoint> sumListHour = clientMetricDao.getMetrics(python, start, end, Statistic.SUM, Aggregation.HOUR);
+        List<DataPoint> sumListHour = clientMetricDao.getMetrics(python, start, end, sum, hour);
         assertEquals(3, sumListHour.size());
         dp = sumListHour.get(0);
         assertEquals("1107853200", dp.getTimestamp());
@@ -109,7 +102,7 @@ public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
         assertEquals("1108116000", dp.getTimestamp());
         assertEquals("3", dp.getValue());
 
-        List<DataPoint> sumListDay = clientMetricDao.getMetrics(python, start, end, Statistic.SUM, Aggregation.DAY);
+        List<DataPoint> sumListDay = clientMetricDao.getMetrics(python, start, end, sum, day);
         assertEquals(2, sumListDay.size());
         dp = sumListDay.get(0);
         assertEquals("1107820800", dp.getTimestamp());
@@ -118,7 +111,7 @@ public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
         assertEquals("1108080000", dp.getTimestamp());
         assertEquals("3", dp.getValue());
 
-        List<DataPoint> nListDay = clientMetricDao.getMetrics(python, start, end, Statistic.N, Aggregation.DAY);
+        List<DataPoint> nListDay = clientMetricDao.getMetrics(python, start, end, n, day);
         assertEquals(2, nListDay.size());
         dp = nListDay.get(0);
         assertEquals("1107820800", dp.getTimestamp());
@@ -127,7 +120,7 @@ public class ClientMetricDaoImplTest extends AbstractRedisDaoTest {
         assertEquals("1108080000", dp.getTimestamp());
         assertEquals("1", dp.getValue());
 
-        List<DataPoint> maxListDay = clientMetricDao.getMetrics(python, start, end, Statistic.MAX, Aggregation.DAY);
+        List<DataPoint> maxListDay = clientMetricDao.getMetrics(python, start, end, max, day);
         assertEquals(2, maxListDay.size());
         dp = maxListDay.get(0);
         assertEquals("1107820800", dp.getTimestamp());

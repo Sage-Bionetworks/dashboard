@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
-import org.sagebionetworks.dashboard.model.redis.RedisKey;
+import org.sagebionetworks.dashboard.model.redis.Key;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -71,8 +71,8 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
         executor.invokeAll(tasks);
 
         // Validate
-        BoundHashOperations<String, String, String> nameIdHash = redisTemplate.boundHashOps(RedisKey.NAME_ID);
-        BoundHashOperations<String, String, String> idNameHash = redisTemplate.boundHashOps(RedisKey.ID_NAME);
+        BoundHashOperations<String, String, String> nameIdHash = redisTemplate.boundHashOps(Key.NAME_ID);
+        BoundHashOperations<String, String, String> idNameHash = redisTemplate.boundHashOps(Key.ID_NAME);
         Map<String, String> nameIdEntries = nameIdHash.entries();
         int i = 0;
         while (nameIdEntries.size() < nThreads && i < 5) {
