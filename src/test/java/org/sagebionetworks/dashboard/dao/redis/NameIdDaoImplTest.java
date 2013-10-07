@@ -4,8 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,11 +61,18 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
         // Test that we can gracefully handle 200 threads
         // trying update the name-id mappings at the same time
         final int nThreads = 200;
+        final Map<String, String> nameIdMap = Collections.synchronizedMap(new HashMap<String, String>());
         Callable<String> task = new Callable<String>() {
             @Override
             public String call() throws Exception {
-                String name = "Thread " + Long.toString(Thread.currentThread().getId());
-                return nameIdDao.getId(name);
+                String name = "Thread " + Long.toString(Thread.currentThread().getId() % 10L);
+                String id = nameIdDao.getId(name);
+                // Verify that once an ID is set for a name, it is never reset
+                String oldId = nameIdMap.put(name, id);
+                if (oldId != null && !oldId.equals(id)) {
+                    fail("ID is reset.");
+                }
+                return id;
             }
         };
         List<Callable<String>> tasks = Collections.nCopies(nThreads, task);
@@ -80,9 +89,9 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
                 nameIdEntries = nameIdHash.entries();
                 i++;
             }
-            assertEquals(nThreads, nameIdEntries.size());
+            assertEquals(10, nameIdEntries.size());
             Map<String, String> idNameEntries = idNameHash.entries();
-            assertEquals(nThreads, idNameEntries.size());
+            assertEquals(10, idNameEntries.size());
             for (Entry<String, String> entry : idNameEntries.entrySet()) {
                 assertNotNull(entry.getKey());
                 assertFalse(entry.getKey().isEmpty());
