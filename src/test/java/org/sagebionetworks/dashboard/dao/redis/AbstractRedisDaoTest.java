@@ -4,7 +4,6 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
@@ -33,7 +32,7 @@ public abstract class AbstractRedisDaoTest {
                     return pong;
                 } catch (RedisConnectionFailureException e) {
                     String msg = "Please make sure a local Redis server is running at 127.0.0.1:6379";
-                    Assume.assumeNoException(msg, e);
+                    Assert.fail(msg);
                     return msg;
                 }
             }
