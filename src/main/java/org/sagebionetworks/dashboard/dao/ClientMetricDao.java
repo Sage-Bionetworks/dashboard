@@ -3,7 +3,7 @@ package org.sagebionetworks.dashboard.dao;
 import java.util.List;
 
 import org.joda.time.DateTime;
-import org.sagebionetworks.dashboard.model.DataPoint;
+import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.model.redis.Aggregation;
 import org.sagebionetworks.dashboard.model.redis.Statistic;
 
@@ -31,6 +31,6 @@ public interface ClientMetricDao {
      * @param aggregation   Aggregation by minute, hour, or day.
      * @return
      */
-    List<DataPoint> getMetric(String metricId, DateTime from, DateTime to,
+    List<TimeDataPoint> getMetric(String metricId, DateTime from, DateTime to,
             Statistic statistic, Aggregation aggregation);
 }

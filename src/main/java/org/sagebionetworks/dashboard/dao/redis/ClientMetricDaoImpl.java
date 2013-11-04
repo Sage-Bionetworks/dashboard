@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.ClientMetricDao;
-import org.sagebionetworks.dashboard.model.DataPoint;
+import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.model.redis.Aggregation;
 import org.sagebionetworks.dashboard.model.redis.KeyAssembler;
 import org.sagebionetworks.dashboard.model.redis.Statistic;
@@ -38,7 +38,7 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
     }
 
     @Override
-    public List<DataPoint> getMetric(final String metricId, final DateTime from, final DateTime to,
+    public List<TimeDataPoint> getMetric(final String metricId, final DateTime from, final DateTime to,
             final Statistic statistic, final Aggregation aggregation) {
 
         long start = -1L;
@@ -73,11 +73,11 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
         }
 
         List<String> values = valueOps.multiGet(keys);
-        List<DataPoint> data = new ArrayList<DataPoint>();
+        List<TimeDataPoint> data = new ArrayList<TimeDataPoint>();
         for (int i = 0; i < values.size(); i++) {
             String value = values.get(i);
             if (value != null) {
-                data.add(new DataPoint(value, timestamps.get(i)));
+                data.add(new TimeDataPoint(timestamps.get(i), value));
             }
         }
 
