@@ -9,14 +9,14 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
-import org.sagebionetworks.dashboard.dao.UniqueCountMetricDao;
+import org.sagebionetworks.dashboard.dao.UniqueCountDao;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class UniqueCountMetricDaoImplTest extends AbstractRedisDaoTest {
+public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
 
     @Autowired
-    private UniqueCountMetricDao uniqueCountDao;
+    private UniqueCountDao uniqueCountDao;
 
     @Before
     public void before() {

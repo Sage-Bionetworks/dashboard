@@ -5,7 +5,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
 
-public interface UniqueCountMetricDao {
+public interface UniqueCountDao {
 
     /**
      * Adds one count to the specified ID.

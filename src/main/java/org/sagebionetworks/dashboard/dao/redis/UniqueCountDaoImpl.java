@@ -7,7 +7,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
-import org.sagebionetworks.dashboard.dao.UniqueCountMetricDao;
+import org.sagebionetworks.dashboard.dao.UniqueCountDao;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
 import org.sagebionetworks.dashboard.model.redis.Aggregation;
 import org.sagebionetworks.dashboard.model.redis.KeyAssembler;
@@ -19,7 +19,7 @@ import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
 
 @Repository("uniqueCountDao")
-public class UniqueCountMetricDaoImpl implements UniqueCountMetricDao {
+public class UniqueCountDaoImpl implements UniqueCountDao {
 
     @Override
     public void addMetric(String metricId, DateTime timestamp, String id) {
@@ -54,7 +54,7 @@ public class UniqueCountMetricDaoImpl implements UniqueCountMetricDao {
     private static final KeyAssembler KEY_ASSEMBLER = new KeyAssembler(
             Statistic.n,
             Aggregation.day,
-            NameSpace.count);
+            NameSpace.uniquecount);
 
     @Resource(name="redisTemplate")
     private ZSetOperations<String, String> zsetOps;

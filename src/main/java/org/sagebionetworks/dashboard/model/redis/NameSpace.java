@@ -11,6 +11,6 @@ public enum NameSpace {
     /** Time series metrics. */
     timeseries,
 
-    /** Counts */
-    count
+    /** Counts by unique IDs. */
+    uniquecount
 }
