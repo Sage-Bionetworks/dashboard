@@ -3,7 +3,7 @@ package org.sagebionetworks.dashboard.dao.redis;
 import static org.sagebionetworks.dashboard.model.redis.Aggregation.day;
 import static org.sagebionetworks.dashboard.model.redis.Aggregation.hour;
 import static org.sagebionetworks.dashboard.model.redis.Aggregation.minute_3;
-import static org.sagebionetworks.dashboard.model.redis.NameSpace.client;
+import static org.sagebionetworks.dashboard.model.redis.NameSpace.timeseries;
 import static org.sagebionetworks.dashboard.model.redis.RedisConstants.EXPIRE_DAYS;
 import static org.sagebionetworks.dashboard.model.redis.Statistic.max;
 import static org.sagebionetworks.dashboard.model.redis.Statistic.n;
@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
-import org.sagebionetworks.dashboard.dao.ClientMetricDao;
-import org.sagebionetworks.dashboard.model.DataPoint;
+import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
+import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.model.redis.Aggregation;
 import org.sagebionetworks.dashboard.model.redis.KeyAssembler;
 import org.sagebionetworks.dashboard.model.redis.Statistic;
@@ -27,18 +27,18 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
-@Repository("clientMetricDao")
-public class ClientMetricDaoImpl implements ClientMetricDao {
+@Repository("timeSeriesDao")
+public class TimeSeriesDaoImpl implements TimeSeriesDao {
 
     @Override
-    public void addLatencyMetric(final String metricId, final DateTime timestamp, final long latency) {
-        addAggregation(minute_3, metricId, timestamp, latency);
-        addAggregation(hour, metricId, timestamp, latency);
-        addAggregation(day, metricId, timestamp, latency);
+    public void addMetric(final String metricId, final DateTime timestamp, final long value) {
+        addAggregation(minute_3, metricId, timestamp, value);
+        addAggregation(hour, metricId, timestamp, value);
+        addAggregation(day, metricId, timestamp, value);
     }
 
     @Override
-    public List<DataPoint> getMetric(final String metricId, final DateTime from, final DateTime to,
+    public List<TimeDataPoint> getMetric(final String metricId, final DateTime from, final DateTime to,
             final Statistic statistic, final Aggregation aggregation) {
 
         long start = -1L;
@@ -64,7 +64,7 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
                 throw new RuntimeException("Aggregation " + aggregation + " not supported.");
         }
 
-        KeyAssembler keyAssembler = new KeyAssembler(statistic, aggregation, client);
+        KeyAssembler keyAssembler = new KeyAssembler(statistic, aggregation, timeseries);
         List<String> timestamps = new ArrayList<String>();
         List<String> keys = new ArrayList<String>();
         for (long i = start; i <= end; i += step) {
@@ -73,11 +73,11 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
         }
 
         List<String> values = valueOps.multiGet(keys);
-        List<DataPoint> data = new ArrayList<DataPoint>();
+        List<TimeDataPoint> data = new ArrayList<TimeDataPoint>();
         for (int i = 0; i < values.size(); i++) {
             String value = values.get(i);
             if (value != null) {
-                data.add(new DataPoint(value, timestamps.get(i)));
+                data.add(new TimeDataPoint(timestamps.get(i), value));
             }
         }
 
@@ -85,19 +85,19 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
     }
 
     private void addAggregation(final Aggregation aggregation,
-            final String metricId, final DateTime timestamp, final long latency) {
+            final String metricId, final DateTime timestamp, final long value) {
 
         // n
         String key = getKey(n, aggregation, metricId, timestamp);
         valueOps.increment(key, 1L);
         // sum
         key = getKey(sum, aggregation, metricId, timestamp);
-        valueOps.increment(key, latency);
+        valueOps.increment(key, value);
         // max -- optimistically work around race conditions
         final String maxKey = getKey(max, aggregation, metricId, timestamp);
         String strMax = valueOps.get(maxKey);
         long redisMax = strMax == null ? -1L : Long.parseLong(strMax);
-        long max = latency;
+        long max = value;
         int i = 0;
         while (redisMax < max && i < 5) {
             // in case some other client set the max in the middle
@@ -130,7 +130,7 @@ public class ClientMetricDaoImpl implements ClientMetricDao {
                 throw new RuntimeException("Aggregation " + aggr + " not supported.");
         }
 
-        KeyAssembler keyAssembler = new KeyAssembler(stat, aggr, client);
+        KeyAssembler keyAssembler = new KeyAssembler(stat, aggr, timeseries);
         String key = keyAssembler.getKey(metricId, ts);
         redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         return key;
