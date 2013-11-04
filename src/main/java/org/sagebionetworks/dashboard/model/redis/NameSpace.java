@@ -8,8 +8,8 @@ public enum NameSpace {
     /** The set of IDs. */
     id,
 
-    /** Synapse clients. */
-    client,
+    /** Time series metrics. */
+    timeseries,
 
     /** Counts */
     count
