@@ -4,5 +4,4 @@ import org.springframework.stereotype.Service;
 
 @Service("dashboardService")
 public class DashboardServiceImpl implements DashboardService {
-
 }
