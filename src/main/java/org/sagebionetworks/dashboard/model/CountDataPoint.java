@@ -15,6 +15,11 @@ public class CountDataPoint {
         return count;
     }
 
+    @Override
+    public String toString() {
+        return "CountDataPoint [id=" + id + ", count=" + count + "]";
+    }
+
     private final String id;
     private final String count;
 }
