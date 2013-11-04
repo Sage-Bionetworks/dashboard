@@ -15,6 +15,12 @@ public class TimeDataPoint {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "TimeDataPoint [timestamp=" + timestamp + ", value=" + value
+                + "]";
+    }
+
     private final String timestamp;
     private final String value;
 }
