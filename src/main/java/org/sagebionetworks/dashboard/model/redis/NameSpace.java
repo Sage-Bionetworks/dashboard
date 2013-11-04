@@ -9,5 +9,8 @@ public enum NameSpace {
     id,
 
     /** Synapse clients. */
-    client
+    client,
+
+    /** Counts */
+    count
 }
