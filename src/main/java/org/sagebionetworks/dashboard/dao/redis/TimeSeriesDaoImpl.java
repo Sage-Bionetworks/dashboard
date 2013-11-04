@@ -41,6 +41,19 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
     public List<TimeDataPoint> getMetric(final String metricId, final DateTime from, final DateTime to,
             final Statistic statistic, final Aggregation aggregation) {
 
+        if (Statistic.avg.equals(statistic)) {
+            List<TimeDataPoint> sumList = getMetric(metricId, from, to, sum, aggregation);
+            List<TimeDataPoint> nList = getMetric(metricId, from, to, n, aggregation);
+            List<TimeDataPoint> avgList = new ArrayList<TimeDataPoint>(sumList.size());
+            for (int i = 0; i < sumList.size(); i++) {
+                TimeDataPoint iSum = sumList.get(i);
+                TimeDataPoint iN = nList.get(i);
+                long average = Long.parseLong(iSum.getValue()) / Long.parseLong(iN.getValue());
+                avgList.add(new TimeDataPoint(iSum.getTimestamp(), Long.toString(average)));
+            }
+            return avgList;
+        }
+
         long start = -1L;
         long end = -1L;
         long step = -1L;
