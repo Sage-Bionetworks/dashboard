@@ -16,8 +16,7 @@
     <bean id="jedisConnFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
             p:host-name="127.0.0.1"
             p:port="6379"
-            p:use-pool="true"
-            p:timeout="5000" />
+            p:use-pool="true" />
 
     <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate"
             p:connection-factory-ref="jedisConnFactory" />
