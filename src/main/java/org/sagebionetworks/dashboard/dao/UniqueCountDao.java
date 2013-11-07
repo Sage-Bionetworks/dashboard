@@ -21,8 +21,9 @@ public interface UniqueCountDao {
      *
      * @param metricId      The ID of the metric.
      * @param timestamp     The day of the metric.
+     * @param n             The max number of counts to retrieve.
      */
-    List<CountDataPoint> getMetric(String metricId, DateTime timestamp);
+    List<CountDataPoint> getMetric(String metricId, DateTime timestamp, long n);
 
     /**
      * The number of unique objects at the specified day.

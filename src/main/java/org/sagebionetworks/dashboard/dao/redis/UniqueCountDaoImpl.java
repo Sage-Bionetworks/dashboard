@@ -28,9 +28,13 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
     }
 
     @Override
-    public List<CountDataPoint> getMetric(String metricId, DateTime timestamp) {
+    public List<CountDataPoint> getMetric(String metricId, DateTime timestamp, final long n) {
         final String key = getKey(metricId, timestamp);
-        Collection<TypedTuple<String>> data = zsetOps.reverseRangeWithScores(key, 0L, Long.MAX_VALUE);
+        long end = Long.MAX_VALUE == n ? Long.MAX_VALUE : (n - 1L); // end is inclusive
+        if (end < 0L) {
+            end = 0L;
+        }
+        Collection<TypedTuple<String>> data = zsetOps.reverseRangeWithScores(key, 0L, end);
         List<CountDataPoint> results = new ArrayList<CountDataPoint>();
         for (TypedTuple<String> tuple : data) {
             results.add(new CountDataPoint(
