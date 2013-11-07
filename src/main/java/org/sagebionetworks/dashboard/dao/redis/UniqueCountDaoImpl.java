@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
+import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
 import org.sagebionetworks.dashboard.model.redis.Aggregation;
@@ -14,6 +15,7 @@ import org.sagebionetworks.dashboard.model.redis.KeyAssembler;
 import org.sagebionetworks.dashboard.model.redis.NameSpace;
 import org.sagebionetworks.dashboard.model.redis.Statistic;
 import org.sagebionetworks.dashboard.util.PosixTimeUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
@@ -21,10 +23,14 @@ import org.springframework.stereotype.Repository;
 @Repository("uniqueCountDao")
 public class UniqueCountDaoImpl implements UniqueCountDao {
 
+    @Autowired
+    private NameIdDao nameIdDao;
+
     @Override
-    public void addMetric(String metricId, DateTime timestamp, String id) {
+    public void addMetric(final String metricId, final DateTime timestamp, final String id) {
         final String key = getKey(metricId, timestamp);
-        zsetOps.incrementScore(key, id, 1.0d);
+        final String newId = nameIdDao.getId(id); // Swap for a shorter id
+        zsetOps.incrementScore(key, newId, 1.0d);
     }
 
     @Override
@@ -38,7 +44,7 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
         List<CountDataPoint> results = new ArrayList<CountDataPoint>();
         for (TypedTuple<String> tuple : data) {
             results.add(new CountDataPoint(
-                    tuple.getValue(),
+                    nameIdDao.getName(tuple.getValue()), // Get back the original id
                     tuple.getScore().longValue()));
         }
         return results;
