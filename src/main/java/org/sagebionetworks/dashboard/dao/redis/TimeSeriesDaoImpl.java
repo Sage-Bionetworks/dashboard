@@ -49,7 +49,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
                 TimeDataPoint iSum = sumList.get(i);
                 TimeDataPoint iN = nList.get(i);
                 long average = Long.parseLong(iSum.getValue()) / Long.parseLong(iN.getValue());
-                avgList.add(new TimeDataPoint(iSum.getTimestamp(), Long.toString(average)));
+                avgList.add(new TimeDataPoint(iSum.getTimestampInMs(), Long.toString(average)));
             }
             return avgList;
         }
@@ -78,10 +78,10 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         }
 
         KeyAssembler keyAssembler = new KeyAssembler(statistic, aggregation, timeseries);
-        List<String> timestamps = new ArrayList<String>();
+        List<Long> timestamps = new ArrayList<Long>();
         List<String> keys = new ArrayList<String>();
         for (long i = start; i <= end; i += step) {
-            timestamps.add(Long.toString(i));
+            timestamps.add(i);
             keys.add(keyAssembler.getKey(metricId, i));
         }
 
@@ -90,7 +90,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         for (int i = 0; i < values.size(); i++) {
             String value = values.get(i);
             if (value != null) {
-                data.add(new TimeDataPoint(timestamps.get(i), value));
+                data.add(new TimeDataPoint(timestamps.get(i).longValue(), value));
             }
         }
 

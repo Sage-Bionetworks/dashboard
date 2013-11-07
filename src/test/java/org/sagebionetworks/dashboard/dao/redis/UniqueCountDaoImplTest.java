@@ -41,7 +41,7 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals(id1, results.get(0).getId());
-        assertEquals("1", results.get(0).getCount());
+        assertEquals(1L, results.get(0).getCount());
 
         uniqueCountDao.addMetric(m2, day1, id3);
         uniqueCountDao.addMetric(m2, day1, id2);
@@ -57,22 +57,22 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals(id1, results.get(0).getId());
-        assertEquals("1", results.get(0).getCount());
+        assertEquals(1L, results.get(0).getCount());
         // Verify day 1 results for m2
         assertEquals(3L, uniqueCountDao.getUniqueCount(m2, day1));
         results = uniqueCountDao.getMetric(m2, day1);
         assertEquals(3, results.size());
         assertEquals(id2, results.get(0).getId());
-        assertEquals("3", results.get(0).getCount());
+        assertEquals(3L, results.get(0).getCount());
         assertEquals(id3, results.get(1).getId());
-        assertEquals("2", results.get(1).getCount());
+        assertEquals(2L, results.get(1).getCount());
         assertEquals(id1, results.get(2).getId());
-        assertEquals("1", results.get(2).getCount());
+        assertEquals(1L, results.get(2).getCount());
         // Verify day 2 results for m2
         assertEquals(1L, uniqueCountDao.getUniqueCount(m2, day2));
         results = uniqueCountDao.getMetric(m2, day2);
         assertEquals(1, results.size());
         assertEquals(id1, results.get(0).getId());
-        assertEquals("2", results.get(0).getCount());
+        assertEquals(2L, results.get(0).getCount());
     }
 }

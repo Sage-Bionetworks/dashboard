@@ -1,13 +1,23 @@
 package org.sagebionetworks.dashboard.model;
 
-public class TimeDataPoint {
+public class TimeDataPoint implements ValuePair<String>{
 
-    public TimeDataPoint(String timestamp, String value) {
-        this.timestamp = timestamp;
+    public TimeDataPoint(long timestampInMs, String value) {
+        this.timestamp = timestampInMs;
         this.value = value;
     }
 
-    public String getTimestamp() {
+    @Override
+    public String getX() {
+        return Long.toString(timestamp);
+    }
+
+    @Override
+    public String getY() {
+        return value;
+    }
+
+    public long getTimestampInMs() {
         return timestamp;
     }
 
@@ -21,6 +31,6 @@ public class TimeDataPoint {
                 + "]";
     }
 
-    private final String timestamp;
+    private final long timestamp;
     private final String value;
 }

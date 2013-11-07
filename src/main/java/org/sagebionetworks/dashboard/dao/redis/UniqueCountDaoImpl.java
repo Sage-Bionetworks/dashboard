@@ -35,7 +35,7 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
         for (TypedTuple<String> tuple : data) {
             results.add(new CountDataPoint(
                     tuple.getValue(),
-                    Long.toString(tuple.getScore().longValue())));
+                    tuple.getScore().longValue()));
         }
         return results;
     }
