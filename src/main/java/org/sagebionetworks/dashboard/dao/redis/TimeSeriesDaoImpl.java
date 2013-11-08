@@ -49,7 +49,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
                 TimeDataPoint iSum = sumList.get(i);
                 TimeDataPoint iN = nList.get(i);
                 long average = Long.parseLong(iSum.getValue()) / Long.parseLong(iN.getValue());
-                avgList.add(new TimeDataPoint(iSum.getTimestamp(), Long.toString(average)));
+                avgList.add(new TimeDataPoint(iSum.getTimestampInMs(), Long.toString(average)));
             }
             return avgList;
         }
@@ -78,10 +78,10 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         }
 
         KeyAssembler keyAssembler = new KeyAssembler(statistic, aggregation, timeseries);
-        List<String> timestamps = new ArrayList<String>();
+        List<Long> timestamps = new ArrayList<Long>();
         List<String> keys = new ArrayList<String>();
         for (long i = start; i <= end; i += step) {
-            timestamps.add(Long.toString(i));
+            timestamps.add(i);
             keys.add(keyAssembler.getKey(metricId, i));
         }
 
@@ -90,7 +90,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         for (int i = 0; i < values.size(); i++) {
             String value = values.get(i);
             if (value != null) {
-                data.add(new TimeDataPoint(timestamps.get(i), value));
+                data.add(new TimeDataPoint(timestamps.get(i).longValue(), value));
             }
         }
 
@@ -103,9 +103,11 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         // n
         String key = getKey(n, aggregation, metricId, timestamp);
         valueOps.increment(key, 1L);
+        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         // sum
         key = getKey(sum, aggregation, metricId, timestamp);
         valueOps.increment(key, value);
+        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         // max -- optimistically work around race conditions
         final String maxKey = getKey(max, aggregation, metricId, timestamp);
         String strMax = valueOps.get(maxKey);
@@ -115,6 +117,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         while (redisMax < max && i < 5) {
             // in case some other client set the max in the middle
             strMax = valueOps.getAndSet(maxKey, Long.toString(max));
+            redisTemplate.expire(maxKey, EXPIRE_DAYS, TimeUnit.DAYS);
             redisMax = max;
             max = strMax == null ? -1L : Long.parseLong(strMax);
             i++;
@@ -145,7 +148,6 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
 
         KeyAssembler keyAssembler = new KeyAssembler(stat, aggr, timeseries);
         String key = keyAssembler.getKey(metricId, ts);
-        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         return key;
     }
 

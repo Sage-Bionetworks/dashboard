@@ -1,17 +1,27 @@
 package org.sagebionetworks.dashboard.model;
 
-public class CountDataPoint {
+public class CountDataPoint implements ValuePair<String> {
 
-    public CountDataPoint(String id, String count) {
+    public CountDataPoint(String id, long count) {
         this.id = id;
         this.count = count;
+    }
+
+    @Override
+    public String getX() {
+        return id;
+    }
+
+    @Override
+    public String getY() {
+        return Long.toString(count);
     }
 
     public String getId() {
         return id;
     }
 
-    public String getCount() {
+    public long getCount() {
         return count;
     }
 
@@ -21,5 +31,5 @@ public class CountDataPoint {
     }
 
     private final String id;
-    private final String count;
+    private final long count;
 }
