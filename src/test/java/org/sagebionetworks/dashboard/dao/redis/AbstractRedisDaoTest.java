@@ -37,17 +37,12 @@ public abstract class AbstractRedisDaoTest {
                 }
             }
         });
+        clearRedis();
     }
 
     @AfterClass
     public static void afterClass() {
-        // Remove all the keys
-        StringRedisTemplate redisTemplate = getRedisTemplate();
-        Set<String> keys = redisTemplate.keys("*");
-        for (String key : keys) {
-            redisTemplate.delete(key);
-            Assert.assertFalse(redisTemplate.hasKey(key));
-        }
+        clearRedis();
     }
 
     private static StringRedisTemplate getRedisTemplate() {
@@ -55,5 +50,15 @@ public abstract class AbstractRedisDaoTest {
         ApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/test-context.xml");
         StringRedisTemplate redisTemplate = context.getBean(StringRedisTemplate.class);
         return redisTemplate;
+    }
+    
+    private static void clearRedis() {
+        // Remove all the keys
+        StringRedisTemplate redisTemplate = getRedisTemplate();
+        Set<String> keys = redisTemplate.keys("*");
+        for (String key : keys) {
+            redisTemplate.delete(key);
+            Assert.assertFalse(redisTemplate.hasKey(key));
+        }
     }
 }
