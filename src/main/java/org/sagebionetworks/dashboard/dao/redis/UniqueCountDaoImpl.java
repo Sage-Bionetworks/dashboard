@@ -1,8 +1,11 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
+import static org.sagebionetworks.dashboard.model.redis.RedisConstants.EXPIRE_DAYS;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
@@ -15,7 +18,7 @@ import org.sagebionetworks.dashboard.model.redis.KeyAssembler;
 import org.sagebionetworks.dashboard.model.redis.NameSpace;
 import org.sagebionetworks.dashboard.model.redis.Statistic;
 import org.sagebionetworks.dashboard.util.PosixTimeUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
@@ -23,14 +26,12 @@ import org.springframework.stereotype.Repository;
 @Repository("uniqueCountDao")
 public class UniqueCountDaoImpl implements UniqueCountDao {
 
-    @Autowired
-    private NameIdDao nameIdDao;
-
     @Override
     public void addMetric(final String metricId, final DateTime timestamp, final String id) {
         final String key = getKey(metricId, timestamp);
         final String newId = nameIdDao.getId(id); // Swap for a shorter id
         zsetOps.incrementScore(key, newId, 1.0d);
+        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
     }
 
     @Override
@@ -58,7 +59,8 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
     }
 
     private String getKey(String metricId, DateTime timestamp) {
-        return KEY_ASSEMBLER.getKey(metricId, PosixTimeUtil.floorToDay(timestamp));
+        String key = KEY_ASSEMBLER.getKey(metricId, PosixTimeUtil.floorToDay(timestamp));
+        return key;
     }
 
     private static final KeyAssembler KEY_ASSEMBLER = new KeyAssembler(
@@ -66,6 +68,12 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
             Aggregation.day,
             NameSpace.uniquecount);
 
+    @Resource
+    private StringRedisTemplate redisTemplate;
+
     @Resource(name="redisTemplate")
     private ZSetOperations<String, String> zsetOps;
+
+    @Resource
+    private NameIdDao nameIdDao;
 }

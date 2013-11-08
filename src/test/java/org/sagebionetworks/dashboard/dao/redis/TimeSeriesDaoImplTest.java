@@ -2,6 +2,7 @@ package org.sagebionetworks.dashboard.dao.redis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.sagebionetworks.dashboard.model.redis.Aggregation.day;
 import static org.sagebionetworks.dashboard.model.redis.Aggregation.hour;
 import static org.sagebionetworks.dashboard.model.redis.Aggregation.minute_3;
@@ -11,6 +12,10 @@ import static org.sagebionetworks.dashboard.model.redis.Statistic.n;
 import static org.sagebionetworks.dashboard.model.redis.Statistic.sum;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -18,12 +23,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
 
-    @Autowired
+    @Resource
     private TimeSeriesDao timeSeriesDao;
+
+    @Resource
+    private StringRedisTemplate redisTemplate;
 
     @Before
     public void before() {
@@ -138,5 +146,20 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         dp = avgListDay.get(1);
         assertEquals(1108080000L, dp.getTimestampInMs());
         assertEquals("3", dp.getValue());
+    }
+
+    @Test
+    public void testKeyExpire() throws InterruptedException {
+
+        final String metricId = this.getClass().getName() + ".testKeyExpire";
+        long val = 83L;
+        DateTime dt = new DateTime(2005, 9, 25, 9, 30, DateTimeZone.UTC);
+        timeSeriesDao.addMetric(metricId, dt, val);
+
+        Set<String> keys = redisTemplate.keys("*" + metricId + "*");
+        for (String key : keys) {
+            long expires = redisTemplate.getExpire(key, TimeUnit.DAYS);
+            assertTrue(expires == 180L || expires == 179L);
+        }
     }
 }

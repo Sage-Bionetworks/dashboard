@@ -103,9 +103,11 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         // n
         String key = getKey(n, aggregation, metricId, timestamp);
         valueOps.increment(key, 1L);
+        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         // sum
         key = getKey(sum, aggregation, metricId, timestamp);
         valueOps.increment(key, value);
+        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         // max -- optimistically work around race conditions
         final String maxKey = getKey(max, aggregation, metricId, timestamp);
         String strMax = valueOps.get(maxKey);
@@ -115,6 +117,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         while (redisMax < max && i < 5) {
             // in case some other client set the max in the middle
             strMax = valueOps.getAndSet(maxKey, Long.toString(max));
+            redisTemplate.expire(maxKey, EXPIRE_DAYS, TimeUnit.DAYS);
             redisMax = max;
             max = strMax == null ? -1L : Long.parseLong(strMax);
             i++;
@@ -145,7 +148,6 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
 
         KeyAssembler keyAssembler = new KeyAssembler(stat, aggr, timeseries);
         String key = keyAssembler.getKey(metricId, ts);
-        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         return key;
     }
 
