@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
+import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
@@ -42,15 +43,12 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         final DateTime day1 = new DateTime(2011, 11, 15, 8, 51, DateTimeZone.UTC);
         final DateTime day2 = new DateTime(2011, 11, 16, 8, 51, DateTimeZone.UTC);
 
+        // (m1, day1, id1) = 1
+        // (m2, day1, id2) = 3
+        // (m2, day1, id3) = 2
+        // (m2, day1, id1) = 1
+        // (m2, day2, id1) = 2
         uniqueCountDao.addMetric(m1, day1, id1);
-        assertEquals(1L, uniqueCountDao.getUniqueCount(m1, day1));
-        assertEquals(0L, uniqueCountDao.getUniqueCount(m2, day1));
-        List<CountDataPoint> results = uniqueCountDao.getMetric(m1, day1, Long.MAX_VALUE);
-        assertNotNull(results);
-        assertEquals(1, results.size());
-        assertEquals(id1, results.get(0).getId());
-        assertEquals(1L, results.get(0).getCount());
-
         uniqueCountDao.addMetric(m2, day1, id3);
         uniqueCountDao.addMetric(m2, day1, id2);
         uniqueCountDao.addMetric(m2, day1, id2);
@@ -59,13 +57,15 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         uniqueCountDao.addMetric(m2, day1, id1);
         uniqueCountDao.addMetric(m2, day2, id1);
         uniqueCountDao.addMetric(m2, day2, id1);
-        // Day 1 results for m1 should remain unchanged
+
         assertEquals(1L, uniqueCountDao.getUniqueCount(m1, day1));
-        results = uniqueCountDao.getMetric(m1, day1, Long.MAX_VALUE);
+        assertEquals(3L, uniqueCountDao.getUniqueCount(m2, day1));
+        List<CountDataPoint> results = uniqueCountDao.getMetric(m1, day1, Long.MAX_VALUE);
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals(id1, results.get(0).getId());
         assertEquals(1L, results.get(0).getCount());
+
         // Verify day 1 results for m2
         assertEquals(3L, uniqueCountDao.getUniqueCount(m2, day1));
         // Only look at top 1
@@ -94,6 +94,17 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1, results.size());
         assertEquals(id1, results.get(0).getId());
         assertEquals(2L, results.get(0).getCount());
+        // Verify results as time series
+        List<TimeDataPoint> dataPoints = uniqueCountDao.getUniqueCount(m1, day1, day2);
+        assertNotNull(dataPoints);
+        assertEquals(2, dataPoints.size());
+        assertEquals("1", dataPoints.get(0).getValue());
+        assertEquals("0", dataPoints.get(1).getValue());
+        dataPoints = uniqueCountDao.getUniqueCount(m2, day1, day2);
+        assertNotNull(dataPoints);
+        assertEquals(2, dataPoints.size());
+        assertEquals("3", dataPoints.get(0).getValue());
+        assertEquals("1", dataPoints.get(1).getValue());
     }
 
     @Test

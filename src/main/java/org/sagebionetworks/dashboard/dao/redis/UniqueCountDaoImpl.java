@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
+import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.model.redis.Aggregation;
 import org.sagebionetworks.dashboard.model.redis.KeyAssembler;
 import org.sagebionetworks.dashboard.model.redis.NameSpace;
@@ -56,6 +57,22 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
         final String key = getKey(metricId, timestamp);
         Long size = zsetOps.size(key);
         return (size == null ? 0 : size.longValue());
+    }
+
+    @Override
+    public List<TimeDataPoint> getUniqueCount(String metricId, DateTime from, DateTime to) {
+        List<TimeDataPoint> results = new ArrayList<TimeDataPoint>();
+        long start = PosixTimeUtil.floorToDay(from);
+        long end = PosixTimeUtil.floorToDay(to);
+        long step = PosixTimeUtil.DAY;
+        for (long i = start; i <= end; i = i + step) {
+            long ms = i * 1000L;
+            DateTime timestamp = new DateTime(ms);
+            long count = getUniqueCount(metricId, timestamp);
+            TimeDataPoint dataPoint = new TimeDataPoint(ms, Long.toString(count));
+            results.add(dataPoint);
+        }
+        return results;
     }
 
     private String getKey(String metricId, DateTime timestamp) {
