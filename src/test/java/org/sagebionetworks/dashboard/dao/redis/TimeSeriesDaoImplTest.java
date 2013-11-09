@@ -45,46 +45,46 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         final String python = "python";
         long latency = 11L;
         DateTime dt = new DateTime(2005, 2, 8, 9, 30, 51, 31, DateTimeZone.UTC);
-        timeSeriesDao.addMetric(python, dt, latency);
+        timeSeriesDao.add(python, dt, latency);
 
         latency = 5L;
         dt = dt.plusMinutes(1);
-        timeSeriesDao.addMetric(python, dt, latency);
+        timeSeriesDao.add(python, dt, latency);
 
         latency = 1L;
         dt = dt.plusMinutes(11);
-        timeSeriesDao.addMetric(python, dt, latency);
+        timeSeriesDao.add(python, dt, latency);
 
         latency = 7L;
         dt = dt.plusHours(1);
-        timeSeriesDao.addMetric(python, dt, latency);
+        timeSeriesDao.add(python, dt, latency);
 
         latency = 2L;
         dt = dt.plusMinutes(2);
-        timeSeriesDao.addMetric(python, dt, latency);
+        timeSeriesDao.add(python, dt, latency);
 
         latency = 3L;
         dt = dt.plusDays(3);
-        timeSeriesDao.addMetric(python, dt, latency);
+        timeSeriesDao.add(python, dt, latency);
 
         // this one is out of range
         latency = 13L;
         dt = dt.plusMonths(1);
-        timeSeriesDao.addMetric(python, dt, latency);
+        timeSeriesDao.add(python, dt, latency);
 
         // Metrics for R
         final String r = "r";
         latency = 101L;
         dt = new DateTime(2005, 2, 21, 11, 32, 51, 31, DateTimeZone.UTC);
-        timeSeriesDao.addMetric(r, dt, latency);
+        timeSeriesDao.add(r, dt, latency);
 
         latency = 79L;
         dt = dt.plusHours(1);
-        timeSeriesDao.addMetric(r, dt, latency);
+        timeSeriesDao.add(r, dt, latency);
 
         final DateTime start = new DateTime(2005, 2, 1, 0, 0, 0, 0, DateTimeZone.UTC);
         final DateTime end = new DateTime(2005, 3, 1, 0, 0, 0, 0, DateTimeZone.UTC);
-        List<TimeDataPoint> sumListM3 = timeSeriesDao.getMetric(python, start, end, sum, minute_3);
+        List<TimeDataPoint> sumListM3 = timeSeriesDao.timeSeries(python, start, end, sum, minute_3);
         assertEquals(4, sumListM3.size());
         TimeDataPoint dp = sumListM3.get(0);
         assertEquals(1107855000L, dp.getTimestampInMs());
@@ -99,7 +99,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1108118520L, dp.getTimestampInMs());
         assertEquals("3", dp.getValue());
 
-        List<TimeDataPoint> sumListHour = timeSeriesDao.getMetric(python, start, end, sum, hour);
+        List<TimeDataPoint> sumListHour = timeSeriesDao.timeSeries(python, start, end, sum, hour);
         assertEquals(3, sumListHour.size());
         dp = sumListHour.get(0);
         assertEquals(1107853200L, dp.getTimestampInMs());
@@ -111,7 +111,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1108116000L, dp.getTimestampInMs());
         assertEquals("3", dp.getValue());
 
-        List<TimeDataPoint> sumListDay = timeSeriesDao.getMetric(python, start, end, sum, day);
+        List<TimeDataPoint> sumListDay = timeSeriesDao.timeSeries(python, start, end, sum, day);
         assertEquals(2, sumListDay.size());
         dp = sumListDay.get(0);
         assertEquals(1107820800L, dp.getTimestampInMs());
@@ -120,7 +120,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1108080000L, dp.getTimestampInMs());
         assertEquals("3", dp.getValue());
 
-        List<TimeDataPoint> nListDay = timeSeriesDao.getMetric(python, start, end, n, day);
+        List<TimeDataPoint> nListDay = timeSeriesDao.timeSeries(python, start, end, n, day);
         assertEquals(2, nListDay.size());
         dp = nListDay.get(0);
         assertEquals(1107820800L, dp.getTimestampInMs());
@@ -129,7 +129,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1108080000L, dp.getTimestampInMs());
         assertEquals("1", dp.getValue());
 
-        List<TimeDataPoint> maxListDay = timeSeriesDao.getMetric(python, start, end, max, day);
+        List<TimeDataPoint> maxListDay = timeSeriesDao.timeSeries(python, start, end, max, day);
         assertEquals(2, maxListDay.size());
         dp = maxListDay.get(0);
         assertEquals(1107820800L, dp.getTimestampInMs());
@@ -138,7 +138,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1108080000L, dp.getTimestampInMs());
         assertEquals("3", dp.getValue());
 
-        List<TimeDataPoint> avgListDay = timeSeriesDao.getMetric(python, start, end, avg, day);
+        List<TimeDataPoint> avgListDay = timeSeriesDao.timeSeries(python, start, end, avg, day);
         assertEquals(2, avgListDay.size());
         dp = avgListDay.get(0);
         assertEquals(1107820800L, dp.getTimestampInMs());
@@ -154,7 +154,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         final String metricId = this.getClass().getName() + ".testKeyExpire";
         long val = 83L;
         DateTime dt = new DateTime(2005, 9, 25, 9, 30, DateTimeZone.UTC);
-        timeSeriesDao.addMetric(metricId, dt, val);
+        timeSeriesDao.add(metricId, dt, val);
 
         Set<String> keys = redisTemplate.keys("*" + metricId + "*");
         for (String key : keys) {
