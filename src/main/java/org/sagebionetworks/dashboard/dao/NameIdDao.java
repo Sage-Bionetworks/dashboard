@@ -1,8 +1,8 @@
 package org.sagebionetworks.dashboard.dao;
 
 /**
- * Handles the name-ID mappings. The purpose here is to use a short string ID
- * to represent a much longer name in Redis.
+ * Handles the name-ID mappings. The purpose of such mappings is to use a short string ID
+ * to represent a much longer name within Redis.
  */
 public interface NameIdDao {
 
