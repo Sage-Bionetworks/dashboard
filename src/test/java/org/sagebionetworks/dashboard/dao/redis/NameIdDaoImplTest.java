@@ -58,6 +58,9 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
     @Test
     public void testMultiThread() throws Exception {
 
+        // Get a baseline of bootstrapped IDs
+        int baseline = redisTemplate.keys("*").size();
+
         // Test that we can gracefully handle 200 threads
         // trying update the name-id mappings at the same time
         final int nThreads = 200;
@@ -89,9 +92,12 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
                 nameIdEntries = nameIdHash.entries();
                 i++;
             }
-            assertEquals(10, nameIdEntries.size());
+            for (Entry<String, String> en : nameIdEntries.entrySet()) {
+                System.out.println(en.getKey() + "   " + en.getValue());
+            }
+            assertEquals(10 + baseline, nameIdEntries.size());
             Map<String, String> idNameEntries = idNameHash.entries();
-            assertEquals(10, idNameEntries.size());
+            assertEquals(10 + baseline, idNameEntries.size());
             for (Entry<String, String> entry : idNameEntries.entrySet()) {
                 assertNotNull(entry.getKey());
                 assertFalse(entry.getKey().isEmpty());

@@ -19,7 +19,7 @@ public interface TimeSeriesDao {
      * @param timestamp  The time when this metric was recorded.
      * @param value      Time series data value.
      */
-    void addMetric(String metricId, DateTime timestamp, long value);
+    void add(String metricId, DateTime timestamp, long value);
 
     /**
      * Gets the metric as a time series.
@@ -30,6 +30,6 @@ public interface TimeSeriesDao {
      * @param statistic     Statistic n, sum, average, or max.
      * @param aggregation   Aggregation by minute, hour, or day.
      */
-    List<TimeDataPoint> getMetric(String metricId, DateTime from, DateTime to,
+    List<TimeDataPoint> timeSeries(String metricId, DateTime from, DateTime to,
             Statistic statistic, Aggregation aggregation);
 }

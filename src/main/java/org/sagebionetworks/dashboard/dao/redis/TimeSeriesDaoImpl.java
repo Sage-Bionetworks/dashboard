@@ -31,19 +31,19 @@ import org.springframework.stereotype.Repository;
 public class TimeSeriesDaoImpl implements TimeSeriesDao {
 
     @Override
-    public void addMetric(final String metricId, final DateTime timestamp, final long value) {
+    public void add(final String metricId, final DateTime timestamp, final long value) {
         addAggregation(minute_3, metricId, timestamp, value);
         addAggregation(hour, metricId, timestamp, value);
         addAggregation(day, metricId, timestamp, value);
     }
 
     @Override
-    public List<TimeDataPoint> getMetric(final String metricId, final DateTime from, final DateTime to,
+    public List<TimeDataPoint> timeSeries(final String metricId, final DateTime from, final DateTime to,
             final Statistic statistic, final Aggregation aggregation) {
 
         if (Statistic.avg.equals(statistic)) {
-            List<TimeDataPoint> sumList = getMetric(metricId, from, to, sum, aggregation);
-            List<TimeDataPoint> nList = getMetric(metricId, from, to, n, aggregation);
+            List<TimeDataPoint> sumList = timeSeries(metricId, from, to, sum, aggregation);
+            List<TimeDataPoint> nList = timeSeries(metricId, from, to, n, aggregation);
             List<TimeDataPoint> avgList = new ArrayList<TimeDataPoint>(sumList.size());
             for (int i = 0; i < sumList.size(); i++) {
                 TimeDataPoint iSum = sumList.get(i);
