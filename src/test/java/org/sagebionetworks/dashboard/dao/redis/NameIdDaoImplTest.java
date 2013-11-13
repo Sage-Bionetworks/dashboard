@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,8 +59,8 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
     @Test
     public void testMultiThread() throws Exception {
 
-        // Get a baseline of bootstrapped IDs
-        int baseline = redisTemplate.keys("*").size();
+        // Get a baseline of the bootstrapped IDs
+        int baseline = redisTemplate.boundHashOps(Key.NAME_ID).entries().size();
 
         // Test that we can gracefully handle 200 threads
         // trying update the name-id mappings at the same time
@@ -91,9 +92,6 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
                 Thread.sleep(200L);
                 nameIdEntries = nameIdHash.entries();
                 i++;
-            }
-            for (Entry<String, String> en : nameIdEntries.entrySet()) {
-                System.out.println(en.getKey() + "   " + en.getValue());
             }
             assertEquals(10 + baseline, nameIdEntries.size());
             Map<String, String> idNameEntries = idNameHash.entries();
