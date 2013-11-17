@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.sagebionetworks.dashboard.model.redis.Aggregation.day;
 import static org.sagebionetworks.dashboard.model.redis.Aggregation.hour;
-import static org.sagebionetworks.dashboard.model.redis.Aggregation.minute_3;
+import static org.sagebionetworks.dashboard.model.redis.Aggregation.m3;
 import static org.sagebionetworks.dashboard.model.redis.Statistic.avg;
 import static org.sagebionetworks.dashboard.model.redis.Statistic.max;
 import static org.sagebionetworks.dashboard.model.redis.Statistic.n;
@@ -84,7 +84,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
 
         final DateTime start = new DateTime(2005, 2, 1, 0, 0, 0, 0, DateTimeZone.UTC);
         final DateTime end = new DateTime(2005, 3, 1, 0, 0, 0, 0, DateTimeZone.UTC);
-        List<TimeDataPoint> sumListM3 = timeSeriesDao.timeSeries(python, start, end, sum, minute_3);
+        List<TimeDataPoint> sumListM3 = timeSeriesDao.timeSeries(python, start, end, sum, m3);
         assertEquals(4, sumListM3.size());
         TimeDataPoint dp = sumListM3.get(0);
         assertEquals(1107855000L, dp.getTimestampInMs());
