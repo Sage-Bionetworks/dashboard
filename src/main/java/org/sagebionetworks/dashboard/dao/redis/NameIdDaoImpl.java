@@ -1,7 +1,7 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
-import static org.sagebionetworks.dashboard.model.redis.Key.ID_NAME;
-import static org.sagebionetworks.dashboard.model.redis.Key.NAME_ID;
+import static org.sagebionetworks.dashboard.model.Key.ID_NAME;
+import static org.sagebionetworks.dashboard.model.Key.NAME_ID;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -3,6 +3,10 @@ package org.sagebionetworks.dashboard.model.redis;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.Aggregation;
+import org.sagebionetworks.dashboard.model.KeyAssembler;
+import org.sagebionetworks.dashboard.model.NameSpace;
+import org.sagebionetworks.dashboard.model.Statistic;
 
 public class KeyAssemblerTest {
     @Test

@@ -3,9 +3,9 @@ package org.sagebionetworks.dashboard.dao;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.sagebionetworks.dashboard.model.Aggregation;
+import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.model.redis.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.Statistic;
 
 /**
  * Metrics of time series data.

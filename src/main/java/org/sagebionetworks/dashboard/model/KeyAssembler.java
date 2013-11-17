@@ -1,6 +1,6 @@
-package org.sagebionetworks.dashboard.model.redis;
+package org.sagebionetworks.dashboard.model;
 
-import static org.sagebionetworks.dashboard.model.redis.Key.SEPARATOR;
+import static org.sagebionetworks.dashboard.model.Key.SEPARATOR;
 
 /**
  * Assembles Redis keys at runtime in the format of

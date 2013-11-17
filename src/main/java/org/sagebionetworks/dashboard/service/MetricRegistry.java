@@ -9,9 +9,9 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
+import org.sagebionetworks.dashboard.model.Aggregation;
 import org.sagebionetworks.dashboard.model.MetricType;
-import org.sagebionetworks.dashboard.model.redis.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.Statistic;
+import org.sagebionetworks.dashboard.model.Statistic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

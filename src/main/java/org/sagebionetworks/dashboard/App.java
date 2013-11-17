@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.sagebionetworks.dashboard.model.Aggregation;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
 import org.sagebionetworks.dashboard.model.MetricType;
+import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.model.redis.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.Statistic;
 import org.sagebionetworks.dashboard.service.MetricQueryService;
 import org.sagebionetworks.dashboard.service.MetricRegistry;
 import org.sagebionetworks.dashboard.service.MetricToRead;

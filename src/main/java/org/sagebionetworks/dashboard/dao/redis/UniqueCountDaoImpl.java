@@ -1,6 +1,6 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
-import static org.sagebionetworks.dashboard.model.redis.RedisConstants.EXPIRE_DAYS;
+import static org.sagebionetworks.dashboard.dao.redis.RedisConstants.EXPIRE_DAYS;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,12 +12,12 @@ import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
+import org.sagebionetworks.dashboard.model.Aggregation;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
+import org.sagebionetworks.dashboard.model.KeyAssembler;
+import org.sagebionetworks.dashboard.model.NameSpace;
+import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.model.redis.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.KeyAssembler;
-import org.sagebionetworks.dashboard.model.redis.NameSpace;
-import org.sagebionetworks.dashboard.model.redis.Statistic;
 import org.sagebionetworks.dashboard.util.PosixTimeUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;

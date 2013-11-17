@@ -8,10 +8,10 @@ import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
+import org.sagebionetworks.dashboard.model.Aggregation;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
+import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.model.redis.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.Statistic;
 import org.springframework.stereotype.Service;
 
 @Service("metricQueryService")

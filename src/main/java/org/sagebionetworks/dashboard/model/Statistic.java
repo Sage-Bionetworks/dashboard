@@ -1,4 +1,4 @@
-package org.sagebionetworks.dashboard.model.redis;
+package org.sagebionetworks.dashboard.model;
 
 public enum Statistic {
     n,
