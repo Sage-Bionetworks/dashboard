@@ -1,10 +1,10 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
+import static org.sagebionetworks.dashboard.dao.redis.NameSpace.timeseries;
 import static org.sagebionetworks.dashboard.dao.redis.RedisConstants.EXPIRE_DAYS;
 import static org.sagebionetworks.dashboard.model.Aggregation.day;
 import static org.sagebionetworks.dashboard.model.Aggregation.hour;
 import static org.sagebionetworks.dashboard.model.Aggregation.m3;
-import static org.sagebionetworks.dashboard.model.NameSpace.timeseries;
 import static org.sagebionetworks.dashboard.model.Statistic.max;
 import static org.sagebionetworks.dashboard.model.Statistic.n;
 import static org.sagebionetworks.dashboard.model.Statistic.sum;
@@ -19,7 +19,6 @@ import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
 import org.sagebionetworks.dashboard.model.Aggregation;
-import org.sagebionetworks.dashboard.model.KeyAssembler;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.util.PosixTimeUtil;

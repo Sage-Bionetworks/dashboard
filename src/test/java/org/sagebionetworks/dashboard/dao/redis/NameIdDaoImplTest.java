@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
-import org.sagebionetworks.dashboard.model.Key;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
