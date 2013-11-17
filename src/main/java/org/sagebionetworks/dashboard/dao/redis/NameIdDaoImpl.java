@@ -38,6 +38,18 @@ public class NameIdDaoImpl implements NameIdDao {
         return idNameHash.get(id);
     }
 
+    @Override
+    public boolean hasId(String id) {
+        BoundHashOperations<String, String, String> idNameHash = getIdNameHash();
+        return idNameHash.hasKey(id);
+    }
+
+    @Override
+    public boolean hasName(String name) {
+        BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
+        return nameIdHash.hasKey(name);
+    }
+
     private BoundHashOperations<String, String, String> getNameIdHash() {
         return redisTemplate.boundHashOps(NAME_ID);
     }

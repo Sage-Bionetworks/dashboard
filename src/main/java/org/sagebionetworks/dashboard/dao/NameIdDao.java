@@ -15,4 +15,14 @@ public interface NameIdDao {
      * Gets the name given its ID. Returns null when the ID does not exist.
      */
     String getName(String id);
+
+    /**
+     * Whether the given ID already exists.
+     */
+    boolean hasId(String id);
+
+    /**
+     * Whether the given name already exists.
+     */
+    boolean hasName(String name);
 }
