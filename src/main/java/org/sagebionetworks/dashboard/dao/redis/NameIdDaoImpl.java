@@ -1,7 +1,7 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
-import static org.sagebionetworks.dashboard.model.redis.Key.ID_NAME;
-import static org.sagebionetworks.dashboard.model.redis.Key.NAME_ID;
+import static org.sagebionetworks.dashboard.dao.redis.Key.ID_NAME;
+import static org.sagebionetworks.dashboard.dao.redis.Key.NAME_ID;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +36,18 @@ public class NameIdDaoImpl implements NameIdDao {
     public String getName(final String id) {
         BoundHashOperations<String, String, String> idNameHash = getIdNameHash();
         return idNameHash.get(id);
+    }
+
+    @Override
+    public boolean hasId(String id) {
+        BoundHashOperations<String, String, String> idNameHash = getIdNameHash();
+        return idNameHash.hasKey(id);
+    }
+
+    @Override
+    public boolean hasName(String name) {
+        BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
+        return nameIdHash.hasKey(name);
     }
 
     private BoundHashOperations<String, String, String> getNameIdHash() {

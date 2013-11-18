@@ -1,13 +1,13 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
-import static org.sagebionetworks.dashboard.model.redis.Aggregation.day;
-import static org.sagebionetworks.dashboard.model.redis.Aggregation.hour;
-import static org.sagebionetworks.dashboard.model.redis.Aggregation.minute_3;
-import static org.sagebionetworks.dashboard.model.redis.NameSpace.timeseries;
-import static org.sagebionetworks.dashboard.model.redis.RedisConstants.EXPIRE_DAYS;
-import static org.sagebionetworks.dashboard.model.redis.Statistic.max;
-import static org.sagebionetworks.dashboard.model.redis.Statistic.n;
-import static org.sagebionetworks.dashboard.model.redis.Statistic.sum;
+import static org.sagebionetworks.dashboard.dao.redis.NameSpace.timeseries;
+import static org.sagebionetworks.dashboard.dao.redis.RedisConstants.EXPIRE_DAYS;
+import static org.sagebionetworks.dashboard.model.Aggregation.day;
+import static org.sagebionetworks.dashboard.model.Aggregation.hour;
+import static org.sagebionetworks.dashboard.model.Aggregation.m3;
+import static org.sagebionetworks.dashboard.model.Statistic.max;
+import static org.sagebionetworks.dashboard.model.Statistic.n;
+import static org.sagebionetworks.dashboard.model.Statistic.sum;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,10 +18,9 @@ import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
+import org.sagebionetworks.dashboard.model.Aggregation;
+import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.model.redis.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.KeyAssembler;
-import org.sagebionetworks.dashboard.model.redis.Statistic;
 import org.sagebionetworks.dashboard.util.PosixTimeUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -32,7 +31,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
 
     @Override
     public void add(final String metricId, final DateTime timestamp, final long value) {
-        addAggregation(minute_3, metricId, timestamp, value);
+        addAggregation(m3, metricId, timestamp, value);
         addAggregation(hour, metricId, timestamp, value);
         addAggregation(day, metricId, timestamp, value);
     }
@@ -58,7 +57,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         long end = -1L;
         long step = -1L;
         switch (aggregation) {
-            case minute_3:
+            case m3:
                  start = PosixTimeUtil.floorToMinute3(from);
                  end = PosixTimeUtil.floorToMinute3(to);
                  step = PosixTimeUtil.MINUTE_3;
@@ -133,7 +132,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
 
         long ts = -1L;
         switch(aggr) {
-            case minute_3:
+            case m3:
                 ts = PosixTimeUtil.floorToMinute3(timestamp);
                 break;
             case hour:

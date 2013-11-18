@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
-import org.sagebionetworks.dashboard.model.redis.Key;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,8 +31,8 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
 
     private final String name1 = "One Name";
     private final String name2 = "Two Name";
-    private String id1;
-    private String id2;
+    private String id1 = "One ID";
+    private String id2 = "Two ID";
 
     @Before
     public void before() {
@@ -42,17 +41,29 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
 
     @Test
     public void test() {
+        assertFalse(nameIdDao.hasName(name1));
+        assertFalse(nameIdDao.hasName(name2));
+        assertFalse(nameIdDao.hasId(id1));
+        assertFalse(nameIdDao.hasId(id2));
         id1 = nameIdDao.getId(name1);
         assertNotNull(id1);
         assertTrue(id1.length() > 0);
         assertEquals(name1, nameIdDao.getName(id1));
         assertEquals(id1, nameIdDao.getId(name1));
+        assertTrue(nameIdDao.hasName(name1));
+        assertFalse(nameIdDao.hasName(name2));
+        assertTrue(nameIdDao.hasId(id1));
+        assertFalse(nameIdDao.hasId(id2));
         id2 = nameIdDao.getId(name2);
         assertNotNull(id2);
         assertTrue(id2.length() > 0);
         assertFalse(id1.equals(id2));
         assertEquals(name2, nameIdDao.getName(id2));
         assertEquals(id2, nameIdDao.getId(name2));
+        assertTrue(nameIdDao.hasName(name1));
+        assertTrue(nameIdDao.hasName(name2));
+        assertTrue(nameIdDao.hasId(id1));
+        assertTrue(nameIdDao.hasId(id2));
     }
 
     @Test

@@ -1,9 +1,9 @@
 package org.sagebionetworks.dashboard.service;
 
 import org.joda.time.DateTime;
+import org.sagebionetworks.dashboard.model.Aggregation;
 import org.sagebionetworks.dashboard.model.MetricType;
-import org.sagebionetworks.dashboard.model.redis.Aggregation;
-import org.sagebionetworks.dashboard.model.redis.Statistic;
+import org.sagebionetworks.dashboard.model.Statistic;
 
 public class MetricToRead {
 

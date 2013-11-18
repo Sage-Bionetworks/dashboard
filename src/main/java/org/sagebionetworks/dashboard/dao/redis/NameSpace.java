@@ -1,6 +1,6 @@
-package org.sagebionetworks.dashboard.model.redis;
+package org.sagebionetworks.dashboard.dao.redis;
 
-public enum NameSpace {
+enum NameSpace {
 
     /** The set of names. */
     name,
