@@ -31,7 +31,7 @@ public class LockDaoImplTest extends AbstractRedisDaoTest {
     @Test
     public void testSingleThread() {
         // Two locks
-        final String lock1 = this.getClass().getSimpleName() + ".lock";
+        final String lock1 = getClass().getSimpleName() + ".lock";
         final String lock2 = lock1 + ".2";
         // Acquire lock1
         final String etag1 = lockDao.acquire(lock1);
@@ -68,7 +68,7 @@ public class LockDaoImplTest extends AbstractRedisDaoTest {
     public void testMultiThread() throws Exception {
 
         // 10 tasks try to acquire lock1
-        final String lock1 = this.getClass().getSimpleName() + ".multithread.lock1";
+        final String lock1 = getClass().getSimpleName() + ".multithread.lock1";
         Callable<String> task1 = new Callable<String> () {
             @Override
             public String call() throws Exception {
@@ -79,7 +79,7 @@ public class LockDaoImplTest extends AbstractRedisDaoTest {
         List<Callable<String>> tasks1 = Collections.nCopies(10, task1);
 
         // 10 other tasks try to acquire lock2
-        final String lock2 = this.getClass().getSimpleName() + ".multithread.lock2";
+        final String lock2 = getClass().getSimpleName() + ".multithread.lock2";
         Callable<String> task2 = new Callable<String> () {
             @Override
             public String call() throws Exception {
