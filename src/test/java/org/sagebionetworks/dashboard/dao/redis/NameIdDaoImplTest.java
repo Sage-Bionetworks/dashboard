@@ -15,18 +15,19 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.annotation.Resource;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
 public class NameIdDaoImplTest extends AbstractRedisDaoTest {
 
-    @Autowired
+    @Resource
     private RedisTemplate<String, String> redisTemplate;
-    @Autowired
+    @Resource
     private NameIdDao nameIdDao;
 
     private final String name1 = "One Name";
