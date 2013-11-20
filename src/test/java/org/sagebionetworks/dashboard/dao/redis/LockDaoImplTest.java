@@ -74,7 +74,6 @@ public class LockDaoImplTest extends AbstractRedisDaoTest {
             public String call() throws Exception {
                 return lockDao.acquire(lock1);
             }
-            
         };
         List<Callable<String>> tasks1 = Collections.nCopies(10, task1);
 

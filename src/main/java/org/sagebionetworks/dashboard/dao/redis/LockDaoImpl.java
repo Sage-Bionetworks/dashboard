@@ -45,9 +45,9 @@ public class LockDaoImpl implements LockDao {
                 ops.watch(lock);
                 final String etagRedis = ops.boundValueOps(lock).get();
                 if (etag.equals(etagRedis)) {
-                    operations.multi();
+                    ops.multi();
                     ops.delete(lock);
-                    List<Object> results = operations.exec();
+                    List<Object> results = ops.exec();
                     if (results != null) {
                         return Boolean.TRUE;
                     }
