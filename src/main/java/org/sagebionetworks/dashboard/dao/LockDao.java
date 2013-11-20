@@ -4,7 +4,7 @@ public interface LockDao {
 
     /**
      * Tries to acquire the lock. If it succeeds, returns the etag associated
-     * with the lock. If it fails, return null. Note lock will acquired with
+     * with the lock. If it fails, return null. Note the lock will be acquired with
      * the default timeout.
      *
      * @param lock The name of the lock
