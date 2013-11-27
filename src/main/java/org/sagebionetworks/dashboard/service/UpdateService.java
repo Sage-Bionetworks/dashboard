@@ -1,99 +1,68 @@
 package org.sagebionetworks.dashboard.service;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
+
+import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.UpdateCallback.UpdateResult;
 import org.sagebionetworks.dashboard.service.UpdateCallback.UpdateStatus;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-// TODO: Rewrite into update worker
 @Service("updateService")
 public class UpdateService {
 
-    @Autowired
+    private final Logger logger = LoggerFactory.getLogger(UpdateService.class);
+
+    private final RecordParser parser = new RepoRecordParser();
+
+    @Resource
     private MetricRegistry metricRegistry;
 
-    @Autowired
+    @Resource
     private TimeSeriesWriter timeSeriesWriter;
 
-    @Autowired
+    @Resource
     private UniqueCountWriter uniqueCountWriter;
 
-    public void load(File filePath, UpdateCallback callback) {
+    public void update(final InputStream in, final String filePath, final UpdateCallback callback) {
 
-        Collection<TimeSeriesToWrite> tsMetrics = metricRegistry.timeSeriesToWrite();
-        System.out.println("TimeSeriesToWrite: " + tsMetrics.size());
-        for (TimeSeriesToWrite tsw : tsMetrics) {
-            System.out.println(tsw.getName());
-        }
-        Collection<UniqueCountToWrite> ucMetrics = metricRegistry.uniqueCountToWrite();
-        System.out.println("UniqueCountToWrite: " + ucMetrics.size());
-        for (UniqueCountToWrite ucw : ucMetrics) {
-            System.out.println(ucw.getName());
-        }
+        final Collection<TimeSeriesToWrite> tsMetrics = metricRegistry.timeSeriesToWrite();
+        final Collection<UniqueCountToWrite> ucMetrics = metricRegistry.uniqueCountToWrite();
 
-        List<File> files = new ArrayList<File>();
-        getFiles(filePath, files);
-        System.out.println("Total number of files: " + files.size());
-
-        int fileCount = 0;
-        File currentFile = null;
         int lineCount = 0;
-        RecordParser parser = new RepoRecordParser();
-        for (File file : files) {
-            try {
-                fileCount++;
-                currentFile = file;
-                FileInputStream fis = new FileInputStream(file);
-                GZIPInputStream gis = new GZIPInputStream(fis);
-                InputStreamReader isr = new InputStreamReader(gis);
-                BufferedReader br = new BufferedReader(isr);
-                List<Record> records = parser.parse(br);
-                lineCount = 0;
-                for (Record record : records) {
-                    for (TimeSeriesToWrite metric : tsMetrics) {
-                        timeSeriesWriter.writeMetric(record, metric);
-                    }
-                    for (UniqueCountToWrite metric: ucMetrics) {
-                        uniqueCountWriter.writeMetric(record, metric);
-                    }
-                    lineCount++;
-                }
-                br.close();
-                callback.call(new UpdateResult(fileCount, currentFile.getName(), lineCount,
-                        UpdateStatus.SUCCEEDED));
-            } catch (IOException e) {
-                callback.call(new UpdateResult(fileCount, currentFile.getName(), lineCount,
-                        UpdateStatus.FAILED));
-            }
-        }
-    }
+        try {
 
-    /**
-     * Gets all the "csv.gz" files.
-     */
-    private void getFiles(File file, List<File> files) {
-        if (file.isFile()) {
-            if (file.getName().endsWith("csv.gz")) {
-                files.add(file);
+            InputStreamReader ir = new InputStreamReader(in);
+            BufferedReader br = new BufferedReader(ir);
+            List<Record> records = parser.parse(br);
+
+            for (Record record : records) {
+                for (TimeSeriesToWrite metric : tsMetrics) {
+                    timeSeriesWriter.writeMetric(record, metric);
+                }
+                for (UniqueCountToWrite metric: ucMetrics) {
+                    uniqueCountWriter.writeMetric(record, metric);
+                }
+                lineCount++;
             }
-            return;
-        }
-        File[] moreFiles = file.listFiles();
-        for (File f : moreFiles) {
-            getFiles(f, files);
+
+            UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.SUCCEEDED);
+            logger.info(result.toString());
+            callback.call(result);
+
+        } catch (Throwable e) {
+            UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.FAILED);
+            logger.error(result + " with exception: " + e.getMessage());
+            callback.call(result);
         }
     }
 }
