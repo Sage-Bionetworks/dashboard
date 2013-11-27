@@ -33,7 +33,7 @@ public class UpdateService {
     @Resource
     private UniqueCountWriter uniqueCountWriter;
 
-    public void load(final InputStream in, final String filePath, final UpdateCallback callback) {
+    public void update(final InputStream in, final String filePath, final UpdateCallback callback) {
 
         final Collection<TimeSeriesToWrite> tsMetrics = metricRegistry.timeSeriesToWrite();
         final Collection<UniqueCountToWrite> ucMetrics = metricRegistry.uniqueCountToWrite();

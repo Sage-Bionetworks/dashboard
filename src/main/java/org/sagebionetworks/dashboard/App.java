@@ -59,7 +59,7 @@ public class App {
             try {
                 FileInputStream fis = new FileInputStream(file);
                 is = new GZIPInputStream(fis);
-                updateService.load(is, file.getPath(), new UpdateCallback() {
+                updateService.update(is, file.getPath(), new UpdateCallback() {
                         @Override
                         public void call(UpdateResult result) {
                             System.out.println(result.toString());

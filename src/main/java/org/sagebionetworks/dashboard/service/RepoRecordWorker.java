@@ -39,7 +39,7 @@ public class RepoRecordWorker {
                     // Already processed
                     continue;
                 }
-                updateService.load(file.getObjectContent(), key, new UpdateCallback() {
+                updateService.update(file.getObjectContent(), key, new UpdateCallback() {
                     @Override
                     public void call(UpdateResult result) {
                         if (UpdateStatus.SUCCEEDED.equals(result.getStatus())) {

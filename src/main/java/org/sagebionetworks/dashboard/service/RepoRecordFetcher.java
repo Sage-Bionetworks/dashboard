@@ -33,8 +33,8 @@ public class RepoRecordFetcher {
 
     public RepoRecordFetcher() {
         try {
-           // First, look for system properties "aws.accessKeyId" and "aws.secretKey"
-           AWSCredentialsProvider p1 = new SystemPropertiesCredentialsProvider();
+            // First, look for system properties "aws.accessKeyId" and "aws.secretKey"
+            AWSCredentialsProvider p1 = new SystemPropertiesCredentialsProvider();
             // Second, look for configuration file "AwsCredentials.properties" at the current directory
             AWSCredentialsProvider p2 = new ClasspathPropertiesFileCredentialsProvider();
             // Third, look for the gradle configuration file
