@@ -1,21 +1,11 @@
 package org.sagebionetworks.dashboard.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSCredentialsProviderChain;
-import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
-import com.amazonaws.auth.PropertiesCredentials;
-import com.amazonaws.auth.SystemPropertiesCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
@@ -32,30 +22,7 @@ public class RepoRecordFetcher {
     private String lastPrefix = null;
 
     public RepoRecordFetcher() {
-        try {
-            // First, look for system properties "aws.accessKeyId" and "aws.secretKey"
-            AWSCredentialsProvider p1 = new SystemPropertiesCredentialsProvider();
-            // Second, look for configuration file "AwsCredentials.properties" at the current directory
-            AWSCredentialsProvider p2 = new ClasspathPropertiesFileCredentialsProvider();
-            // Third, look for the gradle configuration file
-            String userHome = System.getProperty("user.home");
-            File gradleConfig = new File(userHome + "/.gradle/gradle.properties");
-            final PropertiesCredentials propCred = new PropertiesCredentials(gradleConfig);
-            AWSCredentialsProvider p3 = new AWSCredentialsProvider() {
-                @Override
-                public AWSCredentials getCredentials() {
-                    return propCred;
-                }
-                @Override
-                public void refresh() {}
-            };
-            // Last, look for environment variables
-            AWSCredentialsProvider p4 = new EnvironmentVariableCredentialsProvider();
-            AWSCredentialsProviderChain providers = new AWSCredentialsProviderChain(p1, p2, p3, p4);
-            s3 = new AmazonS3Client(providers);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.s3 = AwsS3Client.S3_CLIENT;
     }
 
     RepoRecordFetcher(AmazonS3 s3) {
