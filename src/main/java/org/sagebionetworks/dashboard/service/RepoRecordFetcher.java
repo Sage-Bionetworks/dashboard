@@ -7,32 +7,28 @@ import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 @Service("repoRecordFetcher")
 public class RepoRecordFetcher {
 
-    private static final String PROPERTY_PROD = "prod";
-    private static final String BUCKET_PROD = "prod.access.record.sagebase.org";
-    private static final String BUCKET_DEV = "dev.access.record.sagebase.org";
-    private static final int BATCH_SIZE = 100;
+    private static final int BATCH_SIZE = 300;
 
     private final AmazonS3 s3;
     private String lastPrefix = null;
 
     public RepoRecordFetcher() {
-        this.s3 = AwsS3Client.S3_CLIENT;
+        s3 = ServiceContext.getS3Client();
     }
 
     RepoRecordFetcher(AmazonS3 s3) {
         this.s3 = s3;
     }
 
-    public List<S3Object> getBatch() {
+    public List<String> getBatch() {
 
-        List<S3Object> files = new ArrayList<>();
-        final String bucket = getBucket();
+        List<String> files = new ArrayList<>();
+        final String bucket = ServiceContext.getBucket();
         ObjectListing objListing = null;
         if (lastPrefix == null || lastPrefix.isEmpty()) {
             objListing = s3.listObjects(bucket);
@@ -43,9 +39,9 @@ public class RepoRecordFetcher {
         return files;
     }
 
-    private void fillBatch(List<S3Object> files, ObjectListing objListing) {
+    private void fillBatch(final List<String> files, final ObjectListing objListing) {
 
-        if (files.size() > BATCH_SIZE) {
+        if (files.size() >= BATCH_SIZE) {
             return;
         }
 
@@ -54,7 +50,6 @@ public class RepoRecordFetcher {
             return;
         }
 
-        final String bucket = getBucket();
         for (S3ObjectSummary obj : objListing.getObjectSummaries()) {
             final String key = obj.getKey();
             if (!key.toLowerCase().contains("rolling")) {
@@ -64,23 +59,14 @@ public class RepoRecordFetcher {
                 } else {
                     lastPrefix = key.substring(0, i);
                 }
-                S3Object file = s3.getObject(bucket, key);
-                files.add(file);
+                files.add(key);
+                if (files.size() >= BATCH_SIZE) {
+                    return;
+                }
             }
         }
 
-        objListing = s3.listNextBatchOfObjects(objListing);
-        fillBatch(files, objListing);
-    }
-
-    private String getBucket() {
-        if (isProd()) {
-            return BUCKET_PROD;
-        }
-        return BUCKET_DEV;
-    }
-
-    private boolean isProd() {
-        return Boolean.parseBoolean(System.getProperty(PROPERTY_PROD));
+        ObjectListing nextObjListing = s3.listNextBatchOfObjects(objListing);
+        fillBatch(files, nextObjListing);
     }
 }

@@ -13,9 +13,13 @@ import com.amazonaws.auth.SystemPropertiesCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 
-class AwsS3Client {
+class ServiceContext {
 
-    static final AmazonS3 S3_CLIENT;
+    private static final String PROPERTY_PROD = "prod";
+    private static final String BUCKET_PROD = "prod.access.record.sagebase.org";
+    private static final String BUCKET_DEV = "dev.access.record.sagebase.org";
+
+    private static final AmazonS3 S3_CLIENT;
     static {
         try {
             // First, look for system properties "aws.accessKeyId" and "aws.secretKey"
@@ -43,5 +47,18 @@ class AwsS3Client {
         }
     }
 
-    private AwsS3Client() {}
+    static String getBucket() {
+        if (isProd()) {
+            return BUCKET_PROD;
+        }
+        return BUCKET_DEV;
+    }
+
+    static boolean isProd() {
+        return Boolean.parseBoolean(System.getProperty(PROPERTY_PROD));
+    }
+
+    static AmazonS3 getS3Client() {
+        return S3_CLIENT;
+    }
 }

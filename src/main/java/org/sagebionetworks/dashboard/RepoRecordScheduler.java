@@ -4,7 +4,9 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.service.RepoRecordWorker;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+@Component("repoRecordScheduler")
 public class RepoRecordScheduler {
 
     @Resource

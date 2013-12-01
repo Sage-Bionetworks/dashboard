@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 import javax.annotation.Resource;
 
@@ -41,7 +42,8 @@ public class UpdateService {
         int lineCount = 0;
         try {
 
-            InputStreamReader ir = new InputStreamReader(in);
+            GZIPInputStream gzis = new GZIPInputStream(in);
+            InputStreamReader ir = new InputStreamReader(gzis);
             BufferedReader br = new BufferedReader(ir);
             List<Record> records = parser.parse(br);
 
@@ -56,13 +58,13 @@ public class UpdateService {
             }
 
             UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.SUCCEEDED);
-            logger.info(result.toString());
             callback.call(result);
+            logger.info(result.toString());
 
         } catch (Throwable e) {
             UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.FAILED);
-            logger.error(result + " with exception: " + e.getMessage());
             callback.call(result);
+            logger.error(result + " with exception " + e);
         }
     }
 }

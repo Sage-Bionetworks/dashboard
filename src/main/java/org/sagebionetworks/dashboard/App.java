@@ -2,12 +2,10 @@ package org.sagebionetworks.dashboard;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.GZIPInputStream;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.model.Aggregation;
@@ -55,18 +53,14 @@ public class App {
         for (File file : files) {
             count++;
             System.out.println("Loading file " + count + " of " + total);
-            InputStream is = null;
+            InputStream is = new FileInputStream(file);
             try {
-                FileInputStream fis = new FileInputStream(file);
-                is = new GZIPInputStream(fis);
                 updateService.update(is, file.getPath(), new UpdateCallback() {
                         @Override
                         public void call(UpdateResult result) {
                             System.out.println(result.toString());
                         }
                     });
-            } catch (IOException e) {
-                e.printStackTrace();
             } finally {
                 if (is != null) {
                     is.close();
