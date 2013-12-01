@@ -19,6 +19,9 @@ public class RepoRecordFetcher {
 
     public RepoRecordFetcher() {
         s3 = ServiceContext.getS3Client();
+        if (ServiceContext.isProd()) {
+            lastPrefix = "000000010";
+        }
     }
 
     RepoRecordFetcher(AmazonS3 s3) {
