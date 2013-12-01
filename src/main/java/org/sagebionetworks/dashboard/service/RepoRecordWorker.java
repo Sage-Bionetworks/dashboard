@@ -40,6 +40,7 @@ public class RepoRecordWorker {
             }
             if (fileStatusDao.isCompleted(key) || fileStatusDao.isFailed(key)) {
                 // Already processed
+                lockDao.release(key, etag);
                 continue;
             }
 
