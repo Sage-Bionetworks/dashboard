@@ -41,15 +41,6 @@ public class RepoRecordFetcher {
 
     private void fillBatch(final List<String> files, final ObjectListing objListing) {
 
-        if (files.size() >= BATCH_SIZE) {
-            return;
-        }
-
-        List<S3ObjectSummary> summeries = objListing.getObjectSummaries();
-        if (summeries.isEmpty()) {
-            return;
-        }
-
         for (S3ObjectSummary obj : objListing.getObjectSummaries()) {
             final String key = obj.getKey();
             if (!key.toLowerCase().contains("rolling")) {
@@ -66,7 +57,9 @@ public class RepoRecordFetcher {
             }
         }
 
-        ObjectListing nextObjListing = s3.listNextBatchOfObjects(objListing);
-        fillBatch(files, nextObjListing);
+        if (objListing.isTruncated()) {
+            ObjectListing nextObjListing = s3.listNextBatchOfObjects(objListing);
+            fillBatch(files, nextObjListing);
+        }
     }
 }
