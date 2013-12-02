@@ -12,9 +12,6 @@ import com.amazonaws.services.s3.model.ObjectListing;
 @Service("repoStackFetcher")
 public class RepoStackFetcher {
 
-    /** How many live stacks to keep track of. */
-    private static final int STACK_COUNT = 3;
-
     private AmazonS3 s3;
 
     public RepoStackFetcher() {
@@ -22,9 +19,16 @@ public class RepoStackFetcher {
     }
 
     /**
-     * Gets the live stacks as S3 prefixes in alphabetical order. 
+     * Gets the most recent stacks as S3 prefixes in alphabetical order.
+     *
+     * @param stackCount How many stacks to get
      */
-    public List<String> getLiveStacks() {
+    public List<String> getRecentStacks(int stackCount) {
+
+        if (stackCount < 0) {
+            throw new IllegalArgumentException("Stack count must be >= 0.");
+        }
+
         final String bucket = ServiceContext.getBucket();
         ListObjectsRequest request = new ListObjectsRequest()
                 .withBucketName(bucket)
@@ -32,7 +36,7 @@ public class RepoStackFetcher {
         ObjectListing objListing = s3.listObjects(request);
         List<String> prefixes = objListing.getCommonPrefixes();
         int to = prefixes.size();
-        int from = to - STACK_COUNT;
+        int from = to - stackCount;
         from = from < 0 ? 0 : from;
         return Collections.unmodifiableList(prefixes.subList(from, to));
     }

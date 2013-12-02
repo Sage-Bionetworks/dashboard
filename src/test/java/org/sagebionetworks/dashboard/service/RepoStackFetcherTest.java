@@ -31,7 +31,7 @@ public class RepoStackFetcherTest {
         RepoStackFetcher fetcher = new RepoStackFetcher();
         ReflectionTestUtils.setField(fetcher, "s3", s3, AmazonS3.class);
 
-        List<String> results = fetcher.getLiveStacks();
+        List<String> results = fetcher.getRecentStacks(3);
         assertNotNull(results);
         assertEquals(3, results.size());
         assertEquals("1", results.get(0));
@@ -40,7 +40,7 @@ public class RepoStackFetcherTest {
 
         prefixes = Arrays.asList("1", "2", "3", "4", "5");
         when(objListing.getCommonPrefixes()).thenReturn(prefixes);
-        results = fetcher.getLiveStacks();
+        results = fetcher.getRecentStacks(3);
         assertNotNull(results);
         assertEquals(3, results.size());
         assertEquals("3", results.get(0));
@@ -49,7 +49,7 @@ public class RepoStackFetcherTest {
 
         prefixes = Arrays.asList("1", "2");
         when(objListing.getCommonPrefixes()).thenReturn(prefixes);
-        results = fetcher.getLiveStacks();
+        results = fetcher.getRecentStacks(3);
         assertNotNull(results);
         assertEquals(2, results.size());
         assertEquals("1", results.get(0));
