@@ -46,7 +46,7 @@ public class RepoRecordFetcher {
 
         for (S3ObjectSummary obj : objListing.getObjectSummaries()) {
             final String key = obj.getKey();
-            if (!key.toLowerCase().contains("rolling")) {
+            if (isValidKey(key)) {
                 final int i = key.lastIndexOf('/');
                 if (i <= 0) {
                     lastPrefix = null;
@@ -64,5 +64,24 @@ public class RepoRecordFetcher {
             ObjectListing nextObjListing = s3.listNextBatchOfObjects(objListing);
             fillBatch(files, nextObjListing);
         }
+    }
+
+    private boolean isValidKey(String key) {
+        String[] parts = key.split("/");
+        if (parts.length == 0) {
+            return false;
+        }
+        if (parts.length == 3) {
+            long stack = Long.parseLong(parts[0]);
+            if (stack > 299) {
+                // Ignore stacks like 999
+                return false;
+            }
+        }
+        if (parts[parts.length - 1].toLowerCase().contains("rolling")) {
+            // Ignore rolling files
+            return false;
+        }
+        return true;
     }
 }
