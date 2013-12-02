@@ -9,7 +9,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 
-@Service("repoRecordFetcher")
+@Service("repoStackFetcher")
 public class RepoStackFetcher {
 
     /** How many live stacks to keep track of. */
