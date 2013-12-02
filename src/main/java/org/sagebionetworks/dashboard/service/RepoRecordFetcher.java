@@ -63,7 +63,7 @@ public class RepoRecordFetcher {
         }
     }
 
-    private boolean isValidKey(String key) {
+    private boolean isValidKey(final String key) {
         String[] parts = key.split("/");
         if (parts.length == 0) {
             return false;
@@ -75,7 +75,7 @@ public class RepoRecordFetcher {
                 return false;
             }
         }
-        if (parts[parts.length - 1].toLowerCase().contains("rolling")) {
+        if (key.toLowerCase().contains("rolling")) {
             // Ignore rolling files
             return false;
         }
