@@ -15,15 +15,11 @@ public class RepoRecordFetcher {
 
     private static final int BATCH_SIZE = 300;
 
-    private final AmazonS3 s3;
+    private AmazonS3 s3;
     private String lastMarker = null;
 
     public RepoRecordFetcher() {
         s3 = ServiceContext.getS3Client();
-    }
-
-    RepoRecordFetcher(AmazonS3 s3) {
-        this.s3 = s3;
     }
 
     public List<String> getBatch() {

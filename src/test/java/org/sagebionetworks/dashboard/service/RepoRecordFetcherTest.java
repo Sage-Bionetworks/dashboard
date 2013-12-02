@@ -56,7 +56,8 @@ public class RepoRecordFetcherTest {
         when(objListing.getObjectSummaries()).thenReturn(summaryList);
         when(s3.listObjects("prod.access.record.sagebase.org")).thenReturn(objListing);
 
-        RepoRecordFetcher fetcher = new RepoRecordFetcher(s3);
+        RepoRecordFetcher fetcher = new RepoRecordFetcher();
+        ReflectionTestUtils.setField(fetcher, "s3", s3, AmazonS3.class);
         List<String> files = fetcher.getBatch();
         assertEquals(300, files.size());
         assertEquals("399/399", (String)ReflectionTestUtils.getField(fetcher, "lastMarker"));
