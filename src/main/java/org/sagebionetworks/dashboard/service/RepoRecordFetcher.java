@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
@@ -15,13 +16,10 @@ public class RepoRecordFetcher {
     private static final int BATCH_SIZE = 300;
 
     private final AmazonS3 s3;
-    private String lastPrefix = null;
+    private String lastMarker = null;
 
     public RepoRecordFetcher() {
         s3 = ServiceContext.getS3Client();
-        if (ServiceContext.isProd()) {
-            lastPrefix = "000000010";
-        }
     }
 
     RepoRecordFetcher(AmazonS3 s3) {
@@ -33,10 +31,14 @@ public class RepoRecordFetcher {
         List<String> files = new ArrayList<>();
         final String bucket = ServiceContext.getBucket();
         ObjectListing objListing = null;
-        if (lastPrefix == null || lastPrefix.isEmpty()) {
+        if (lastMarker == null || lastMarker.isEmpty()) {
             objListing = s3.listObjects(bucket);
         } else {
-            objListing = s3.listObjects(bucket, lastPrefix);
+            ListObjectsRequest request = new ListObjectsRequest()
+                    .withBucketName(bucket)
+                    .withMarker(lastMarker)
+                    .withMaxKeys(BATCH_SIZE);
+            objListing = s3.listObjects(request);
         }
         fillBatch(files, objListing);
         return files;
@@ -47,12 +49,7 @@ public class RepoRecordFetcher {
         for (S3ObjectSummary obj : objListing.getObjectSummaries()) {
             final String key = obj.getKey();
             if (isValidKey(key)) {
-                final int i = key.lastIndexOf('/');
-                if (i <= 0) {
-                    lastPrefix = null;
-                } else {
-                    lastPrefix = key.substring(0, i);
-                }
+                lastMarker = key;
                 files.add(key);
                 if (files.size() >= BATCH_SIZE) {
                     return;

@@ -1,6 +1,7 @@
 package org.sagebionetworks.dashboard.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
@@ -57,7 +59,7 @@ public class RepoRecordFetcherTest {
         RepoRecordFetcher fetcher = new RepoRecordFetcher(s3);
         List<String> files = fetcher.getBatch();
         assertEquals(300, files.size());
-        assertEquals("399", (String)ReflectionTestUtils.getField(fetcher, "lastPrefix"));
+        assertEquals("399/399", (String)ReflectionTestUtils.getField(fetcher, "lastMarker"));
 
         // Mock the next page of 20 files with 5 rolling
         summaryList = new ArrayList<>();
@@ -73,13 +75,13 @@ public class RepoRecordFetcherTest {
         }
         objListing = mock(ObjectListing.class);
         when(objListing.getObjectSummaries()).thenReturn(summaryList);
-        when(s3.listObjects("prod.access.record.sagebase.org", "399")).thenReturn(objListing);
+        when(s3.listObjects(any(ListObjectsRequest.class))).thenReturn(objListing);
         // No more page
         ObjectListing emptyList = mock(ObjectListing.class);
         when(emptyList.getObjectSummaries()).thenReturn(new ArrayList<S3ObjectSummary>());
         when(s3.listNextBatchOfObjects(objListing)).thenReturn(emptyList);
         files = fetcher.getBatch();
         assertEquals(15, files.size());
-        assertEquals("819", (String)ReflectionTestUtils.getField(fetcher, "lastPrefix"));
+        assertEquals("819/819", (String)ReflectionTestUtils.getField(fetcher, "lastMarker"));
     }
 }
