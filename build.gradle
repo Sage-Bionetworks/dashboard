@@ -10,7 +10,7 @@ run {
 jar {
     group = 'org.sagebionetworks'
     baseName = 'dashboard'
-    version =  '0.2.3'
+    version =  '0.2.4'
 }
 
 repositories {
@@ -23,7 +23,7 @@ dependencies {
     compile 'redis.clients:jedis:' + jedisVersion
     compile 'joda-time:joda-time:2.3'
     compile 'net.sf.opencsv:opencsv:2.3'
-    compile 'com.amazonaws:aws-java-sdk:1.6.6'
+    compile 'com.amazonaws:aws-java-sdk:1.6.7'
     compile 'org.slf4j:slf4j-api:' + slf4jVersion
     runtime 'org.slf4j:slf4j-log4j12:' + slf4jVersion
     testCompile 'junit:junit:4.11'
