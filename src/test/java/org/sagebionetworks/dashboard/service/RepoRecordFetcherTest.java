@@ -1,88 +1,81 @@
 package org.sagebionetworks.dashboard.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 public class RepoRecordFetcherTest {
 
-    @Before
-    public void before() {
-        System.setProperty("prod", "true");
-    }
-
-    @After
-    public void after() {
-        System.setProperty("prod", "false");
-    }
-
     @Test
     public void test() {
 
-        final String bucket = "prod.access.record.sagebase.org";
-        AmazonS3 s3 = mock(AmazonS3.class);
-
-        // Mock one page of 800 files with 200 rolling
-        // 1) Should get back a full batch of 300 files
-        // 2) Should stop filling the batch as it is over 300
-        // 3) Should have the correct lastPrefix
-        List<S3ObjectSummary> summaryList = new ArrayList<>();
-        for (int i = 0; i < 800; i++) {
-            S3ObjectSummary summary = new S3ObjectSummary();
-            String key = String.format("%3d", i) + "/" + String.format("%3d", i);
-            if ((i % 4) == 0) {
-                key = key + "rolling";
-            }
-            summary.setKey(key);
-            summaryList.add(summary);
-            when(s3.getObject(bucket, key)).thenReturn(mock(S3Object.class));
+        // Mock 400 stacks
+        List<String> stackList = new ArrayList<>();
+        for (int i = 0; i < 400; i++) {
+            String stack = String.format("%3d", i);
+            stackList.add(stack);
         }
+        RepoStackFetcher stackFetcher = mock(RepoStackFetcher.class);
+        when(stackFetcher.getRecentStacks(30)).thenReturn(stackList);
+
+        // Each stack gets 3 files.
+        // File 1 is usual
+        String key = UUID.randomUUID().toString();
+        S3ObjectSummary summary = new S3ObjectSummary();
+        summary.setKey(key);
+        List<S3ObjectSummary> summaryList = new ArrayList<>();
+        summaryList.add(summary);
+        // File 2 is "rolling" and should be ignored
+        key = UUID.randomUUID().toString() + "-rolling";
+        summary = new S3ObjectSummary();
+        summary.setKey(key);
+        summaryList.add(summary);
+        // File 3 is the last and should set the marker
+        key = UUID.randomUUID().toString();
+        String marker = key;
+        summary = new S3ObjectSummary();
+        summary.setKey(key);
+        summaryList.add(summary);
+
         ObjectListing objListing = mock(ObjectListing.class);
         when(objListing.getObjectSummaries()).thenReturn(summaryList);
-        when(s3.listObjects("prod.access.record.sagebase.org")).thenReturn(objListing);
+        AmazonS3 s3 = mock(AmazonS3.class);
+        when(s3.listObjects(any(ListObjectsRequest.class))).thenReturn(objListing);
 
         RepoRecordFetcher fetcher = new RepoRecordFetcher();
+        ReflectionTestUtils.setField(fetcher, "repoStackFetcher", stackFetcher, RepoStackFetcher.class);
         ReflectionTestUtils.setField(fetcher, "s3", s3, AmazonS3.class);
-        List<String> files = fetcher.getBatch();
-        assertEquals(300, files.size());
-        assertEquals("399/399", (String)ReflectionTestUtils.getField(fetcher, "lastMarker"));
 
-        // Mock the next page of 20 files with 5 rolling
-        summaryList = new ArrayList<>();
-        for (int i = 800; i < 820; i++) {
-            S3ObjectSummary summary = new S3ObjectSummary();
-            String key = String.format("%3d", i) + "/" + String.format("%3d", i);
-            if ((i % 4) == 0) {
-                key = key + "rolling";
-            }
-            summary.setKey(key);
-            summaryList.add(summary);
-            when(s3.getObject(bucket, key)).thenReturn(mock(S3Object.class));
-        }
-        objListing = mock(ObjectListing.class);
-        when(objListing.getObjectSummaries()).thenReturn(summaryList);
-        when(s3.listObjects(any(ListObjectsRequest.class))).thenReturn(objListing);
-        // No more page
-        ObjectListing emptyList = mock(ObjectListing.class);
-        when(emptyList.getObjectSummaries()).thenReturn(new ArrayList<S3ObjectSummary>());
-        when(s3.listNextBatchOfObjects(objListing)).thenReturn(emptyList);
-        files = fetcher.getBatch();
-        assertEquals(15, files.size());
-        assertEquals("819/819", (String)ReflectionTestUtils.getField(fetcher, "lastMarker"));
+        List<String> files = fetcher.getBatch();
+        // Should get back a full batch of 300 files
+        assertEquals(300, files.size());
+        @SuppressWarnings("unchecked")
+        Map<String, String> markerMap = (Map<String, String>)ReflectionTestUtils.getField(fetcher, "stackMarkerMap");
+        // Should cut off at stack 299
+        assertTrue(markerMap.containsKey("299"));
+        assertFalse(markerMap.containsKey("300"));
+        // Should stop at stack 150
+        // Going down from 299 to 150, we have 150 stacks with each stack has 2 valid files. A total of 300 files.
+        assertTrue(markerMap.containsKey("150"));
+        assertFalse(markerMap.containsKey("149"));
+        // Should have the correct marker
+        assertEquals(marker, markerMap.get("299"));
+        assertEquals(marker, markerMap.get("175"));
     }
 }

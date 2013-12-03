@@ -136,7 +136,7 @@ public class RepoRecordWorkerTest {
   
         final AmazonS3 s3 = ServiceContext.getS3Client();
         final String bucket = ServiceContext.getBucket();
-        final String key = UUID.randomUUID().toString() + ".csv.gz";
+        final String key = "00022/" + UUID.randomUUID().toString() + ".csv.gz";
         final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         s3.putObject(bucket, key, bais, metadata);
         bais.close();
