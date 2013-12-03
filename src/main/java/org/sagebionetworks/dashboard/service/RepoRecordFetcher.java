@@ -86,7 +86,7 @@ public class RepoRecordFetcher {
 
         marker = fillBatch(objListing, batch);
         logger.info("Batch[size=" + batch.size() + "] filled for stack " + stack +
-                " with a new marker " + marker + ".");
+                " with a new marker " + marker + ". Null marker will NOT be updated.");
         if (marker != null) {
             stackMarkerMap.put(stack, marker);
         }

@@ -23,7 +23,7 @@ public class RepoStackFetcher {
      *
      * @param stackCount How many stacks to get
      */
-    public List<String> getRecentStacks(int stackCount) {
+    public List<String> getRecentStacks(final int stackCount) {
 
         if (stackCount < 0) {
             throw new IllegalArgumentException("Stack count must be >= 0.");
