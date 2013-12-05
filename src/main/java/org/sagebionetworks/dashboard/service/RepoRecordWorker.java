@@ -8,6 +8,7 @@ import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.sagebionetworks.dashboard.dao.LockDao;
 import org.springframework.stereotype.Service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3Object;
 
 @Service("repoRecordWorker")
@@ -27,18 +28,24 @@ public class RepoRecordWorker {
 
     public void doWork() {
 
-        List<S3Object> batch = repoRecordFetcher.getBatch();
-        for (S3Object file : batch) {
-            final String key = file.getKey();
+        final AmazonS3 s3 = ServiceContext.getS3Client();
+        final String bucket = ServiceContext.getBucket();
+        List<String> batch = repoRecordFetcher.getBatch();
+        for (final String key : batch) {
+
             final String etag = lockDao.acquire(key);
             if (etag == null) {
+                // Fail to acquire lock
                 continue;
             }
+            if (fileStatusDao.isCompleted(key) || fileStatusDao.isFailed(key)) {
+                // Already processed
+                lockDao.release(key, etag);
+                continue;
+            }
+
+            S3Object file = s3.getObject(bucket, key);
             try {
-                if (fileStatusDao.isCompleted(key) || fileStatusDao.isFailed(key)) {
-                    // Already processed
-                    continue;
-                }
                 updateService.update(file.getObjectContent(), key, new UpdateCallback() {
                     @Override
                     public void call(UpdateResult result) {
