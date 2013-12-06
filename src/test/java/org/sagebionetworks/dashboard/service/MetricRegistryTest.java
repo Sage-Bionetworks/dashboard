@@ -40,7 +40,7 @@ public class MetricRegistryTest {
     public void test() {
         List<MetricToRead> metrics = registry.metricsToRead();
         assertNotNull(metrics);
-        assertEquals(5, metrics.size());
+        assertEquals(3, metrics.size());
         assertEquals("Top Users", metrics.get(0).getName());
         assertNotNull(metrics.get(0).getId());
         assertFalse(metrics.get(0).getId().equals(nameIdDao.getId(metrics.get(0).getName())));
@@ -50,8 +50,8 @@ public class MetricRegistryTest {
         Collection<TimeSeriesToWrite> timeSeries = registry.timeSeriesToWrite();
         assertNotNull(timeSeries);
         assertEquals(1, timeSeries.size());
-        MetricToRead metric3 = metrics.get(3);
-        assertEquals(metric3, registry.getMetric(metric3.getId(), metric3.getType()));
+        MetricToRead metric2 = metrics.get(2);
+        assertEquals(metric2, registry.getMetric(metric2.getId(), metric2.getType()));
     }
 
     private void clearRedis() {
