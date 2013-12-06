@@ -89,7 +89,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         for (int i = 0; i < values.size(); i++) {
             String value = values.get(i);
             if (value != null) {
-                data.add(new TimeDataPoint(timestamps.get(i).longValue(), value));
+                data.add(new TimeDataPoint(timestamps.get(i).longValue() * 1000L, value));
             }
         }
 

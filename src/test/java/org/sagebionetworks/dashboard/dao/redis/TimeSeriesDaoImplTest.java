@@ -87,64 +87,64 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         List<TimeDataPoint> sumListM3 = timeSeriesDao.timeSeries(python, start, end, sum, m3);
         assertEquals(4, sumListM3.size());
         TimeDataPoint dp = sumListM3.get(0);
-        assertEquals(1107855000L, dp.getTimestampInMs());
+        assertEquals(1107855000000L, dp.getTimestampInMs());
         assertEquals("16", dp.getValue());
         dp = sumListM3.get(1);
-        assertEquals(1107855720L, dp.getTimestampInMs());
+        assertEquals(1107855720000L, dp.getTimestampInMs());
         assertEquals("1", dp.getValue());
         dp = sumListM3.get(2);
-        assertEquals(1107859320L, dp.getTimestampInMs());
+        assertEquals(1107859320000L, dp.getTimestampInMs());
         assertEquals("9", dp.getValue());
         dp = sumListM3.get(3);
-        assertEquals(1108118520L, dp.getTimestampInMs());
+        assertEquals(1108118520000L, dp.getTimestampInMs());
         assertEquals("3", dp.getValue());
 
         List<TimeDataPoint> sumListHour = timeSeriesDao.timeSeries(python, start, end, sum, hour);
         assertEquals(3, sumListHour.size());
         dp = sumListHour.get(0);
-        assertEquals(1107853200L, dp.getTimestampInMs());
+        assertEquals(1107853200000L, dp.getTimestampInMs());
         assertEquals("17", dp.getValue());
         dp = sumListHour.get(1);
-        assertEquals(1107856800L, dp.getTimestampInMs());
+        assertEquals(1107856800000L, dp.getTimestampInMs());
         assertEquals("9", dp.getValue());
         dp = sumListHour.get(2);
-        assertEquals(1108116000L, dp.getTimestampInMs());
+        assertEquals(1108116000000L, dp.getTimestampInMs());
         assertEquals("3", dp.getValue());
 
         List<TimeDataPoint> sumListDay = timeSeriesDao.timeSeries(python, start, end, sum, day);
         assertEquals(2, sumListDay.size());
         dp = sumListDay.get(0);
-        assertEquals(1107820800L, dp.getTimestampInMs());
+        assertEquals(1107820800000L, dp.getTimestampInMs());
         assertEquals("26", dp.getValue());
         dp = sumListDay.get(1);
-        assertEquals(1108080000L, dp.getTimestampInMs());
+        assertEquals(1108080000000L, dp.getTimestampInMs());
         assertEquals("3", dp.getValue());
 
         List<TimeDataPoint> nListDay = timeSeriesDao.timeSeries(python, start, end, n, day);
         assertEquals(2, nListDay.size());
         dp = nListDay.get(0);
-        assertEquals(1107820800L, dp.getTimestampInMs());
+        assertEquals(1107820800000L, dp.getTimestampInMs());
         assertEquals("5", dp.getValue());
         dp = nListDay.get(1);
-        assertEquals(1108080000L, dp.getTimestampInMs());
+        assertEquals(1108080000000L, dp.getTimestampInMs());
         assertEquals("1", dp.getValue());
 
         List<TimeDataPoint> maxListDay = timeSeriesDao.timeSeries(python, start, end, max, day);
         assertEquals(2, maxListDay.size());
         dp = maxListDay.get(0);
-        assertEquals(1107820800L, dp.getTimestampInMs());
+        assertEquals(1107820800000L, dp.getTimestampInMs());
         assertEquals("11", dp.getValue());
         dp = maxListDay.get(1);
-        assertEquals(1108080000L, dp.getTimestampInMs());
+        assertEquals(1108080000000L, dp.getTimestampInMs());
         assertEquals("3", dp.getValue());
 
         List<TimeDataPoint> avgListDay = timeSeriesDao.timeSeries(python, start, end, avg, day);
         assertEquals(2, avgListDay.size());
         dp = avgListDay.get(0);
-        assertEquals(1107820800L, dp.getTimestampInMs());
+        assertEquals(1107820800000L, dp.getTimestampInMs());
         assertEquals("5", dp.getValue());
         dp = avgListDay.get(1);
-        assertEquals(1108080000L, dp.getTimestampInMs());
+        assertEquals(1108080000000L, dp.getTimestampInMs());
         assertEquals("3", dp.getValue());
     }
 
