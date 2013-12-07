@@ -140,8 +140,8 @@ public class NameIdDaoImpl implements NameIdDao {
         return redisTemplate.execute(callback);
     }
 
-    // 5-char ID has a space of 916,132,832 keys
-    private final RandomIdGenerator idGenerator = new RandomIdGenerator(5);
+    // 6-char ID has a space of 56,800,235,584 keys
+    private final RandomIdGenerator idGenerator = new RandomIdGenerator(6);
 
     @Resource
     private StringRedisTemplate redisTemplate;
