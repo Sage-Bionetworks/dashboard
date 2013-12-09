@@ -46,7 +46,7 @@ public class MetricRegistryTest {
         assertFalse(metrics.get(0).getId().equals(nameIdDao.getId(metrics.get(0).getName())));
         Collection<UniqueCountToWrite> uniqueCounts = registry.uniqueCountToWrite();
         assertNotNull(uniqueCounts);
-        assertEquals(5, uniqueCounts.size());
+        assertEquals(6, uniqueCounts.size());
         Collection<TimeSeriesToWrite> timeSeries = registry.timeSeriesToWrite();
         assertNotNull(timeSeries);
         assertEquals(1, timeSeries.size());
