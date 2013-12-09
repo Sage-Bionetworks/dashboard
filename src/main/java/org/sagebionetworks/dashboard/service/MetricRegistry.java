@@ -46,7 +46,7 @@ public class MetricRegistry {
         createMetric(
                 "Top Users",
                 "IDs of users with most activitities.",
-                "uniqueUserMetric",
+                new String[] {"uniqueUserMetric"},
                 MetricType.TOP,
                 Aggregation.day,
                 Statistic.n,
@@ -58,7 +58,7 @@ public class MetricRegistry {
         createMetric(
                 "Count of Unique Users",
                 "The number of unique users that logged activities.",
-                "uniqueUserMetric",
+                new String[] {"uniqueUserMetric"},
                 MetricType.UNIQUE_COUNT,
                 Aggregation.day,
                 Statistic.n,
@@ -70,7 +70,7 @@ public class MetricRegistry {
         createMetric(
                 "GET Entity Bundle Latencies",
                 "Latency in milliseconds for the GET entity bundle REST API.",
-                "getEntityBundleMetric",
+                new String[] {"getEntityBundleMetric"},
                 MetricType.TIME_SERIES,
                 Aggregation.hour,
                 Statistic.avg,
@@ -129,7 +129,7 @@ public class MetricRegistry {
     private void createMetric(
             final String name,
             final String description,
-            final String metricToWriteName,
+            final String[] metricToWriteName,
             final MetricType metricType,
             final Aggregation aggregation,
             final Statistic statistic,
@@ -141,7 +141,11 @@ public class MetricRegistry {
         MetricToRead mtr = new MetricToRead();
         mtr.setName(name);
         mtr.setDescription(description);
-        String id = nameIdMap.get(metricToWriteName);
+        String id = "";
+        for (String mName : metricToWriteName) {
+            id = id + nameIdMap.get(mName) + ":";
+        }
+        id = id.substring(0, id.length() - 1);
         if (id == null) {
             throw new RuntimeException("Incorrect metricToWriteName.");
         }
