@@ -37,6 +37,12 @@ public class RepoRecord implements Record {
     public void setUri(String uri) {
         this.uri = uri;
     }
+    public String getQueryString() {
+        return queryString;
+    }
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
+    }
     public String getStatus() {
         return status;
     }
@@ -70,29 +76,15 @@ public class RepoRecord implements Record {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("RepoRecord [sessionId=");
-        builder.append(sessionId);
-        builder.append(", timestamp=");
-        builder.append(timestamp);
-        builder.append(", userId=");
-        builder.append(userId);
-        builder.append(", objectId=");
-        builder.append(objectId);
-        builder.append(", method=");
-        builder.append(method);
-        builder.append(", uri=");
-        builder.append(uri);
-        builder.append(", status=");
-        builder.append(status);
-        builder.append(", latency=");
-        builder.append(latency);
-        builder.append(", userAgent=");
-        builder.append(userAgent);
-        builder.append(", stack=");
-        builder.append(stack);
-        builder.append(", host=");
-        builder.append(host);
-        builder.append("]");
+        builder.append("RepoRecord [sessionId=").append(sessionId)
+                .append(", timestamp=").append(timestamp).append(", userId=")
+                .append(userId).append(", objectId=").append(objectId)
+                .append(", method=").append(method).append(", uri=")
+                .append(uri).append(", queryString=").append(queryString)
+                .append(", status=").append(status).append(", latency=")
+                .append(latency).append(", userAgent=").append(userAgent)
+                .append(", stack=").append(stack).append(", host=")
+                .append(host).append("]");
         return builder.toString();
     }
     private String sessionId;
@@ -101,6 +93,7 @@ public class RepoRecord implements Record {
     private String objectId;
     private String method;
     private String uri;
+    private String queryString;
     private String status;
     private Long latency;
     private String userAgent;

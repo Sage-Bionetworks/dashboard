@@ -75,6 +75,7 @@ public class RepoRecordParser implements RecordParser {
         record.setObjectId(getString("returnObjectId", line));
         record.setMethod(getString("method", line));
         record.setUri(getString("requestURL", line));
+        record.setQueryString(getString("queryString", line));
         record.setStatus(getString("success", line));
         record.setLatency(getLong("elapseMS", line));
         record.setUserAgent(getString("userAgent", line));

@@ -15,6 +15,10 @@ public class EntityIdReaderTest {
         assertNull(reader.read(record));
         record.setUri("/repo/v1/entity/user");
         assertNull(reader.read(record));
+        record.setQueryString("query=select+id,name,nodeType+from+project+where+createdByPrincipalId+==+2223659+limit+1000+offset+1");
+        assertNull(reader.read(record));
+        record.setQueryString("query=select+id,name,nodeType+from+entity+where+parentId+==+%22syn1761567%22+limit+500+offset+1");
+        assertEquals("syn1761567", reader.read(record));
         record.setUri("/repo/v1/entity/syn12345");
         assertEquals("syn12345", reader.read(record));
         record.setUri("/repo/v1/entity/SYN12345");

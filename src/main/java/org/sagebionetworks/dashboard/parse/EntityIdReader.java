@@ -9,22 +9,36 @@ public class EntityIdReader implements RecordReader<String> {
             "syn[1-9][0-9]*", Pattern.CASE_INSENSITIVE);
 
     /**
-     * Tries to read the entity ID from the record. It tries the object ID
-     * field first. If it is not there, tries to read it from the URI.
+     * Reads the entity ID from the record. It tries in the following order:
+     * <ol>
+     * <li> The object ID field.
+     * <li> Any matches in the request URI.
+     * <li> Any matches in the query string.
+     * </ol>
      */
     @Override
     public String read(Record record) {
+        // Object ID
         final String entityId = record.getObjectId();
         if (entityId != null && !entityId.isEmpty()) {
             if (SYN_ID.matcher(entityId).matches()) {
                 return entityId;
             }
         }
+        // Request URI
         final String uri = record.getUri();
         if (uri != null && !uri.isEmpty()) {
             Matcher matcher = SYN_ID.matcher(uri);
             if (matcher.find()) {
                 return matcher.group();
+            }
+        }
+        // Query String
+        final String query = record.getQueryString();
+        if (query != null && !query.isEmpty()) {
+            Matcher matcher = SYN_ID.matcher(query);
+            if (matcher.find()) {
+                return matcher.group().toLowerCase();
             }
         }
         return null;
