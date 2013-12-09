@@ -44,8 +44,32 @@ public class MetricRegistry {
         Map<String, MetricToRead> idTypeMetricMap = new HashMap<String, MetricToRead>();
 
         createMetric(
+                "Newly Registered Users",
+                "Daily counts of newly registered users.",
+                new String[] {"createUserMetric", "changePasswordMetric"},
+                MetricType.UNIQUE_COUNT,
+                Aggregation.day,
+                Statistic.n,
+                DateTime.now().minusDays(8),
+                DateTime.now().minusDays(1),
+                metricsToRead,
+                idTypeMetricMap);
+
+        createMetric(
+                "Daily Unique Users",
+                "The number of unique users that logged activities on a daily basis.",
+                new String[] {"uniqueUserMetric"},
+                MetricType.UNIQUE_COUNT,
+                Aggregation.day,
+                Statistic.n,
+                DateTime.now().minusDays(8),
+                DateTime.now().minusDays(1),
+                metricsToRead,
+                idTypeMetricMap);
+
+        createMetric(
                 "Top Users",
-                "IDs of users with most activitities.",
+                "Users with the most activitities.",
                 new String[] {"uniqueUserMetric"},
                 MetricType.TOP,
                 Aggregation.day,
@@ -56,13 +80,25 @@ public class MetricRegistry {
                 idTypeMetricMap);
 
         createMetric(
-                "Count of Unique Users",
-                "The number of unique users that logged activities.",
-                new String[] {"uniqueUserMetric"},
-                MetricType.UNIQUE_COUNT,
+                "Top Entities",
+                "List of entities that are accessed most often.",
+                new String[] {"topEntityMetric"},
+                MetricType.TOP,
                 Aggregation.day,
                 Statistic.n,
-                DateTime.now().minusDays(8),
+                DateTime.now().minusDays(1),
+                DateTime.now().minusDays(1),
+                metricsToRead,
+                idTypeMetricMap);
+
+        createMetric(
+                "Top Clients",
+                "List of programming clients sorted in descending order of their activities.",
+                new String[] {"topClientMetric"},
+                MetricType.TOP,
+                Aggregation.day,
+                Statistic.n,
+                DateTime.now().minusDays(1),
                 DateTime.now().minusDays(1),
                 metricsToRead,
                 idTypeMetricMap);

@@ -40,8 +40,8 @@ public class MetricRegistryTest {
     public void test() {
         List<MetricToRead> metrics = registry.metricsToRead();
         assertNotNull(metrics);
-        assertEquals(3, metrics.size());
-        assertEquals("Top Users", metrics.get(0).getName());
+        assertEquals(6, metrics.size());
+        assertEquals("Newly Registered Users", metrics.get(0).getName());
         assertNotNull(metrics.get(0).getId());
         assertFalse(metrics.get(0).getId().equals(nameIdDao.getId(metrics.get(0).getName())));
         Collection<UniqueCountToWrite> uniqueCounts = registry.uniqueCountToWrite();
