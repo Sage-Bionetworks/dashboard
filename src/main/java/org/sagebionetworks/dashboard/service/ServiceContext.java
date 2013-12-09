@@ -29,7 +29,8 @@ class ServiceContext {
             // Third, look for the gradle configuration file
             String userHome = System.getProperty("user.home");
             File gradleConfig = new File(userHome + "/.gradle/gradle.properties");
-            final PropertiesCredentials propCred = new PropertiesCredentials(gradleConfig);
+            final PropertiesCredentials propCred = gradleConfig.exists() ?
+                    new PropertiesCredentials(gradleConfig) : null;
             AWSCredentialsProvider p3 = new AWSCredentialsProvider() {
                 @Override
                 public AWSCredentials getCredentials() {

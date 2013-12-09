@@ -68,8 +68,12 @@ public class RepoRecordWorkerTest {
         clearRedis();
         final AmazonS3 s3 = ServiceContext.getS3Client();
         final String bucket = ServiceContext.getBucket();
-        s3.deleteObject(bucket, keySuccess);
-        s3.deleteObject(bucket, keyFailure);
+        if (keySuccess != null) {
+            s3.deleteObject(bucket, keySuccess);
+        }
+        if (keyFailure != null) {
+            s3.deleteObject(bucket, keyFailure);
+        }
     }
 
     @Test
@@ -114,8 +118,17 @@ public class RepoRecordWorkerTest {
             }
         }
         while (listing.isTruncated());
+        // Clean in multiple batches; each batch at most 300 files.
         if (toDelete.size() > 0) {
-            s3.deleteObjects(new DeleteObjectsRequest(bucket).withKeys(toDelete));
+            int from = 0;
+            int to = 300;
+            while (from < toDelete.size()) {
+                to = to > toDelete.size() ? toDelete.size() : to;
+                s3.deleteObjects(new DeleteObjectsRequest(bucket)
+                        .withKeys(toDelete.subList(from, to)));
+                from = to;
+                to = to + 300;
+            }
         }
     }
 
