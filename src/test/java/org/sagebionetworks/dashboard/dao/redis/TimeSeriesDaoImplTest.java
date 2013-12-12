@@ -45,42 +45,42 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         final String python = "python";
         long latency = 11L;
         DateTime dt = new DateTime(2005, 2, 8, 9, 30, 51, 31, DateTimeZone.UTC);
-        timeSeriesDao.add(python, dt, latency);
+        timeSeriesDao.put(python, dt, latency);
 
         latency = 5L;
         dt = dt.plusMinutes(1);
-        timeSeriesDao.add(python, dt, latency);
+        timeSeriesDao.put(python, dt, latency);
 
         latency = 1L;
         dt = dt.plusMinutes(11);
-        timeSeriesDao.add(python, dt, latency);
+        timeSeriesDao.put(python, dt, latency);
 
         latency = 7L;
         dt = dt.plusHours(1);
-        timeSeriesDao.add(python, dt, latency);
+        timeSeriesDao.put(python, dt, latency);
 
         latency = 2L;
         dt = dt.plusMinutes(2);
-        timeSeriesDao.add(python, dt, latency);
+        timeSeriesDao.put(python, dt, latency);
 
         latency = 3L;
         dt = dt.plusDays(3);
-        timeSeriesDao.add(python, dt, latency);
+        timeSeriesDao.put(python, dt, latency);
 
         // this one is out of range
         latency = 13L;
         dt = dt.plusMonths(1);
-        timeSeriesDao.add(python, dt, latency);
+        timeSeriesDao.put(python, dt, latency);
 
         // Metrics for R
         final String r = "r";
         latency = 101L;
         dt = new DateTime(2005, 2, 21, 11, 32, 51, 31, DateTimeZone.UTC);
-        timeSeriesDao.add(r, dt, latency);
+        timeSeriesDao.put(r, dt, latency);
 
         latency = 79L;
         dt = dt.plusHours(1);
-        timeSeriesDao.add(r, dt, latency);
+        timeSeriesDao.put(r, dt, latency);
 
         final DateTime start = new DateTime(2005, 2, 1, 0, 0, 0, 0, DateTimeZone.UTC);
         final DateTime end = new DateTime(2005, 3, 1, 0, 0, 0, 0, DateTimeZone.UTC);
@@ -154,7 +154,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         final String metricId = this.getClass().getName() + ".testKeyExpire";
         long val = 83L;
         DateTime dt = new DateTime(2005, 9, 25, 9, 30, DateTimeZone.UTC);
-        timeSeriesDao.add(metricId, dt, val);
+        timeSeriesDao.put(metricId, dt, val);
 
         Set<String> keys = redisTemplate.keys("*" + metricId + "*");
         for (String key : keys) {

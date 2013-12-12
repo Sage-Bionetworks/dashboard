@@ -30,7 +30,7 @@ import org.springframework.stereotype.Repository;
 public class TimeSeriesDaoImpl implements TimeSeriesDao {
 
     @Override
-    public void add(final String metricId, final DateTime timestamp, final long value) {
+    public void put(final String metricId, final DateTime timestamp, final long value) {
         addAggregation(m3, metricId, timestamp, value);
         addAggregation(hour, metricId, timestamp, value);
         addAggregation(day, metricId, timestamp, value);
