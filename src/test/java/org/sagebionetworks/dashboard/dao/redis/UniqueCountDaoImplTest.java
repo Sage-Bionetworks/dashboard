@@ -48,15 +48,15 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         // (m2, day1, id3) = 2
         // (m2, day1, id1) = 1
         // (m2, day2, id1) = 2
-        uniqueCountDao.add(m1, day1, id1);
-        uniqueCountDao.add(m2, day1, id3);
-        uniqueCountDao.add(m2, day1, id2);
-        uniqueCountDao.add(m2, day1, id2);
-        uniqueCountDao.add(m2, day1, id2);
-        uniqueCountDao.add(m2, day1, id3);
-        uniqueCountDao.add(m2, day1, id1);
-        uniqueCountDao.add(m2, day2, id1);
-        uniqueCountDao.add(m2, day2, id1);
+        uniqueCountDao.put(m1, day1, id1);
+        uniqueCountDao.put(m2, day1, id3);
+        uniqueCountDao.put(m2, day1, id2);
+        uniqueCountDao.put(m2, day1, id2);
+        uniqueCountDao.put(m2, day1, id2);
+        uniqueCountDao.put(m2, day1, id3);
+        uniqueCountDao.put(m2, day1, id1);
+        uniqueCountDao.put(m2, day2, id1);
+        uniqueCountDao.put(m2, day2, id1);
 
         List<CountDataPoint> results = uniqueCountDao.topCounts(m1, day1, Long.MAX_VALUE);
         assertNotNull(results);
@@ -115,7 +115,7 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         final String metricId = this.getClass().getName() + ".testKeyExpire";
         final String id = "id";
         DateTime dt = new DateTime(2005, 9, 25, 9, 30, DateTimeZone.UTC);
-        uniqueCountDao.add(metricId, dt, id);
+        uniqueCountDao.put(metricId, dt, id);
 
         Set<String> keys = redisTemplate.keys("*" + metricId + "*");
         for (String key : keys) {

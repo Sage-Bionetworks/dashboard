@@ -9,13 +9,13 @@ import org.sagebionetworks.dashboard.model.TimeDataPoint;
 public interface UniqueCountDao {
 
     /**
-     * Adds one to the count of the specified ID.
+     * Puts an ID. Adds one to the count of the specified ID.
      *
      * @param metricId   The ID of the metric.
      * @param timestamp  The time when this metric was recorded.
      * @param id         The ID whose count is tracked by this metric.
      */
-    void add(String metricId, DateTime timestamp, String id);
+    void put(String metricId, DateTime timestamp, String id);
 
     /**
      * Gets the list of counts sorted at descending order for the specified day.
