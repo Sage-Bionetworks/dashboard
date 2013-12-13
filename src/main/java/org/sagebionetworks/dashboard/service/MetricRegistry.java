@@ -44,21 +44,9 @@ public class MetricRegistry {
         Map<String, MetricToRead> idTypeMetricMap = new HashMap<String, MetricToRead>();
 
         createMetric(
-                "Top Users",
-                "IDs of users with most activitities.",
-                "uniqueUserMetric",
-                MetricType.TOP,
-                Aggregation.day,
-                Statistic.n,
-                DateTime.now().minusDays(1),
-                DateTime.now().minusDays(1),
-                metricsToRead,
-                idTypeMetricMap);
-
-        createMetric(
-                "Count of Unique Users",
-                "The number of unique users that logged activities.",
-                "uniqueUserMetric",
+                "Newly Registered Users",
+                "Daily counts of newly registered users.",
+                new String[] {"createUserMetric", "changePasswordMetric"},
                 MetricType.UNIQUE_COUNT,
                 Aggregation.day,
                 Statistic.n,
@@ -68,9 +56,57 @@ public class MetricRegistry {
                 idTypeMetricMap);
 
         createMetric(
+                "Daily Unique Users",
+                "The number of unique users that logged activities on a daily basis.",
+                new String[] {"uniqueUserMetric"},
+                MetricType.UNIQUE_COUNT,
+                Aggregation.day,
+                Statistic.n,
+                DateTime.now().minusDays(8),
+                DateTime.now().minusDays(1),
+                metricsToRead,
+                idTypeMetricMap);
+
+        createMetric(
+                "Top Users",
+                "Users with the most activitities.",
+                new String[] {"uniqueUserMetric"},
+                MetricType.TOP,
+                Aggregation.day,
+                Statistic.n,
+                DateTime.now().minusDays(1),
+                DateTime.now().minusDays(1),
+                metricsToRead,
+                idTypeMetricMap);
+
+        createMetric(
+                "Top Entities",
+                "List of entities that are accessed most often.",
+                new String[] {"topEntityMetric"},
+                MetricType.TOP,
+                Aggregation.day,
+                Statistic.n,
+                DateTime.now().minusDays(1),
+                DateTime.now().minusDays(1),
+                metricsToRead,
+                idTypeMetricMap);
+
+        createMetric(
+                "Top Clients",
+                "List of programming clients sorted in descending order of their activities.",
+                new String[] {"topClientMetric"},
+                MetricType.TOP,
+                Aggregation.day,
+                Statistic.n,
+                DateTime.now().minusDays(1),
+                DateTime.now().minusDays(1),
+                metricsToRead,
+                idTypeMetricMap);
+
+        createMetric(
                 "GET Entity Bundle Latencies",
                 "Latency in milliseconds for the GET entity bundle REST API.",
-                "getEntityBundleMetric",
+                new String[] {"getEntityBundleMetric"},
                 MetricType.TIME_SERIES,
                 Aggregation.hour,
                 Statistic.avg,
@@ -129,7 +165,7 @@ public class MetricRegistry {
     private void createMetric(
             final String name,
             final String description,
-            final String metricToWriteName,
+            final String[] metricToWriteName,
             final MetricType metricType,
             final Aggregation aggregation,
             final Statistic statistic,
@@ -141,7 +177,11 @@ public class MetricRegistry {
         MetricToRead mtr = new MetricToRead();
         mtr.setName(name);
         mtr.setDescription(description);
-        String id = nameIdMap.get(metricToWriteName);
+        String id = "";
+        for (String mName : metricToWriteName) {
+            id = id + nameIdMap.get(mName) + ":";
+        }
+        id = id.substring(0, id.length() - 1);
         if (id == null) {
             throw new RuntimeException("Incorrect metricToWriteName.");
         }

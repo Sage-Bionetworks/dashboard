@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 public class UniqueCountDaoImpl implements UniqueCountDao {
 
     @Override
-    public void add(final String metricId, final DateTime timestamp, final String id) {
+    public void put(final String metricId, final DateTime timestamp, final String id) {
         final String key = getKey(metricId, timestamp);
         final String newId = nameIdDao.getId(id); // Swap for a shorter id
         zsetOps.incrementScore(key, newId, 1.0d);

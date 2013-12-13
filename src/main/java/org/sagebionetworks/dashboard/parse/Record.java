@@ -7,6 +7,7 @@ public interface Record {
     String getObjectId();
     String getMethod();
     String getUri();
+    String getQueryString();
     String getStatus();
     Long getLatency();
     String getUserAgent();

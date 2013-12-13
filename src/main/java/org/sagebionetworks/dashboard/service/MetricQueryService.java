@@ -1,5 +1,6 @@
 package org.sagebionetworks.dashboard.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -37,5 +38,14 @@ public class MetricQueryService {
 
     public List<TimeDataPoint> getUniqueCount(String metricId, DateTime from, DateTime to) {
         return uniqueCountDao.uniqueCounts(metricId, from, to);
+    }
+
+    public List<List<TimeDataPoint>> getUniqueCount(List<String> metricIds,
+            DateTime from, DateTime to) {
+        List<List<TimeDataPoint>> results = new ArrayList<>(metricIds.size());
+        for (String metricId : metricIds) {
+            results.add(uniqueCountDao.uniqueCounts(metricId, from, to));
+        }
+        return results;
     }
 }

@@ -19,7 +19,7 @@ public interface TimeSeriesDao {
      * @param timestamp  The time when this metric was recorded.
      * @param value      Time series data value.
      */
-    void add(String metricId, DateTime timestamp, long value);
+    void put(String metricId, DateTime timestamp, long value);
 
     /**
      * Gets the metric as a time series.
