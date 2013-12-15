@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
+import org.sagebionetworks.dashboard.metric.TimeSeriesToWrite;
+import org.sagebionetworks.dashboard.metric.UniqueCountToWrite;
 import org.sagebionetworks.dashboard.model.Aggregation;
 import org.sagebionetworks.dashboard.model.MetricType;
 import org.sagebionetworks.dashboard.model.Statistic;

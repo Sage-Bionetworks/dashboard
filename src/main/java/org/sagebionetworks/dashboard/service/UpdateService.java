@@ -9,6 +9,8 @@ import java.util.zip.GZIPInputStream;
 
 import javax.annotation.Resource;
 
+import org.sagebionetworks.dashboard.metric.TimeSeriesToWrite;
+import org.sagebionetworks.dashboard.metric.UniqueCountToWrite;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;

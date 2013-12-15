@@ -1,3 +1,4 @@
-package org.sagebionetworks.dashboard.service;
+package org.sagebionetworks.dashboard.metric;
+
 
 public interface TimeSeriesToWrite extends MetricToWrite<Long> {}

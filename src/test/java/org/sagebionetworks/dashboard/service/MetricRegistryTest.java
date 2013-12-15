@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
+import org.sagebionetworks.dashboard.metric.TimeSeriesToWrite;
+import org.sagebionetworks.dashboard.metric.UniqueCountToWrite;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

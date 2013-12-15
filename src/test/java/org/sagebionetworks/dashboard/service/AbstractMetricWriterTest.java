@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
+import org.sagebionetworks.dashboard.metric.MetricToWrite;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;

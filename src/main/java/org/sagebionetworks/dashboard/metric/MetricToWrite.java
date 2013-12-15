@@ -1,4 +1,4 @@
-package org.sagebionetworks.dashboard.service;
+package org.sagebionetworks.dashboard.metric;
 
 import java.util.List;
 

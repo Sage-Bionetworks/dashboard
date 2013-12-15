@@ -1,4 +1,4 @@
-package org.sagebionetworks.dashboard.service;
+package org.sagebionetworks.dashboard.metric;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,16 +9,16 @@ import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.SuccessFilter;
-import org.sagebionetworks.dashboard.parse.UriChangePasswordFilter;
+import org.sagebionetworks.dashboard.parse.UriCreateUserFilter;
 import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
-@Component("changePasswordMetric")
-public class ChangePasswordMetric implements UniqueCountToWrite {
+@Component("createUserMetric")
+public class CreateUserMetric implements UniqueCountToWrite {
 
     @Override
     public String getName() {
-        return "changePasswordMetric";
+        return "createUserMetric";
     }
 
     @Override
@@ -27,7 +27,7 @@ public class ChangePasswordMetric implements UniqueCountToWrite {
                 new ProdFilter(),
                 new SuccessFilter(),
                 new MethodFilter("post"),
-                new UriChangePasswordFilter()));
+                new UriCreateUserFilter()));
     }
 
     @Override
