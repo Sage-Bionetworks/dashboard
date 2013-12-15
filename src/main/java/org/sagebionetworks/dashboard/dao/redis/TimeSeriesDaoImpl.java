@@ -40,17 +40,9 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
     public List<TimeDataPoint> timeSeries(final String metricId, final DateTime from, final DateTime to,
             final Statistic statistic, final Aggregation aggregation) {
 
+        // Average is derived from sum/n
         if (Statistic.avg.equals(statistic)) {
-            List<TimeDataPoint> sumList = timeSeries(metricId, from, to, sum, aggregation);
-            List<TimeDataPoint> nList = timeSeries(metricId, from, to, n, aggregation);
-            List<TimeDataPoint> avgList = new ArrayList<TimeDataPoint>(sumList.size());
-            for (int i = 0; i < sumList.size(); i++) {
-                TimeDataPoint iSum = sumList.get(i);
-                TimeDataPoint iN = nList.get(i);
-                long average = Long.parseLong(iSum.getValue()) / Long.parseLong(iN.getValue());
-                avgList.add(new TimeDataPoint(iSum.getTimestampInMs(), Long.toString(average)));
-            }
-            return avgList;
+            return getAvg(metricId, from, to, aggregation);
         }
 
         long start = -1L;
@@ -94,6 +86,21 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         }
 
         return Collections.unmodifiableList(data);
+    }
+
+    private List<TimeDataPoint> getAvg(final String metricId, final DateTime from, final DateTime to,
+            final Aggregation aggregation) {
+
+        List<TimeDataPoint> sumList = timeSeries(metricId, from, to, sum, aggregation);
+        List<TimeDataPoint> nList = timeSeries(metricId, from, to, n, aggregation);
+        List<TimeDataPoint> avgList = new ArrayList<TimeDataPoint>(sumList.size());
+        for (int i = 0; i < sumList.size(); i++) {
+            TimeDataPoint iSum = sumList.get(i);
+            TimeDataPoint iN = nList.get(i);
+            long average = Long.parseLong(iSum.getValue()) / Long.parseLong(iN.getValue());
+            avgList.add(new TimeDataPoint(iSum.getTimestampInMs(), Long.toString(average)));
+        }
+        return avgList;
     }
 
     private void addAggregation(final Aggregation aggregation,
