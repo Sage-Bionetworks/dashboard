@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.sagebionetworks.dashboard.metric.GetEntityBundleMetric;
-import org.sagebionetworks.dashboard.metric.TimeSeriesToWrite;
 import org.sagebionetworks.dashboard.parse.LatencyReader;
 import org.sagebionetworks.dashboard.parse.MethodFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
