@@ -1,4 +1,4 @@
-package org.sagebionetworks.dashboard.service;
+package org.sagebionetworks.dashboard.metric;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

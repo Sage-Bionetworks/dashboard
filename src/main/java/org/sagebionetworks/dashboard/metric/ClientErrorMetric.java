@@ -1,22 +1,22 @@
-package org.sagebionetworks.dashboard.service;
+package org.sagebionetworks.dashboard.metric;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.sagebionetworks.dashboard.parse.ClientReader;
 import org.sagebionetworks.dashboard.parse.ErrorFilter;
-import org.sagebionetworks.dashboard.parse.MethodUriReader;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
-@Component("methodErrorMetric")
-public class MethodErrorMetric implements UniqueCountToWrite {
+@Component("clientErrorMetric")
+public class ClientErrorMetric implements UniqueCountToWrite {
 
     @Override
     public String getName() {
-        return "methodErrorMetric";
+        return "clientErrorMetric";
     }
 
     @Override
@@ -27,6 +27,6 @@ public class MethodErrorMetric implements UniqueCountToWrite {
 
     @Override
     public RecordReader<String> getRecordReader() {
-        return new MethodUriReader();
+        return new ClientReader();
     }
 }

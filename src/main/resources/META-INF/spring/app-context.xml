@@ -11,6 +11,7 @@
 
     <context:component-scan base-package="
             org.sagebionetworks.dashboard.dao.redis,
+            org.sagebionetworks.dashboard.metric,
             org.sagebionetworks.dashboard.service" />
 
     <bean id="jedisConnFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
