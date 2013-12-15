@@ -21,7 +21,6 @@ import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
 import org.sagebionetworks.dashboard.model.Aggregation;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.util.PosixTimeUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
@@ -45,35 +44,11 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
             return getAvg(metricId, from, to, aggregation);
         }
 
-        long start = -1L;
-        long end = -1L;
-        long step = -1L;
-        switch (aggregation) {
-            case m3:
-                 start = PosixTimeUtil.floorToMinute3(from);
-                 end = PosixTimeUtil.floorToMinute3(to);
-                 step = PosixTimeUtil.MINUTE_3;
-                 break;
-            case hour:
-                start = PosixTimeUtil.floorToHour(from);
-                end = PosixTimeUtil.floorToHour(to);
-                step = PosixTimeUtil.HOUR;
-                break;
-            case day:
-                start = PosixTimeUtil.floorToDay(from);
-                end = PosixTimeUtil.floorToDay(to);
-                step = PosixTimeUtil.DAY;
-                break;
-            default:
-                throw new RuntimeException("Aggregation " + aggregation + " not supported.");
-        }
-
         KeyAssembler keyAssembler = new KeyAssembler(statistic, aggregation, timeseries);
-        List<Long> timestamps = new ArrayList<Long>();
+        List<Long> timestamps = keyAssembler.getTimestamps(metricId, from, to);
         List<String> keys = new ArrayList<String>();
-        for (long i = start; i <= end; i += step) {
-            timestamps.add(i);
-            keys.add(keyAssembler.getKey(metricId, i));
+        for (Long timestamp : timestamps) {
+            keys.add(keyAssembler.getKey(metricId, timestamp.longValue()));
         }
 
         List<String> values = valueOps.multiGet(keys);
@@ -107,15 +82,15 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
             final String metricId, final DateTime timestamp, final long value) {
 
         // n
-        String key = getKey(n, aggregation, metricId, timestamp);
+        String key = (new KeyAssembler(n, aggregation, timeseries)).getKey(metricId, timestamp);
         valueOps.increment(key, 1L);
         redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         // sum
-        key = getKey(sum, aggregation, metricId, timestamp);
+        key = (new KeyAssembler(sum, aggregation, timeseries)).getKey(metricId, timestamp);
         valueOps.increment(key, value);
         redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         // max -- optimistically work around race conditions
-        final String maxKey = getKey(max, aggregation, metricId, timestamp);
+        final String maxKey = (new KeyAssembler(max, aggregation, timeseries)).getKey(metricId, timestamp);
         String strMax = valueOps.get(maxKey);
         long redisMax = strMax == null ? -1L : Long.parseLong(strMax);
         long max = value;
@@ -132,29 +107,6 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
             throw new RuntimeException(
                     "Failed to set the max after 5 retries due to possible race conditions.");
         }
-    }
-
-    private String getKey(final Statistic stat, final Aggregation aggr,
-            final String metricId, final DateTime timestamp) {
-
-        long ts = -1L;
-        switch(aggr) {
-            case m3:
-                ts = PosixTimeUtil.floorToMinute3(timestamp);
-                break;
-            case hour:
-                ts = PosixTimeUtil.floorToHour(timestamp);
-                break;
-            case day:
-                ts = PosixTimeUtil.floorToDay(timestamp);
-                break;
-            default:
-                throw new RuntimeException("Aggregation " + aggr + " not supported.");
-        }
-
-        KeyAssembler keyAssembler = new KeyAssembler(stat, aggr, timeseries);
-        String key = keyAssembler.getKey(metricId, ts);
-        return key;
     }
 
     @Resource
