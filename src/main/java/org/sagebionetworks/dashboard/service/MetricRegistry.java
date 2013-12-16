@@ -179,11 +179,11 @@ public class MetricRegistry {
         MetricToRead mtr = new MetricToRead();
         mtr.setName(name);
         mtr.setDescription(description);
-        String id = "";
+        StringBuilder idBuilder = new StringBuilder();
         for (String mName : metricToWriteName) {
-            id = id + nameIdMap.get(mName) + ":";
+            idBuilder.append(nameIdMap.get(mName)).append(":");
         }
-        id = id.substring(0, id.length() - 1);
+        String id = idBuilder.substring(0, idBuilder.length() - 1);
         if (id == null) {
             throw new RuntimeException("Incorrect metricToWriteName.");
         }

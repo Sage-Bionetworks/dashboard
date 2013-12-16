@@ -34,7 +34,7 @@ public class MetricRegistryTest {
     }
 
     @After
-    public void After() {
+    public void after() {
         clearRedis();
     }
 

@@ -20,10 +20,9 @@ public class EntityIdReader implements RecordReader<String> {
     public String read(Record record) {
         // Object ID
         final String entityId = record.getObjectId();
-        if (entityId != null && !entityId.isEmpty()) {
-            if (SYN_ID.matcher(entityId).matches()) {
-                return entityId;
-            }
+        if (entityId != null && !entityId.isEmpty()
+                && SYN_ID.matcher(entityId).matches()) {
+            return entityId;
         }
         // Request URI
         final String uri = record.getUri();
