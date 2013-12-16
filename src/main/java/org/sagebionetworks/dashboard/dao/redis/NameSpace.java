@@ -11,6 +11,9 @@ enum NameSpace {
     /** The set of files. */
     file,
 
+    /** Cached Synapse data. */
+    synapse,
+
     /** Time series metrics. */
     timeseries,
 

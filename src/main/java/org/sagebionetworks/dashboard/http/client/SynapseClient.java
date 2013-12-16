@@ -74,10 +74,11 @@ public class SynapseClient {
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
-        System.out.println(root);
         JsonNode node = root.get("displayName");
-        String displayName = node.asText();
-        return displayName;
+        if (node == null) {
+            return null;
+        }
+        return node.asText();
     }
 
     public String getEntityName(final String entityId, final String session) {
@@ -87,8 +88,10 @@ public class SynapseClient {
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
         JsonNode node = root.get("name");
-        String name = node.asText();
-        return name;
+        if (node == null) {
+            return null;
+        }
+        return node.asText();
     }
 
     private JsonNode executeRequest(HttpUriRequest request) {
