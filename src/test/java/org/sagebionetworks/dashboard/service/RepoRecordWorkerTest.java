@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,7 +65,7 @@ public class RepoRecordWorkerTest {
     }
 
     @After
-    public void After() {
+    public void after() {
         clearRedis();
         final AmazonS3 s3 = ServiceContext.getS3Client();
         final String bucket = ServiceContext.getBucket();
@@ -136,7 +137,7 @@ public class RepoRecordWorkerTest {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream gzos = new GZIPOutputStream(baos);
-        OutputStreamWriter osw = new OutputStreamWriter(gzos);
+        OutputStreamWriter osw = new OutputStreamWriter(gzos, StandardCharsets.UTF_8);
         CSVWriter cw = new CSVWriter(osw);
         cw.writeNext(line);
         cw.close();

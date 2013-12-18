@@ -30,8 +30,8 @@ public class NameIdDaoImplTest extends AbstractRedisDaoTest {
     @Resource
     private NameIdDao nameIdDao;
 
-    private final String name1 = "One Name";
-    private final String name2 = "Two Name";
+    private String name1 = "One Name";
+    private String name2 = "Two Name";
     private String id1 = "One ID";
     private String id2 = "Two ID";
 

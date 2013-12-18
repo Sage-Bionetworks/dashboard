@@ -78,7 +78,7 @@ public class NameIdDaoImpl implements NameIdDao {
                     try {
                         Thread.sleep(delay << i);
                     } catch (InterruptedException e) {
-                        new RuntimeException(e);
+                        throw new RuntimeException(e);
                     }
                     results = tryGenerateId(ops);
                     i++;

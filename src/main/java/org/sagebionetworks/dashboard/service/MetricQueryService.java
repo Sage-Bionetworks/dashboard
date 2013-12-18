@@ -36,6 +36,15 @@ public class MetricQueryService {
         return uniqueCountDao.topCounts(metricId, timestamp, 25);
     }
 
+    public List<CountDataPoint> getTop25(String metricId, DateTime timestamp,
+            CountDataPointConverter converter) {
+        List<CountDataPoint> results = getTop25(metricId, timestamp);
+        for (int i = 0; i < results.size(); i++) {
+            results.set(i, converter.convert(results.get(i)));
+        }
+        return results;
+    }
+
     public List<TimeDataPoint> getUniqueCount(String metricId, DateTime from, DateTime to) {
         return uniqueCountDao.uniqueCounts(metricId, from, to);
     }
