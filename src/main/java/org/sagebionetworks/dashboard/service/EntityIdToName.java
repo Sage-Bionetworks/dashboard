@@ -15,7 +15,12 @@ public class EntityIdToName implements CountDataPointConverter {
     @Override
     public CountDataPoint convert(final CountDataPoint in) {
         String id = in.getId();
-        String name = synapseDao.getEntityName(id);
+        String name = null;
+        try {
+            name = synapseDao.getEntityName(id);
+        } catch (Exception e) {
+            name = null;
+        }
         if (name == null) {
             name = id;
         }

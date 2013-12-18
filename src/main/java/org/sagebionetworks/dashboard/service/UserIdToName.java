@@ -15,7 +15,12 @@ public class UserIdToName implements CountDataPointConverter {
     @Override
     public CountDataPoint convert(final CountDataPoint in) {
         String id = in.getId();
-        String name = synapseDao.getUserDisplayName(id);
+        String name = null;
+        try {
+            name = synapseDao.getUserDisplayName(id);
+        } catch (Exception e) {
+            name = null;
+        }
         if (name == null) {
             name = id;
         }
