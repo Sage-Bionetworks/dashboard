@@ -14,7 +14,7 @@ import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
 @Component("createUserMetric")
-public class CreateUserMetric implements UniqueCountToWrite {
+public class CreateUserMetric implements UniqueCountMetric {
 
     @Override
     public String getName() {

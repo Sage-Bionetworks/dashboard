@@ -12,7 +12,7 @@ import org.sagebionetworks.dashboard.parse.UriEntityBundleFilter;
 public class GetEntityBundleMetricTest {
     @Test
     public void test() {
-        TimeSeriesToWrite metricToWrite = new GetEntityBundleMetric();
+        TimeSeriesMetric metricToWrite = new GetEntityBundleMetric();
         assertEquals("getEntityBundleMetric", metricToWrite.getName());
         assertTrue(metricToWrite.getRecordReader() instanceof LatencyReader);
         assertEquals(3, metricToWrite.getFilters().size());

@@ -13,7 +13,7 @@ import org.sagebionetworks.dashboard.parse.UriEntityBundleFilter;
 import org.springframework.stereotype.Component;
 
 @Component("getEntityBundleMetric")
-public class GetEntityBundleMetric implements TimeSeriesToWrite {
+public class GetEntityBundleMetric implements TimeSeriesMetric {
 
     @Override
     public String getName() {

@@ -11,7 +11,7 @@ import org.sagebionetworks.dashboard.parse.ProdFilter;
 public class ClientErrorMetricTest {
     @Test
     public void test() {
-        UniqueCountToWrite metricToWrite = new ClientErrorMetric();
+        UniqueCountMetric metricToWrite = new ClientErrorMetric();
         assertEquals("clientErrorMetric", metricToWrite.getName());
         assertTrue(metricToWrite.getRecordReader() instanceof ClientReader);
         assertEquals(2, metricToWrite.getFilters().size());

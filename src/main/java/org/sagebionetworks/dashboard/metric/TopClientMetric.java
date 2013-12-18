@@ -11,7 +11,7 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
 @Component("topClientMetric")
-public class TopClientMetric implements UniqueCountToWrite {
+public class TopClientMetric implements UniqueCountMetric {
 
     @Override
     public String getName() {

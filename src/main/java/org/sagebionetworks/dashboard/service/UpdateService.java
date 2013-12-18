@@ -11,8 +11,8 @@ import java.util.zip.GZIPInputStream;
 
 import javax.annotation.Resource;
 
-import org.sagebionetworks.dashboard.metric.TimeSeriesToWrite;
-import org.sagebionetworks.dashboard.metric.UniqueCountToWrite;
+import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
+import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
@@ -40,8 +40,8 @@ public class UpdateService {
 
     public void update(final InputStream in, final String filePath, final UpdateCallback callback) {
 
-        final Collection<TimeSeriesToWrite> tsMetrics = metricRegistry.timeSeriesToWrite();
-        final Collection<UniqueCountToWrite> ucMetrics = metricRegistry.uniqueCountToWrite();
+        final Collection<TimeSeriesMetric> tsMetrics = metricRegistry.timeSeriesToWrite();
+        final Collection<UniqueCountMetric> ucMetrics = metricRegistry.uniqueCountToWrite();
 
         int lineCount = 0;
         try {
@@ -53,10 +53,10 @@ public class UpdateService {
             List<Record> records = parser.parse(br);
 
             for (Record record : records) {
-                for (TimeSeriesToWrite metric : tsMetrics) {
+                for (TimeSeriesMetric metric : tsMetrics) {
                     timeSeriesWriter.writeMetric(record, metric);
                 }
-                for (UniqueCountToWrite metric: ucMetrics) {
+                for (UniqueCountMetric metric: ucMetrics) {
                     uniqueCountWriter.writeMetric(record, metric);
                 }
                 lineCount++;

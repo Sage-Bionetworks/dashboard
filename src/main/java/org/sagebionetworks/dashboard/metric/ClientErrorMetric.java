@@ -12,7 +12,7 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
 @Component("clientErrorMetric")
-public class ClientErrorMetric implements UniqueCountToWrite {
+public class ClientErrorMetric implements UniqueCountMetric {
 
     @Override
     public String getName() {

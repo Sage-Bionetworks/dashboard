@@ -3,8 +3,8 @@ package org.sagebionetworks.dashboard.service;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.sagebionetworks.dashboard.metric.TimeSeriesToWrite;
-import org.sagebionetworks.dashboard.metric.UniqueCountToWrite;
+import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
+import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,20 +13,20 @@ public class MetricRegistry {
 
     @Autowired
     public MetricRegistry(
-            final Collection<TimeSeriesToWrite> tsToWrite,
-            final Collection<UniqueCountToWrite> ucToWrite) {
+            final Collection<TimeSeriesMetric> tsToWrite,
+            final Collection<UniqueCountMetric> ucToWrite) {
         this.tsToWrite = Collections.unmodifiableCollection(tsToWrite);
         this.ucToWrite = Collections.unmodifiableCollection(ucToWrite);
     }
 
-    public Collection<TimeSeriesToWrite> timeSeriesToWrite() {
+    public Collection<TimeSeriesMetric> timeSeriesToWrite() {
         return tsToWrite;
     }
 
-    public Collection<UniqueCountToWrite> uniqueCountToWrite() {
+    public Collection<UniqueCountMetric> uniqueCountToWrite() {
         return ucToWrite;
     }
 
-    private final Collection<TimeSeriesToWrite> tsToWrite;
-    private final Collection<UniqueCountToWrite> ucToWrite;
+    private final Collection<TimeSeriesMetric> tsToWrite;
+    private final Collection<UniqueCountMetric> ucToWrite;
 }
