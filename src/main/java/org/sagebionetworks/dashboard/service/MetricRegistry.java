@@ -3,6 +3,7 @@ package org.sagebionetworks.dashboard.service;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
 import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
 import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,20 +14,27 @@ public class MetricRegistry {
 
     @Autowired
     public MetricRegistry(
-            final Collection<TimeSeriesMetric> tsToWrite,
-            final Collection<UniqueCountMetric> ucToWrite) {
-        this.tsToWrite = Collections.unmodifiableCollection(tsToWrite);
-        this.ucToWrite = Collections.unmodifiableCollection(ucToWrite);
+            final Collection<SimpleCountMetric> sc,
+            final Collection<TimeSeriesMetric> ts,
+            final Collection<UniqueCountMetric> uc) {
+        this.sc = Collections.unmodifiableCollection(sc);
+        this.ts = Collections.unmodifiableCollection(ts);
+        this.uc = Collections.unmodifiableCollection(uc);
+    }
+
+    public Collection<SimpleCountMetric> simpleCountMetrics() {
+        return sc;
     }
 
     public Collection<TimeSeriesMetric> timeSeriesToWrite() {
-        return tsToWrite;
+        return ts;
     }
 
     public Collection<UniqueCountMetric> uniqueCountToWrite() {
-        return ucToWrite;
+        return uc;
     }
 
-    private final Collection<TimeSeriesMetric> tsToWrite;
-    private final Collection<UniqueCountMetric> ucToWrite;
+    private final Collection<SimpleCountMetric> sc;
+    private final Collection<TimeSeriesMetric> ts;
+    private final Collection<UniqueCountMetric> uc;
 }

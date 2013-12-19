@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.sagebionetworks.dashboard.service.UpdateCallback;
-import org.sagebionetworks.dashboard.service.UpdateService;
+import org.sagebionetworks.dashboard.service.RepoUpdateService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -32,7 +32,7 @@ public class App {
         System.out.println("Total number of files: " + total);
 
         final ApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/app-context.xml");
-        final UpdateService updateService = context.getBean(UpdateService.class);
+        final RepoUpdateService updateService = context.getBean(RepoUpdateService.class);
 
         // Clear Redis
         StringRedisTemplate redisTemplate = context.getBean(StringRedisTemplate.class);

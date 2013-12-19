@@ -21,7 +21,7 @@ public class RepoRecordWorker {
     private LockDao lockDao;
 
     @Resource
-    private UpdateService updateService;
+    private RepoUpdateService repoUpdateService;
 
     @Resource
     private RepoRecordFetcher repoRecordFetcher;
@@ -46,7 +46,7 @@ public class RepoRecordWorker {
 
             S3Object file = s3.getObject(bucket, key);
             try {
-                updateService.update(file.getObjectContent(), key, new UpdateCallback() {
+                repoUpdateService.update(file.getObjectContent(), key, new UpdateCallback() {
                     @Override
                     public void call(UpdateResult result) {
                         if (UpdateStatus.SUCCEEDED.equals(result.getStatus())) {

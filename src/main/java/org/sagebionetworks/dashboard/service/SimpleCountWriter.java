@@ -7,7 +7,7 @@ import org.sagebionetworks.dashboard.dao.CountDao;
 import org.springframework.stereotype.Service;
 
 @Service("countWriter")
-public class CountWriter extends AbstractMetricWriter<String> {
+public class SimpleCountWriter extends AbstractMetricWriter<String> {
 
     /**
      * Any value is ignored. Use the empty string "" for the record reader.
