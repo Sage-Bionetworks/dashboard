@@ -11,8 +11,16 @@ public class MethodUriReaderTest {
         RecordReader<String> reader = new MethodUriReader();
         assertEquals("null-method null-uri", reader.read(record));
         record.setUri("/REPO/v1/SYN12345");
-        assertEquals("null-method /repo/v[num]/syn[num]", reader.read(record));
+        assertEquals("null-method /repo/v1/syn{id}", reader.read(record));
+        record.setUri("/auth/v1");
+        assertEquals("null-method /auth/v1", reader.read(record));
+        record.setUri("/auth/v1/");
+        assertEquals("null-method /auth/v1/", reader.read(record));
+        record.setUri("/auth/v1/user");
+        assertEquals("null-method /auth/v1/user", reader.read(record));
+        record.setUri("/auth/v1/user/123982");
+        assertEquals("null-method /auth/v1/user/{id}", reader.read(record));
         record.setMethod("GET");
-        assertEquals("get /repo/v[num]/syn[num]", reader.read(record));
+        assertEquals("get /auth/v1/user/{id}", reader.read(record));
     }
 }

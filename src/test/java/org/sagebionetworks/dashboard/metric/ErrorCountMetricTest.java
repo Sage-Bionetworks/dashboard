@@ -5,15 +5,19 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.sagebionetworks.dashboard.parse.ErrorFilter;
-import org.sagebionetworks.dashboard.parse.MethodUriReader;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
+import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.parse.RecordReader;
+import org.sagebionetworks.dashboard.parse.RepoRecord;
 
-public class MethodErrorMetricTest {
+public class ErrorCountMetricTest {
     @Test
     public void test() {
-        UniqueCountMetric metric = new MethodErrorMetric();
-        assertEquals("methodErrorMetric", metric.getName());
-        assertTrue(metric.getRecordReader() instanceof MethodUriReader);
+        SimpleCountMetric metric = new ErrorCountMetric();
+        assertEquals("errorCountMetric", metric.getName());
+        RecordReader<String> reader = metric.getRecordReader();
+        Record record = new RepoRecord();
+        assertEquals("", reader.read(record));
         assertEquals(2, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
         assertTrue(metric.getFilters().get(1) instanceof ErrorFilter);

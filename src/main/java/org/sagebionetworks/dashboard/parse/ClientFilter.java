@@ -14,7 +14,11 @@ public class ClientFilter implements RecordFilter {
 
     @Override
     public boolean matches(Record record) {
-        return pattern.matcher(record.getUserAgent()).matches();
+        String userAgent = record.getUserAgent();
+        if (userAgent == null) {
+            return false;
+        }
+        return pattern.matcher(userAgent).matches();
     }
 
     private ClientFilter(Pattern pattern) {

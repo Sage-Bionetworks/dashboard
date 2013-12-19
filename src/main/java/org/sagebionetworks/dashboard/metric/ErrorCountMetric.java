@@ -4,28 +4,33 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.sagebionetworks.dashboard.parse.ClientSummaryReader;
+import org.sagebionetworks.dashboard.parse.ErrorFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
+import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
-@Component("topClientMetric")
-public class TopClientMetric implements UniqueCountMetric {
+@Component("errorCountMetric")
+public class ErrorCountMetric implements SimpleCountMetric {
 
     @Override
     public String getName() {
-        return "topClientMetric";
+        return "errorCountMetric";
     }
 
     @Override
     public List<RecordFilter> getFilters() {
         return Collections.unmodifiableList(Arrays.asList(
-                (RecordFilter)new ProdFilter()));
+                new ProdFilter(), new ErrorFilter()));
     }
 
     @Override
     public RecordReader<String> getRecordReader() {
-        return new ClientSummaryReader();
+        return new RecordReader<String>(){
+            @Override
+            public String read(Record record) {
+                return "";
+            }};
     }
 }
