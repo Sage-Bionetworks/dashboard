@@ -3,7 +3,6 @@ package org.sagebionetworks.dashboard.service;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
@@ -47,11 +46,9 @@ public class UpdateService {
         try {
 
             GZIPInputStream gzis = new GZIPInputStream(in);
-            System.out.println(Charset.defaultCharset().displayName());
             InputStreamReader ir = new InputStreamReader(gzis, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(ir);
             List<Record> records = parser.parse(br);
-
             for (Record record : records) {
                 for (TimeSeriesMetric metric : tsMetrics) {
                     timeSeriesWriter.writeMetric(record, metric);
