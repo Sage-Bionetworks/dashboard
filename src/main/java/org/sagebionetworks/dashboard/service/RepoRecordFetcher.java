@@ -25,7 +25,7 @@ public class RepoRecordFetcher {
     private Logger logger = LoggerFactory.getLogger(RepoRecordFetcher.class);
 
     /** The max number of access log files in one batch. */
-    private static final int BATCH_SIZE = 300;
+    private static final int BATCH_SIZE = 200;
 
     /** How many stacks to keep track of. */
     private static final int STACK_COUNT = 30;
