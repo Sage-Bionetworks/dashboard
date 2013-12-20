@@ -13,6 +13,9 @@ public class ClientSummaryReader implements RecordReader<String> {
         if (ClientFilter.WEB.matches(record)) {
             return "Web Client";
         }
+        if (ClientFilter.BRIDGE.matches(record)) {
+            return "Bridge Client";
+        }
         return clientReader.read(record);
     }
 
