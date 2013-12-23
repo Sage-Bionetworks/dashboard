@@ -14,7 +14,7 @@ import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
 @Component("changePasswordMetric")
-public class ChangePasswordMetric implements UniqueCountToWrite {
+public class ChangePasswordMetric implements UniqueCountMetric {
 
     @Override
     public String getName() {

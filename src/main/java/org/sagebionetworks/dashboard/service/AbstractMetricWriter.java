@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
-import org.sagebionetworks.dashboard.metric.MetricToWrite;
+import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
@@ -15,12 +15,12 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
 
     @Override
-    public void writeMetric(final Record record, final MetricToWrite<T> metric) {
+    public void writeMetric(final Record record, final Metric<T> metric) {
         writeMetric(record, metric, Collections.<RecordFilter> emptyList());
     }
 
     @Override
-    public void writeMetric(final Record record, final MetricToWrite<T> metric,
+    public void writeMetric(final Record record, final Metric<T> metric,
             final List<RecordFilter> additionalFilters) {
 
         // Apply the filters first

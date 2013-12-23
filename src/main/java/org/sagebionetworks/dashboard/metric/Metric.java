@@ -10,7 +10,7 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
  *
  * @param <T> Typed metric value
  */
-public interface MetricToWrite<T> {
+public interface Metric<T> {
 
     String getName();
 

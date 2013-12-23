@@ -10,7 +10,7 @@ import org.sagebionetworks.dashboard.parse.UserIdReader;
 public class UniqueUserMetricTest {
     @Test
     public void test() {
-        UniqueCountToWrite metricToWrite = new UniqueUserMetric();
+        UniqueCountMetric metricToWrite = new UniqueUserMetric();
         assertEquals("uniqueUserMetric", metricToWrite.getName());
         assertTrue(metricToWrite.getRecordReader() instanceof UserIdReader);
         assertEquals(1, metricToWrite.getFilters().size());

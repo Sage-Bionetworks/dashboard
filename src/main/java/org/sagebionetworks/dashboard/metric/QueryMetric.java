@@ -4,34 +4,31 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.sagebionetworks.dashboard.parse.LatencyReader;
 import org.sagebionetworks.dashboard.parse.MethodFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
-import org.sagebionetworks.dashboard.parse.SuccessFilter;
-import org.sagebionetworks.dashboard.parse.UriCreateUserFilter;
-import org.sagebionetworks.dashboard.parse.UserIdReader;
+import org.sagebionetworks.dashboard.parse.UriQueryFilter;
 import org.springframework.stereotype.Component;
 
-@Component("createUserMetric")
-public class CreateUserMetric implements UniqueCountMetric {
+/** Latencies of the query REST API. */
+@Component("queryMetric")
+public class QueryMetric implements TimeSeriesMetric {
 
     @Override
     public String getName() {
-        return "createUserMetric";
+        return "queryMetric";
     }
 
     @Override
     public List<RecordFilter> getFilters() {
         return Collections.unmodifiableList(Arrays.asList(
-                new ProdFilter(),
-                new SuccessFilter(),
-                new MethodFilter("post"),
-                new UriCreateUserFilter()));
+                new ProdFilter(), new MethodFilter("get"), new UriQueryFilter()));
     }
 
     @Override
-    public RecordReader<String> getRecordReader() {
-        return new UserIdReader();
+    public RecordReader<Long> getRecordReader() {
+        return new LatencyReader();
     }
 }

@@ -4,34 +4,33 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.sagebionetworks.dashboard.parse.MethodFilter;
+import org.sagebionetworks.dashboard.parse.ErrorFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
+import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
-import org.sagebionetworks.dashboard.parse.SuccessFilter;
-import org.sagebionetworks.dashboard.parse.UriCreateUserFilter;
-import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
-@Component("createUserMetric")
-public class CreateUserMetric implements UniqueCountMetric {
+@Component("errorCountMetric")
+public class ErrorCountMetric implements SimpleCountMetric {
 
     @Override
     public String getName() {
-        return "createUserMetric";
+        return "errorCountMetric";
     }
 
     @Override
     public List<RecordFilter> getFilters() {
         return Collections.unmodifiableList(Arrays.asList(
-                new ProdFilter(),
-                new SuccessFilter(),
-                new MethodFilter("post"),
-                new UriCreateUserFilter()));
+                new ProdFilter(), new ErrorFilter()));
     }
 
     @Override
     public RecordReader<String> getRecordReader() {
-        return new UserIdReader();
+        return new RecordReader<String>(){
+            @Override
+            public String read(Record record) {
+                return "";
+            }};
     }
 }

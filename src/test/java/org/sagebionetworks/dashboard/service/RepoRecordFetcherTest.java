@@ -63,19 +63,19 @@ public class RepoRecordFetcherTest {
         ReflectionTestUtils.setField(fetcher, "s3", s3, AmazonS3.class);
 
         List<String> files = fetcher.getBatch();
-        // Should get back a full batch of 300 files
-        assertEquals(300, files.size());
+        // Should get back a full batch of 200 files
+        assertEquals(200, files.size());
         @SuppressWarnings("unchecked")
         Map<String, String> markerMap = (Map<String, String>)ReflectionTestUtils.getField(fetcher, "stackMarkerMap");
         // Should cut off at stack 299
         assertTrue(markerMap.containsKey("299"));
         assertFalse(markerMap.containsKey("300"));
         // Should stop at stack 150
-        // Going down from 299 to 150, we have 150 stacks with each stack has 2 valid files. A total of 300 files.
-        assertTrue(markerMap.containsKey("150"));
-        assertFalse(markerMap.containsKey("149"));
+        // Going down from 299 to 200, we have 100 stacks with each stack has 2 valid files. A total of 200 files.
+        assertTrue(markerMap.containsKey("200"));
+        assertFalse(markerMap.containsKey("199"));
         // Should have the correct marker
         assertEquals(marker, markerMap.get("299"));
-        assertEquals(marker, markerMap.get("175"));
+        assertEquals(marker, markerMap.get("237"));
     }
 }

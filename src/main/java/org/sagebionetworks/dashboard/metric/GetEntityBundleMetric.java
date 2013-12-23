@@ -12,8 +12,9 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.UriEntityBundleFilter;
 import org.springframework.stereotype.Component;
 
+/** Latencies of the get-entity-bundle REST API. */
 @Component("getEntityBundleMetric")
-public class GetEntityBundleMetric implements TimeSeriesToWrite {
+public class GetEntityBundleMetric implements TimeSeriesMetric {
 
     @Override
     public String getName() {

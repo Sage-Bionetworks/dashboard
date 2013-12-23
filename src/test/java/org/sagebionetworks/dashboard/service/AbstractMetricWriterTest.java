@@ -13,7 +13,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
-import org.sagebionetworks.dashboard.metric.MetricToWrite;
+import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
@@ -33,7 +33,7 @@ public class AbstractMetricWriterTest {
         Record record = mock(Record.class);
 
         @SuppressWarnings("unchecked")
-        MetricToWrite<String> metric = mock(MetricToWrite.class);
+        Metric<String> metric = mock(Metric.class);
         when(metric.getName()).thenReturn("metric");
         @SuppressWarnings("unchecked")
         RecordReader<String> reader = mock(RecordReader.class);
