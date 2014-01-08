@@ -14,8 +14,8 @@ import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.springframework.stereotype.Service;
 
-@Service("metricQueryService")
-public class MetricQueryService {
+@Service("metricReader")
+public class MetricReader {
 
     @Resource
     private NameIdDao nameIdDao;
