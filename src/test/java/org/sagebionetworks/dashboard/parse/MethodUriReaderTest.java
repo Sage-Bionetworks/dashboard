@@ -22,5 +22,11 @@ public class MethodUriReaderTest {
         assertEquals("null-method /auth/v1/user/{id}", reader.read(record));
         record.setMethod("GET");
         assertEquals("get /auth/v1/user/{id}", reader.read(record));
+        record.setUri("/repo/v1/entity/syn123/wiki2");
+        assertEquals("get /repo/v1/entity/syn{id}/wiki2", reader.read(record));
+        record.setUri("/repo/v1/entity/syn123/wiki2/321");
+        assertEquals("get /repo/v1/entity/syn{id}/wiki2/{id}", reader.read(record));
+        record.setUri("/repo/v1/entity/syn123/wikiheadertree2");
+        assertEquals("get /repo/v1/entity/syn{id}/wikiheadertree2", reader.read(record));
     }
 }
