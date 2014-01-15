@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.http.HttpEntity;
@@ -66,6 +67,20 @@ public class SynapseClient {
         JsonNode node = root.get("sessionToken");
         String session = node.asText();
         return session;
+    }
+
+    public Long getPrincipalId(final String email, final String session) {
+
+        String uri = REPO + "/userGroupHeaders?prefix=" + email;
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+        Iterator<JsonNode> list = root.get("children").elements();
+        if (list.hasNext()) {
+            JsonNode userGroupHeader = list.next();
+            return userGroupHeader.get("ownerId").asLong();
+        }
+        return null;
     }
 
     public String getDisplayName(final String userId, final String session) {

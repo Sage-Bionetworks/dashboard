@@ -5,6 +5,9 @@ package org.sagebionetworks.dashboard.dao;
  */
 public interface SynapseDao {
 
+    /** Gets principal ID given the user's email */
+    Long getPrincipalId(String email);
+
     /** Gets user display name. Can return null. */
     String getUserDisplayName(String userId);
 

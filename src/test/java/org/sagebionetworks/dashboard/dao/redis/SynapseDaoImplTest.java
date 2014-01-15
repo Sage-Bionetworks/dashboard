@@ -47,4 +47,10 @@ public class SynapseDaoImplTest extends AbstractRedisDaoTest {
         assertNotNull(expire);
         assertTrue(expire.longValue() == 12L || expire.longValue() == 11L);
     }
+
+    @Test
+    public void testGetPrincipalId() {
+        Long id = synapseDao.getPrincipalId("dashboard@sagebase.org");
+        assertNotNull(id);
+    }
 }
