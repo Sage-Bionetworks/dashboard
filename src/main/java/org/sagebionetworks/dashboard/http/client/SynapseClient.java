@@ -52,7 +52,6 @@ public class SynapseClient {
         usr = user;
         pwd = password;
         client = new DefaultHttpClient();
-        // Get the dashboard 
     }
 
     /**
