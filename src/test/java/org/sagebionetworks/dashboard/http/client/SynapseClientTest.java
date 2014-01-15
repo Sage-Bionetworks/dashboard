@@ -3,6 +3,7 @@ package org.sagebionetworks.dashboard.http.client;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -29,5 +30,23 @@ public class SynapseClientTest {
         assertFalse(displayName.isEmpty());
         displayName = client.getDisplayName("nobody", session);
         assertNull(displayName);
+    }
+
+    @Test
+    public void testTeam() {
+
+        SynapseClient client = new SynapseClient();
+        String session = client.login();
+        assertNotNull(session);
+
+        String email = "dashboard@sagebase.org";
+        Long userId = client.getPrincipalId("dashboard@sagebase.org", session);
+        assertNotNull(userId);
+
+        Long teamId = client.getTeamId("SageBioEmployees", session);
+        assertNotNull(teamId);
+
+        assertTrue(client.isMemberOfTeam(email, teamId, session));
+        assertFalse(client.isMemberOfTeam("jojoojoj@nowhere.com", teamId, session));
     }
 }

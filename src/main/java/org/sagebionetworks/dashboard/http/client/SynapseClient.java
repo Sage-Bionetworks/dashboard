@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.http.HttpEntity;
@@ -92,6 +93,53 @@ public class SynapseClient {
             return null;
         }
         return node.asText();
+    }
+
+    public Long getPrincipalId(final String email, final String session) {
+
+        String uri = REPO + "/userGroupHeaders?prefix=" + email;
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+        Iterator<JsonNode> iterator = root.get("children").elements();
+        JsonNode userGroupHeader = null;
+        if (iterator.hasNext()) {
+            userGroupHeader = iterator.next();
+        }
+        if (iterator.hasNext()) {
+            throw new RuntimeException(email + " has more than one Synapse account.");
+        }
+        return (userGroupHeader == null ? null : userGroupHeader.get("ownerId").asLong());
+    }
+
+    public Long getTeamId(final String teamName, final String session) {
+
+        String uri = REPO + "/teams?fragment=" + teamName;
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+        Iterator<JsonNode> iterator = root.get("results").elements();
+        JsonNode team = null;
+        while (iterator.hasNext()) {
+            team = iterator.next();
+            if (teamName.equals(team.get("name").asText())) {
+                return team.get("id").asLong();
+            }
+        }
+        return null;
+    }
+
+    public boolean isMemberOfTeam(final String email, final Long teamId, final String session) {
+
+        Long userId = getPrincipalId(email, session);
+        if (userId == null) {
+            return false;
+        }
+        String uri = REPO + "/team/" + teamId + "/member/" + userId + "/membershipStatus";
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+        return root.get("isMember").asBoolean();
     }
 
     private JsonNode executeRequest(HttpUriRequest request) {

@@ -20,6 +20,18 @@ public class SynapseDaoImpl implements SynapseDao {
 
     public SynapseDaoImpl() {
         synapseClient = new SynapseClient();
+        // Get the team of dashboard users
+        final String session = synapseClient.login();
+        dashboardTeamId = synapseClient.getTeamId(TEAM_NAME, session);
+        if (dashboardTeamId == null) {
+            throw new RuntimeException("Cannot find the team for " + TEAM_NAME);
+        }
+    }
+
+    @Override
+    public boolean isDashboardUser(final String email) {
+        final String session = getSession();
+        return synapseClient.isMemberOfTeam(email, dashboardTeamId, session);
     }
 
     @Override
@@ -70,6 +82,9 @@ public class SynapseDaoImpl implements SynapseDao {
 
     private static final long EXPIRE_HOURS = 12;
 
+    // Synapse team name for the list of dashboard users
+    private static final String TEAM_NAME = "SageBioEmployees"; 
+
     @Resource
     private StringRedisTemplate redisTemplate;
 
@@ -77,4 +92,5 @@ public class SynapseDaoImpl implements SynapseDao {
     private ValueOperations<String, String> valueOps;
 
     private final SynapseClient synapseClient;
+    private final Long dashboardTeamId;
 }
