@@ -43,7 +43,7 @@ public class SynapseClientTest {
         Long userId = client.getPrincipalId("dashboard@sagebase.org", session);
         assertNotNull(userId);
 
-        Long teamId = client.getTeamId(userId, session);
+        Long teamId = client.getTeamId("SageBioEmployees", session);
         assertNotNull(teamId);
 
         assertTrue(client.isMemberOfTeam(email, teamId, session));

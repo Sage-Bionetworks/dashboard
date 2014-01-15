@@ -96,6 +96,7 @@ public class SynapseClient {
     }
 
     public Long getPrincipalId(final String email, final String session) {
+
         String uri = REPO + "/userGroupHeaders?prefix=" + email;
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
@@ -111,20 +112,21 @@ public class SynapseClient {
         return (userGroupHeader == null ? null : userGroupHeader.get("ownerId").asLong());
     }
 
-    public Long getTeamId(final Long userId, final String session) {
-        String uri = REPO + "/user/" + userId + "/team";
+    public Long getTeamId(final String teamName, final String session) {
+
+        String uri = REPO + "/teams?fragment=" + teamName;
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
         Iterator<JsonNode> iterator = root.get("results").elements();
         JsonNode team = null;
-        if (iterator.hasNext()) {
+        while (iterator.hasNext()) {
             team = iterator.next();
+            if (teamName.equals(team.get("name").asText())) {
+                return team.get("id").asLong();
+            }
         }
-        if (iterator.hasNext()) {
-            throw new RuntimeException(userId + " is in more than one team.");
-        }
-        return (team == null ? null : team.get("id").asLong());
+        return null;
     }
 
     public boolean isMemberOfTeam(final String email, final Long teamId, final String session) {
