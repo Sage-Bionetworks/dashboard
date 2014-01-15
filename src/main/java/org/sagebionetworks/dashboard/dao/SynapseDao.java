@@ -5,8 +5,8 @@ package org.sagebionetworks.dashboard.dao;
  */
 public interface SynapseDao {
 
-    /** Gets principal ID given the user's email */
-    Long getPrincipalId(String email);
+    /** If the user is a dashboard user. */
+    boolean isDashboardUser(String email);
 
     /** Gets user display name. Can return null. */
     String getUserDisplayName(String userId);

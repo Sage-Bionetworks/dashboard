@@ -49,8 +49,8 @@ public class SynapseDaoImplTest extends AbstractRedisDaoTest {
     }
 
     @Test
-    public void testGetPrincipalId() {
-        Long id = synapseDao.getPrincipalId("dashboard@sagebase.org");
-        assertNotNull(id);
+    public void testDashboarUser() {
+        assertTrue(synapseDao.isDashboardUser("dashboard@sagebase.org"));
+        assertFalse(synapseDao.isDashboardUser("jojojoj@sagebase.org"));
     }
 }
