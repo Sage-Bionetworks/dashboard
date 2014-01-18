@@ -64,6 +64,13 @@ public class RepoRecordParser implements RecordParser {
                     throw new RuntimeException(e);
                 }
             }
+            if (r != null) {
+                try {
+                    r.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
