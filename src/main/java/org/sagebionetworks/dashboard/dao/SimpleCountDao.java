@@ -5,7 +5,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 
-public interface CountDao {
+public interface SimpleCountDao {
 
     /**
      * Increases the count by 1 for the specified metric at the specified time.

@@ -7,15 +7,15 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
-import org.sagebionetworks.dashboard.dao.CountDao;
+import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.model.Aggregation;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
-@Repository("countDao")
-public class CountDaoImpl implements CountDao {
+@Repository("simpleCountDao")
+public class SimpleCountDaoImpl implements SimpleCountDao {
 
     @Override
     public void put(String metricId, DateTime timestamp) {
