@@ -14,6 +14,11 @@ import org.springframework.stereotype.Component;
 @Component("methodErrorMetric")
 public class MethodErrorMetric implements UniqueCountMetric {
 
+    private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
+            new ProdFilter(), new ErrorFilter()));
+
+    private final RecordReader<String> reader = new MethodUriReader();
+
     @Override
     public String getName() {
         return "methodErrorMetric";
@@ -21,12 +26,11 @@ public class MethodErrorMetric implements UniqueCountMetric {
 
     @Override
     public List<RecordFilter> getFilters() {
-        return Collections.unmodifiableList(Arrays.asList(
-                new ProdFilter(), new ErrorFilter()));
+        return filters;
     }
 
     @Override
     public RecordReader<String> getRecordReader() {
-        return new MethodUriReader();
+        return reader;
     }
 }

@@ -16,6 +16,11 @@ import org.springframework.stereotype.Component;
 @Component("queryMetric")
 public class QueryMetric implements TimeSeriesMetric {
 
+    private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
+            new ProdFilter(), new MethodFilter("get"), new UriQueryFilter()));
+
+    private final RecordReader<Long> reader = new LatencyReader();
+
     @Override
     public String getName() {
         return "queryMetric";
@@ -23,12 +28,11 @@ public class QueryMetric implements TimeSeriesMetric {
 
     @Override
     public List<RecordFilter> getFilters() {
-        return Collections.unmodifiableList(Arrays.asList(
-                new ProdFilter(), new MethodFilter("get"), new UriQueryFilter()));
+        return filters;
     }
 
     @Override
     public RecordReader<Long> getRecordReader() {
-        return new LatencyReader();
+        return reader;
     }
 }

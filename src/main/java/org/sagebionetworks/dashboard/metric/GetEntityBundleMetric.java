@@ -16,6 +16,11 @@ import org.springframework.stereotype.Component;
 @Component("getEntityBundleMetric")
 public class GetEntityBundleMetric implements TimeSeriesMetric {
 
+    private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
+            new ProdFilter(), new MethodFilter("get"), new UriEntityBundleFilter()));
+
+    private final RecordReader<Long> reader = new LatencyReader();
+
     @Override
     public String getName() {
         return "getEntityBundleMetric";
@@ -23,12 +28,11 @@ public class GetEntityBundleMetric implements TimeSeriesMetric {
 
     @Override
     public List<RecordFilter> getFilters() {
-        return Collections.unmodifiableList(Arrays.asList(
-                new ProdFilter(), new MethodFilter("get"), new UriEntityBundleFilter()));
+        return filters;
     }
 
     @Override
     public RecordReader<Long> getRecordReader() {
-        return new LatencyReader();
+        return reader;
     }
 }
