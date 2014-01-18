@@ -27,7 +27,7 @@ public class RepoRecordFetcher {
     /** The max number of access log files in one batch. */
     private static final int BATCH_SIZE = 200;
 
-    /** How many stacks to keep track of. */
+    /** How many stacks to keep track of. It covers more than 7 months of data with 30 stacks. */
     private static final int STACK_COUNT = 30;
 
     /** Ignore stack numbers above the cutoff. */
@@ -40,7 +40,7 @@ public class RepoRecordFetcher {
     // so that next batch for the same stack will start from the marker
     private final Map<String, String> stackMarkerMap;
 
-    private AmazonS3 s3;
+    private final AmazonS3 s3;
 
     public RepoRecordFetcher() {
         stackMarkerMap = new HashMap<>();
@@ -50,6 +50,7 @@ public class RepoRecordFetcher {
     public List<String> getBatch() {
 
         logger.info("Getting a new batch...");
+        final long start = System.currentTimeMillis();
         final List<String> batch = new ArrayList<>();
         // Get the last 30 stacks
         final List<String> stacks = repoStackFetcher.getRecentStacks(STACK_COUNT);
@@ -58,37 +59,43 @@ public class RepoRecordFetcher {
         for (int i = stackCount - 1; i >= 0; i--) {
             final String stack = stacks.get(i);
             if (isValidStack(stack)) {
-                fillBatch(stack, batch);
+                fillBatchForStack(stack, batch);
                 if (batch.size() >= BATCH_SIZE) {
                     return batch;
                 }
             }
         }
-        logger.info("One batch[size=" + batch.size() + "] has been retrieved.");
+        final long end = System.currentTimeMillis();
+        logger.info("One batch[size=" + batch.size() + "] has been fetched in "
+                + Long.toString(end - start) + " milliseconds.");
         return batch;
     }
 
-    private void fillBatch(final String stack, final List<String> batch) {
+    private void fillBatchForStack(final String stack, final List<String> batch) {
 
-        logger.info("Filling the batch[size=" + batch.size() + "] for stack " + stack + ".");
+        logger.info("Filling the batch for stack " + stack + ".");
         final String bucket = ServiceContext.getBucket();
         ListObjectsRequest request = new ListObjectsRequest()
                 .withBucketName(bucket)
                 .withPrefix(stack)
-                .withMaxKeys(BATCH_SIZE);
+                .withMaxKeys(BATCH_SIZE - batch.size());
 
-        String marker = stackMarkerMap.get(stack);
-        if (marker != null) {
-            request.setMarker(marker);
+        { // Use the marker to skip files already processed
+            final String marker = stackMarkerMap.get(stack);
+            if (marker != null) {
+                request.setMarker(marker);
+            }
         }
 
-        ObjectListing objListing  = s3.listObjects(request);
+        final ObjectListing objListing  = s3.listObjects(request);
 
-        marker = fillBatch(objListing, batch);
-        logger.info("Batch[size=" + batch.size() + "] filled for stack " + stack +
-                " with a new marker " + marker + ". Null marker will NOT be updated.");
-        if (marker != null) {
-            stackMarkerMap.put(stack, marker);
+        final String newMarker = fillBatch(objListing, batch);
+        if (newMarker != null) {
+            stackMarkerMap.put(stack, newMarker);
+            logger.info("Batch filled for stack " + stack + ". The stack now has a new marker "
+                    + newMarker + ".");
+        } else {
+            logger.info("0 files are added to the batch and the stack marker is not updated.");
         }
     }
 
@@ -104,15 +111,12 @@ public class RepoRecordFetcher {
                 logger.info("Adding key " + key + " to the batch.");
                 batch.add(key);
                 marker = key;
-                if (batch.size() >= BATCH_SIZE) {
-                    return marker;
-                }
             }
         }
 
         if (objListing.isTruncated()) {
             final ObjectListing nextObjListing = s3.listNextBatchOfObjects(objListing);
-            String newMarker = fillBatch(nextObjListing, batch);
+            final String newMarker = fillBatch(nextObjListing, batch);
             if (newMarker != null) {
                 marker = newMarker;
             }

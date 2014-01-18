@@ -13,9 +13,9 @@ public class RepoRecordScheduler {
     private RepoRecordWorker repoRecordWorker;
 
     /**
-     * Updates every 30 minutes.
+     * Updates every 20 minutes.
      */
-    @Scheduled(fixedRate=(30 * 60 * 1000))
+    @Scheduled(fixedRate=(20 * 60 * 1000))
     public void run() {
         repoRecordWorker.doWork();
     }
