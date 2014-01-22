@@ -61,11 +61,12 @@ public class App {
     }
 
     /**
-     * Gets all the "csv.gz" files.
+     * Gets all the "csv.gz" files but excluse the "rolling" ones.
      */
     private static void getCsvGzFiles(File file, List<File> files) {
         if (file.isFile()) {
-            if (file.getName().endsWith("csv.gz")) {
+            final String fileName = file.getName();
+            if (fileName.endsWith("csv.gz") && !fileName.contains("rolling")) {
                 files.add(file);
             }
             return;

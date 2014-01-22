@@ -6,6 +6,8 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.sagebionetworks.dashboard.dao.LockDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -13,6 +15,8 @@ import com.amazonaws.services.s3.model.S3Object;
 
 @Service("repoRecordWorker")
 public class RepoRecordWorker {
+
+    private final Logger logger = LoggerFactory.getLogger(RepoRecordWorker.class);
 
     @Resource
     private FileStatusDao fileStatusDao;
@@ -36,11 +40,13 @@ public class RepoRecordWorker {
             final String etag = lockDao.acquire(key);
             if (etag == null) {
                 // Fail to acquire lock
+                logger.info("Failed to acquire lock for file " + key + ". Skipping it...");
                 continue;
             }
             if (fileStatusDao.isCompleted(key) || fileStatusDao.isFailed(key)) {
                 // Already processed
                 lockDao.release(key, etag);
+                logger.info("File " + key + " already processed. Skipping it...");
                 continue;
             }
 

@@ -14,7 +14,7 @@ run {
 jar {
     group = 'org.sagebionetworks'
     baseName = 'dashboard'
-    version =  '0.4.1'
+    version =  '0.4.2'
 }
 
 repositories {
@@ -27,13 +27,14 @@ dependencies {
     compile 'redis.clients:jedis:' + jedisVersion
     compile 'joda-time:joda-time:2.3'
     compile 'net.sf.opencsv:opencsv:2.3'
-    compile 'com.amazonaws:aws-java-sdk:1.6.11'
-    compile 'org.slf4j:slf4j-api:' + slf4jVersion
+    compile 'com.amazonaws:aws-java-sdk:1.6.12'
     compile 'org.apache.httpcomponents:httpclient:4.2.6'
-    runtime 'org.slf4j:slf4j-log4j12:' + slf4jVersion
+    compile 'org.slf4j:slf4j-api:' + slf4jVersion
     testCompile 'junit:junit:4.11'
     testCompile 'org.mockito:mockito-core:1.9.5'
     testCompile 'org.springframework:spring-test:' + springFrameworkVersion
+    testRuntime 'org.slf4j:slf4j-log4j12:' + slf4jVersion
+    testRuntime 'log4j:log4j:1.2.17'
 }
 
 tasks.withType(FindBugs) {

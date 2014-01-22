@@ -16,6 +16,14 @@ import org.springframework.stereotype.Component;
 @Component("changePasswordMetric")
 public class ChangePasswordMetric implements UniqueCountMetric {
 
+    private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
+            new ProdFilter(),
+            new SuccessFilter(),
+            new MethodFilter("post"),
+            new UriChangePasswordFilter()));
+
+    private final RecordReader<String> reader = new UserIdReader();
+
     @Override
     public String getName() {
         return "changePasswordMetric";
@@ -23,15 +31,11 @@ public class ChangePasswordMetric implements UniqueCountMetric {
 
     @Override
     public List<RecordFilter> getFilters() {
-        return Collections.unmodifiableList(Arrays.asList(
-                new ProdFilter(),
-                new SuccessFilter(),
-                new MethodFilter("post"),
-                new UriChangePasswordFilter()));
+        return filters;
     }
 
     @Override
     public RecordReader<String> getRecordReader() {
-        return new UserIdReader();
+        return reader;
     }
 }

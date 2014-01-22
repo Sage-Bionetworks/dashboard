@@ -14,6 +14,11 @@ import org.springframework.stereotype.Component;
 @Component("topWebClientMetric")
 public class TopWebClientMetric implements UniqueCountMetric {
 
+    private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
+            new ProdFilter(), ClientFilter.WEB));
+
+    private final RecordReader<String> reader = new ClientReader();
+
     @Override
     public String getName() {
         return "topWebClientMetric";
@@ -21,12 +26,11 @@ public class TopWebClientMetric implements UniqueCountMetric {
 
     @Override
     public List<RecordFilter> getFilters() {
-        return Collections.unmodifiableList(Arrays.asList(
-                new ProdFilter(), ClientFilter.WEB));
+        return filters;
     }
 
     @Override
     public RecordReader<String> getRecordReader() {
-        return new ClientReader();
+        return reader;
     }
 }

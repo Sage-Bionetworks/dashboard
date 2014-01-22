@@ -14,6 +14,11 @@ import org.springframework.stereotype.Component;
 @Component("topPythonClientMetric")
 public class TopPythonClientMetric implements UniqueCountMetric {
 
+    private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
+            new ProdFilter(), ClientFilter.PYTHON));
+
+    private final RecordReader<String> reader = new ClientReader();
+
     @Override
     public String getName() {
         return "topPythonClientMetric";
@@ -21,12 +26,11 @@ public class TopPythonClientMetric implements UniqueCountMetric {
 
     @Override
     public List<RecordFilter> getFilters() {
-        return Collections.unmodifiableList(Arrays.asList(
-                new ProdFilter(), ClientFilter.PYTHON));
+        return filters;
     }
 
     @Override
     public RecordReader<String> getRecordReader() {
-        return new ClientReader();
+        return reader;
     }
 }

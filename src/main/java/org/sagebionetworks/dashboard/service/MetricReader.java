@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
+import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
 import org.sagebionetworks.dashboard.model.Aggregation;
@@ -25,6 +26,9 @@ public class MetricReader {
 
     @Resource
     private UniqueCountDao uniqueCountDao;
+
+    @Resource
+    private SimpleCountDao simpleCountDao;
 
     public List<TimeDataPoint> getTimeSeries(String metricName, DateTime from, DateTime to,
             Statistic s, Aggregation a) {
@@ -52,6 +56,15 @@ public class MetricReader {
         }
         String metricId = getMetricId(metricName);
         return uniqueCountDao.uniqueCounts(metricId, from, to);
+    }
+
+    public List<TimeDataPoint> getCount(String metricName, DateTime from, DateTime to) {
+
+        if (metricName == null || metricName.isEmpty()) {
+            throw new IllegalArgumentException("Metric name cannot be null or empty.");
+        }
+        String metricId = getMetricId(metricName);
+        return simpleCountDao.get(metricId, from, to);
     }
 
     private String getMetricId(String metricName) {

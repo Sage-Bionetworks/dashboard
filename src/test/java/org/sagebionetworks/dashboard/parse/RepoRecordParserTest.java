@@ -37,5 +37,11 @@ public class RepoRecordParserTest {
         assertEquals(1, records.size());
         assertEquals("syn150935", records.get(0).getObjectId());
         assertEquals(63L, records.get(0).getLatency().longValue());
+        line = ",\"330\",\"1388278872156\",,\"repo-prod.prod.sagebase.org\",\"50032\",\"python-requests/1.2.3 CPython/2.7.4 Linux/3.8.0-19-generic\",\"limit=20&offset=40\",\"37dbacaa-d508-40bc-95df-027669c1defa\",,\"/repo/v1/evaluation/1917804/submission/all\",\"1976831\",,\"2013-12-29\",\"GET\",\"596b6cd4fe9c6b87:2490c0ea:142eda5a7fd:-7ffd\",\"000000024\",\"prod\",\"false\"";
+        reader = new StringReader(line);
+        records = parser.parse(reader);
+        assertNotNull(records);
+        assertEquals(1, records.size());
+        assertEquals("false", records.get(0).getStatus());
     }
 }

@@ -3,10 +3,10 @@ package org.sagebionetworks.dashboard.service;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
-import org.sagebionetworks.dashboard.dao.CountDao;
+import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.springframework.stereotype.Service;
 
-@Service("countWriter")
+@Service("simpleCountWriter")
 public class SimpleCountWriter extends AbstractMetricWriter<String> {
 
     /**
@@ -14,9 +14,9 @@ public class SimpleCountWriter extends AbstractMetricWriter<String> {
      */
     @Override
     void write(String metricId, DateTime timestamp, String value) {
-        countDao.put(metricId, timestamp);
+        simpleCountDao.put(metricId, timestamp);
     }
 
     @Resource
-    private CountDao countDao;
+    private SimpleCountDao simpleCountDao;
 }
