@@ -16,8 +16,8 @@ public class UserIdToNameTest {
 
         // Mock
         SynapseDao mockSynapse = mock(SynapseDao.class);
-        when(mockSynapse.getUserDisplayName("id")).thenReturn("name");
-        when(mockSynapse.getUserDisplayName("null")).thenReturn(null);
+        when(mockSynapse.getUserName("id")).thenReturn("name");
+        when(mockSynapse.getUserName("null")).thenReturn(null);
         UserIdToName idToName = new UserIdToName();
         ReflectionTestUtils.setField(idToName, "synapseDao", mockSynapse, SynapseDao.class);
 
