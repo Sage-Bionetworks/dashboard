@@ -29,18 +29,12 @@ public class SynapseDaoImpl implements SynapseDao {
     }
 
     @Override
-    public boolean isDashboardUser(final String email) {
-        final String session = getSession();
-        return synapseClient.isMemberOfTeam(email, dashboardTeamId, session);
-    }
-
-    @Override
-    public String getUserDisplayName(final String userId) {
+    public String getUserName(final String userId) {
         final String key = SYNAPSE_USER_ID_NAME + SEPARATOR + userId;
         String name = valueOps.get(key);
         if (name == null) {
             String session = getSession();
-            name = synapseClient.getDisplayName(userId, session);
+            name = synapseClient.getUserName(userId, session);
             if (name != null) {
                 valueOps.set(key, name, EXPIRE_HOURS, TimeUnit.HOURS);
             }

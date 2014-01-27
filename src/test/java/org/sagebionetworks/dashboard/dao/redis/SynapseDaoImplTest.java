@@ -31,11 +31,11 @@ public class SynapseDaoImplTest extends AbstractRedisDaoTest {
         assertNull(entityName);
 
         // User "anonymous"
-        String displayName = synapseDao.getUserDisplayName("273950");
-        assertNotNull(displayName);
-        assertFalse(displayName.isEmpty());
-        displayName = synapseDao.getUserDisplayName("syn1669771");
-        assertNull(displayName);
+        String userName = synapseDao.getUserName("273950");
+        assertNotNull(userName);
+        assertFalse(userName.isEmpty());
+        userName = synapseDao.getUserName("syn1669771");
+        assertNull(userName);
 
         // Verify timeout
         String key = Key.SYNAPSE_ENTITY_ID_NAME + ":" + "syn1669771";
@@ -46,11 +46,5 @@ public class SynapseDaoImplTest extends AbstractRedisDaoTest {
         expire = redisTemplate.getExpire(key, TimeUnit.HOURS);
         assertNotNull(expire);
         assertTrue(expire.longValue() == 12L || expire.longValue() == 11L);
-    }
-
-    @Test
-    public void testDashboarUser() {
-        assertTrue(synapseDao.isDashboardUser("dashboard@sagebase.org"));
-        assertFalse(synapseDao.isDashboardUser("jojojoj@sagebase.org"));
     }
 }
