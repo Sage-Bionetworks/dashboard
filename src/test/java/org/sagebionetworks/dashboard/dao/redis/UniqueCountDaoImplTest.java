@@ -93,12 +93,8 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         // Verify results as time series
         List<TimeDataPoint> dataPoints = uniqueCountDao.uniqueCounts(m1, day1, day2);
         assertNotNull(dataPoints);
-        assertEquals(2, dataPoints.size());
+        assertEquals(1, dataPoints.size());
         assertEquals("1", dataPoints.get(0).getValue());
-        DateTime d1 = new DateTime(dataPoints.get(0).getTimestampInMs());
-        assertEquals("0", dataPoints.get(1).getValue());
-        DateTime d2 = new DateTime(dataPoints.get(1).getTimestampInMs());
-        assertEquals(1, d2.getDayOfYear() - d1.getDayOfYear());
         dataPoints = uniqueCountDao.uniqueCounts(m2, day1, day2);
         assertNotNull(dataPoints);
         assertEquals(2, dataPoints.size());
@@ -107,6 +103,11 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         dataPoints = uniqueCountDao.uniqueCounts(m1, day1, day1);
         assertEquals(1, dataPoints.size());
         assertEquals("1", dataPoints.get(0).getValue());
+
+        // Verify we get back an empty results set for a future time
+        dataPoints = uniqueCountDao.uniqueCounts(m1, day1.plusYears(1), day2.plusYears(1));
+        assertNotNull(dataPoints);
+        assertEquals(0, dataPoints.size());
     }
 
     @Test
