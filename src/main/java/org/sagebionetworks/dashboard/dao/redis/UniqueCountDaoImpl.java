@@ -56,10 +56,9 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
         while (from.isBefore(to) || from.isEqual(to)) {
             final String key = getKey(metricId, from);
             if (redisTemplate.hasKey(key)) {
-                Long count = zsetOps.size(key);
+                String count = zsetOps.size(key).toString();
                 long timestamp = PosixTimeUtil.floorToDay(from) * 1000L;
-                TimeDataPoint dataPoint = new TimeDataPoint(timestamp, count.toString());
-                results.add(dataPoint);
+                results.add(new TimeDataPoint(timestamp, count));
             }
             from = from.plusDays(1);
         }
