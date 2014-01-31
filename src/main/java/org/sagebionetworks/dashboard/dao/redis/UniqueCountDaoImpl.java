@@ -55,11 +55,11 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
         List<TimeDataPoint> results = new ArrayList<TimeDataPoint>();
         while (from.isBefore(to) || from.isEqual(to)) {
             final String key = getKey(metricId, from);
-            Long count = zsetOps.size(key);
-            count = (count == null ? Long.valueOf(0L) : count);
-            long timestamp = PosixTimeUtil.floorToDay(from) * 1000L;
-            TimeDataPoint dataPoint = new TimeDataPoint(timestamp, count.toString());
-            results.add(dataPoint);
+            if (redisTemplate.hasKey(key)) {
+                String count = zsetOps.size(key).toString();
+                long timestamp = PosixTimeUtil.floorToDay(from) * 1000L;
+                results.add(new TimeDataPoint(timestamp, count));
+            }
             from = from.plusDays(1);
         }
         return results;
