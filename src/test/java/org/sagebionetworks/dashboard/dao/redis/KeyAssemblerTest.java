@@ -68,77 +68,77 @@ public class KeyAssemblerTest {
         KeyAssembler assembler = new KeyAssembler(Statistic.n, Interval.m3, NameSpace.count);
         DateTime from = new DateTime(2013, 12, 3, 5, 22, 17, 697, DateTimeZone.UTC);
         DateTime to = new DateTime(2013, 12, 3, 5, 22, 17, 697, DateTimeZone.UTC);
-        List<Long> timestamps = assembler.getTimestamps("metric", from, to);
+        List<Long> timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(1, timestamps.size());
 
         to = to.plusMinutes(1);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(1, timestamps.size());
 
         to = to.plusMinutes(2);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(2, timestamps.size());
 
         to = to.minusMinutes(5);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(0, timestamps.size());
 
         assembler = new KeyAssembler(Statistic.n, Interval.hour, NameSpace.count);
         from = new DateTime(2013, 12, 3, 5, 22, 17, 697, DateTimeZone.UTC);
         to = new DateTime(2013, 12, 3, 7, 22, 17, 697, DateTimeZone.UTC);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(3, timestamps.size());
 
         assembler = new KeyAssembler(Statistic.n, Interval.day, NameSpace.count);
         from = new DateTime(2013, 12, 3, 5, 22, 17, 697, DateTimeZone.UTC);
         to = new DateTime(2013, 12, 5, 7, 22, 17, 697, DateTimeZone.UTC);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(3, timestamps.size());
 
         assembler = new KeyAssembler(Statistic.n, Interval.week, NameSpace.count);
         from = new DateTime(2013, 12, 3, 5, 22, 17, 697, DateTimeZone.UTC);
         to = new DateTime(2013, 12, 11, 7, 22, 17, 697, DateTimeZone.UTC);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(2, timestamps.size());
 
         assembler = new KeyAssembler(Statistic.n, Interval.month, NameSpace.count);
         from = new DateTime(2013, 12, 3, 5, 22, 17, 697, DateTimeZone.UTC);
         to = new DateTime(2014, 1, 3, 7, 22, 17, 697, DateTimeZone.UTC);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(2, timestamps.size());
 
         to = from;
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(1, timestamps.size());
 
         to = to.plusMonths(2);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(3, timestamps.size());
 
         to = to.minusMonths(5);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(0, timestamps.size());
 
         assembler = new KeyAssembler(Statistic.n, Interval.sage_quarter, NameSpace.count);
         from = new DateTime(2013, 12, 3, 5, 22, 17, 697, DateTimeZone.UTC);
         to = new DateTime(2013, 12, 3, 7, 22, 17, 697, DateTimeZone.UTC);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(1, timestamps.size());
 
         to = to.plusMonths(4);
-        timestamps = assembler.getTimestamps("metric", from, to);
+        timestamps = assembler.getTimestamps(from, to);
         assertNotNull(timestamps);
         assertEquals(2, timestamps.size());
     }

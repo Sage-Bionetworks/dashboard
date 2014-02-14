@@ -26,7 +26,7 @@ public class SimpleCountDaoImpl implements SimpleCountDao {
     @Override
     public List<TimeDataPoint> get(String metricId, DateTime from, DateTime to) {
 
-        List<Long> timestamps = KEY_ASSEMBLER.getTimestamps(metricId, from, to);
+        List<Long> timestamps = KEY_ASSEMBLER.getTimestamps(from, to);
         List<String> keys = new ArrayList<String>();
         for (Long timestamp : timestamps) {
             keys.add(KEY_ASSEMBLER.getKey(metricId, timestamp.longValue()));
