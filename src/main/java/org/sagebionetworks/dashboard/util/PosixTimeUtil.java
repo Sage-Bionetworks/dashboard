@@ -13,6 +13,7 @@ public final class PosixTimeUtil {
     public static final long MINUTE_3 = MINUTE * 3L; // 3 minutes
     public static final long HOUR = MINUTE * 60L;
     public static final long DAY = HOUR * 24L;
+    public static final long WEEK = DAY * 7L;
 
     public static long floorToMinute(long posixTime) {
         return (posixTime / MINUTE) * MINUTE;
@@ -44,6 +45,24 @@ public final class PosixTimeUtil {
 
     public static long floorToDay(DateTime dateTime) {
         return floorToDay(getPosixTime(dateTime));
+    }
+
+    public static long floorToWeek(DateTime dateTime) {
+        final int days = dateTime.getDayOfWeek() % 7;
+        DateTime sunday = dateTime.minusDays(days);
+        return floorToDay(sunday);
+    }
+
+    public static long floorToMonth(DateTime dateTime) {
+        final int days = dateTime.getDayOfMonth() - 1;
+        DateTime day1 = dateTime.minusDays(days);
+        return floorToDay(day1);
+    }
+
+    public static long floorToSageQuarter(DateTime dateTime) {
+        final int sageOffset = 1;  // Example: Feb - Apr should all floor to Feb 1
+        final int months = (dateTime.getMonthOfYear() + sageOffset) % 3;
+        return floorToMonth(dateTime.minusMonths(months));
     }
 
     private static long getPosixTime(DateTime dateTime) {

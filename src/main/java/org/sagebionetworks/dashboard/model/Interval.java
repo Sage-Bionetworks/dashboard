@@ -12,5 +12,14 @@ public enum Interval {
     hour,
 
     /** Aggregates daily. */
-    day
+    day,
+
+    /** Aggregates by calendar week. */
+    week,
+
+    /** Aggregates by calendar month. */
+    month,
+
+    /** Aggregates by sage audit quarters. */
+    sage_quarter
 }
