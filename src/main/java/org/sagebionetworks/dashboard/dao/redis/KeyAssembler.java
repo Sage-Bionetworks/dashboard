@@ -54,7 +54,7 @@ class KeyAssembler {
         }
     }
 
-    List<Long> getTimestamps(final String metricId, final DateTime from, final DateTime to) {
+    List<Long> getTimestamps(final DateTime from, final DateTime to) {
         switch (interval) {
             case m3:
                 return getTimestamps(
@@ -98,13 +98,13 @@ class KeyAssembler {
     }
 
     private List<Long> getTimestampsByMonths(final long start, final long end,
-            final int months, final DateTimeZone dtZone) {
+            final int stepInMonths, final DateTimeZone dtZone) {
         List<Long> timestamps = new ArrayList<Long>();
         long next = start;
         while (next <= end) {
             timestamps.add(next);
             DateTime dt = new DateTime(next * 1000L, dtZone);
-            dt = dt.plusMonths(months);
+            dt = dt.plusMonths(stepInMonths);
             next = dt.getMillis() / 1000L;
         }
         return timestamps;
