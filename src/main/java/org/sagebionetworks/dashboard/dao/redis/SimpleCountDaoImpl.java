@@ -8,7 +8,7 @@ import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.SimpleCountDao;
-import org.sagebionetworks.dashboard.model.Aggregation;
+import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.springframework.data.redis.core.ValueOperations;
@@ -45,7 +45,7 @@ public class SimpleCountDaoImpl implements SimpleCountDao {
 
     private static final KeyAssembler KEY_ASSEMBLER = new KeyAssembler(
             Statistic.n,
-            Aggregation.day,
+            Interval.day,
             NameSpace.count);
 
     @Resource(name="redisTemplate")

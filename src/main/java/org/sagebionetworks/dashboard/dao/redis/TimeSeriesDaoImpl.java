@@ -2,9 +2,9 @@ package org.sagebionetworks.dashboard.dao.redis;
 
 import static org.sagebionetworks.dashboard.dao.redis.NameSpace.timeseries;
 import static org.sagebionetworks.dashboard.dao.redis.RedisConstants.EXPIRE_DAYS;
-import static org.sagebionetworks.dashboard.model.Aggregation.day;
-import static org.sagebionetworks.dashboard.model.Aggregation.hour;
-import static org.sagebionetworks.dashboard.model.Aggregation.m3;
+import static org.sagebionetworks.dashboard.model.Interval.day;
+import static org.sagebionetworks.dashboard.model.Interval.hour;
+import static org.sagebionetworks.dashboard.model.Interval.m3;
 import static org.sagebionetworks.dashboard.model.Statistic.max;
 import static org.sagebionetworks.dashboard.model.Statistic.n;
 import static org.sagebionetworks.dashboard.model.Statistic.sum;
@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
-import org.sagebionetworks.dashboard.model.Aggregation;
+import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -30,21 +30,21 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
 
     @Override
     public void put(final String metricId, final DateTime timestamp, final long value) {
-        addAggregation(m3, metricId, timestamp, value);
-        addAggregation(hour, metricId, timestamp, value);
-        addAggregation(day, metricId, timestamp, value);
+        addInterval(m3, metricId, timestamp, value);
+        addInterval(hour, metricId, timestamp, value);
+        addInterval(day, metricId, timestamp, value);
     }
 
     @Override
     public List<TimeDataPoint> timeSeries(final String metricId, final DateTime from, final DateTime to,
-            final Statistic statistic, final Aggregation aggregation) {
+            final Statistic statistic, final Interval interval) {
 
         // Average is derived from sum/n
         if (Statistic.avg.equals(statistic)) {
-            return getAvg(metricId, from, to, aggregation);
+            return getAvg(metricId, from, to, interval);
         }
 
-        KeyAssembler keyAssembler = new KeyAssembler(statistic, aggregation, timeseries);
+        KeyAssembler keyAssembler = new KeyAssembler(statistic, interval, timeseries);
         List<Long> timestamps = keyAssembler.getTimestamps(metricId, from, to);
         List<String> keys = new ArrayList<String>();
         for (Long timestamp : timestamps) {
@@ -64,10 +64,10 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
     }
 
     private List<TimeDataPoint> getAvg(final String metricId, final DateTime from, final DateTime to,
-            final Aggregation aggregation) {
+            final Interval interval) {
 
-        List<TimeDataPoint> sumList = timeSeries(metricId, from, to, sum, aggregation);
-        List<TimeDataPoint> nList = timeSeries(metricId, from, to, n, aggregation);
+        List<TimeDataPoint> sumList = timeSeries(metricId, from, to, sum, interval);
+        List<TimeDataPoint> nList = timeSeries(metricId, from, to, n, interval);
         List<TimeDataPoint> avgList = new ArrayList<TimeDataPoint>(sumList.size());
         for (int i = 0; i < sumList.size(); i++) {
             TimeDataPoint iSum = sumList.get(i);
@@ -78,19 +78,19 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         return avgList;
     }
 
-    private void addAggregation(final Aggregation aggregation,
+    private void addInterval(final Interval interval,
             final String metricId, final DateTime timestamp, final long value) {
 
         // n
-        String key = (new KeyAssembler(n, aggregation, timeseries)).getKey(metricId, timestamp);
+        String key = (new KeyAssembler(n, interval, timeseries)).getKey(metricId, timestamp);
         valueOps.increment(key, 1L);
         redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         // sum
-        key = (new KeyAssembler(sum, aggregation, timeseries)).getKey(metricId, timestamp);
+        key = (new KeyAssembler(sum, interval, timeseries)).getKey(metricId, timestamp);
         valueOps.increment(key, value);
         redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
         // max -- optimistically work around race conditions
-        final String maxKey = (new KeyAssembler(max, aggregation, timeseries)).getKey(metricId, timestamp);
+        final String maxKey = (new KeyAssembler(max, interval, timeseries)).getKey(metricId, timestamp);
         String strMax = valueOps.get(maxKey);
         long redisMax = strMax == null ? -1L : Long.parseLong(strMax);
         long max = value;

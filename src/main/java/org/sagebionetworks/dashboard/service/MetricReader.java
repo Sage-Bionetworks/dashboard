@@ -9,7 +9,7 @@ import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
-import org.sagebionetworks.dashboard.model.Aggregation;
+import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
@@ -31,7 +31,7 @@ public class MetricReader {
     private SimpleCountDao simpleCountDao;
 
     public List<TimeDataPoint> getTimeSeries(String metricName, DateTime from, DateTime to,
-            Statistic s, Aggregation a) {
+            Statistic s, Interval a) {
 
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
