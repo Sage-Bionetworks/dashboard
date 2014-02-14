@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
-import org.sagebionetworks.dashboard.model.Aggregation;
+import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
@@ -72,7 +72,7 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
 
     private static final KeyAssembler KEY_ASSEMBLER = new KeyAssembler(
             Statistic.n,
-            Aggregation.day,
+            Interval.day,
             NameSpace.uniquecount);
 
     @Resource

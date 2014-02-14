@@ -1,6 +1,9 @@
 package org.sagebionetworks.dashboard.model;
 
-public enum Aggregation {
+/**
+ * Different sizes of the time bins within which numbers are aggregated.
+ */
+public enum Interval {
 
     /** Aggregates every 3 minutes. */
     m3,

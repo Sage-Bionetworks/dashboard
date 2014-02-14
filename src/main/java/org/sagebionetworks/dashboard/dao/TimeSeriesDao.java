@@ -3,7 +3,7 @@ package org.sagebionetworks.dashboard.dao;
 import java.util.List;
 
 import org.joda.time.DateTime;
-import org.sagebionetworks.dashboard.model.Aggregation;
+import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 
@@ -28,8 +28,8 @@ public interface TimeSeriesDao {
      * @param from          Time range of the metric. This is the starting point.
      * @param to            Time range of the metric. This is the ending point.
      * @param statistic     Statistic n, sum, average, or max.
-     * @param aggregation   Aggregation by minute, hour, or day.
+     * @param interval      Aggregates by minute, hour, or day.
      */
     List<TimeDataPoint> timeSeries(String metricId, DateTime from, DateTime to,
-            Statistic statistic, Aggregation aggregation);
+            Statistic statistic, Interval interval);
 }
