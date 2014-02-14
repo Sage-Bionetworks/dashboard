@@ -18,7 +18,6 @@ import org.sagebionetworks.dashboard.util.PosixTimeUtil;
 class KeyAssembler {
 
     KeyAssembler(Statistic statistic, Interval interval, NameSpace nameSpace) {
-
         if (statistic == null) {
             throw new IllegalArgumentException("Statistic cannot be null.");
         }
@@ -28,7 +27,6 @@ class KeyAssembler {
         if (nameSpace == null) {
             throw new IllegalArgumentException("Name space cannot be null.");
         }
-
         this.interval = interval;
         prefix = statistic + SEPARATOR + interval + SEPARATOR + nameSpace;
     }
@@ -38,67 +36,54 @@ class KeyAssembler {
     }
 
     String getKey(final String metricId, final DateTime timestamp) {
-
-        long ts = -1L;
         switch(interval) {
             case m3:
-                ts = PosixTimeUtil.floorToMinute3(timestamp);
-                break;
+                return getKey(metricId, PosixTimeUtil.floorToMinute3(timestamp));
             case hour:
-                ts = PosixTimeUtil.floorToHour(timestamp);
-                break;
+                return getKey(metricId, PosixTimeUtil.floorToHour(timestamp));
             case day:
-                ts = PosixTimeUtil.floorToDay(timestamp);
-                break;
+                return getKey(metricId, PosixTimeUtil.floorToDay(timestamp));
             case week:
-                ts = PosixTimeUtil.floorToWeek(timestamp);
-                break;
+                return getKey(metricId, PosixTimeUtil.floorToWeek(timestamp));
             case month:
-                ts = PosixTimeUtil.floorToMonth(timestamp);
-                break;
+                return getKey(metricId, PosixTimeUtil.floorToMonth(timestamp));
             case sage_quarter:
-                ts = PosixTimeUtil.floorToSageQuarter(timestamp);
-                break;
+                return getKey(metricId, PosixTimeUtil.floorToSageQuarter(timestamp));
             default:
                 throw new RuntimeException("Interval " + interval + " not supported.");
         }
-        return getKey(metricId, ts);
     }
 
     List<Long> getTimestamps(final String metricId, final DateTime from, final DateTime to) {
-
-        long start = -1L;
-        long end = -1L;
-        long step = -1L;
         switch (interval) {
             case m3:
-                 start = PosixTimeUtil.floorToMinute3(from);
-                 end = PosixTimeUtil.floorToMinute3(to);
-                 step = PosixTimeUtil.MINUTE_3;
-                 return getTimestamps(start, end, step);
+                return getTimestamps(
+                        PosixTimeUtil.floorToMinute3(from),
+                        PosixTimeUtil.floorToMinute3(to),
+                        PosixTimeUtil.MINUTE_3);
             case hour:
-                start = PosixTimeUtil.floorToHour(from);
-                end = PosixTimeUtil.floorToHour(to);
-                step = PosixTimeUtil.HOUR;
-                return getTimestamps(start, end, step);
+                return getTimestamps(
+                        PosixTimeUtil.floorToHour(from),
+                        PosixTimeUtil.floorToHour(to),
+                        PosixTimeUtil.HOUR);
             case day:
-                start = PosixTimeUtil.floorToDay(from);
-                end = PosixTimeUtil.floorToDay(to);
-                step = PosixTimeUtil.DAY;
-                return getTimestamps(start, end, step);
+                return getTimestamps(
+                        PosixTimeUtil.floorToDay(from),
+                        PosixTimeUtil.floorToDay(to),
+                        PosixTimeUtil.DAY);
             case week:
-                start = PosixTimeUtil.floorToWeek(from);
-                end = PosixTimeUtil.floorToWeek(to);
-                step = PosixTimeUtil.WEEK;
-                return getTimestamps(start, end, step);
+                return getTimestamps(
+                        PosixTimeUtil.floorToWeek(from),
+                        PosixTimeUtil.floorToWeek(to),
+                        PosixTimeUtil.WEEK);
             case month:
-                start = PosixTimeUtil.floorToMonth(from);
-                end = PosixTimeUtil.floorToMonth(to);
-                return getTimestampsByMonths(start, end, 1, from.getZone());
+                return getTimestampsByMonths(
+                        PosixTimeUtil.floorToMonth(from),
+                        PosixTimeUtil.floorToMonth(to), 1, from.getZone());
             case sage_quarter:
-                start = PosixTimeUtil.floorToSageQuarter(from);
-                end = PosixTimeUtil.floorToSageQuarter(to);
-                return getTimestampsByMonths(start, end, 3, from.getZone());
+                return getTimestampsByMonths(
+                        PosixTimeUtil.floorToSageQuarter(from),
+                        PosixTimeUtil.floorToSageQuarter(to), 3, from.getZone());
             default:
                 throw new RuntimeException("Interval " + interval + " not supported.");
         }
