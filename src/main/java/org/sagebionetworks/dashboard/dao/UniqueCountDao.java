@@ -20,9 +20,9 @@ public interface UniqueCountDao {
     /**
      * Gets the list of counts sorted at descending order for the specified day.
      *
-     * @param metricId      The ID of the metric.
-     * @param timestamp     The day of the metric.
-     * @param n             The max number of counts to retrieve.
+     * @param metricId   The ID of the metric.
+     * @param timestamp  The day of the metric.
+     * @param n          The max number of counts to retrieve.
      */
     List<CountDataPoint> topCounts(String metricId, DateTime timestamp, long n);
 
