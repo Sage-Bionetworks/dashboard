@@ -68,8 +68,8 @@ public class SimpleCountWriterIntegTest {
         List<TimeDataPoint> results = metricReader.getCount(metric.getName(), dtFrom, dtTo);
         assertNotNull(results);
         assertEquals(1, results.size());
-        assertEquals(1388275200000L, results.get(0).getTimestampInMs());
-        assertEquals("1", results.get(0).getValue());
+        assertEquals(1388275200000L, results.get(0).timestamp());
+        assertEquals("1", results.get(0).value());
     }
 
     private void clearRedis() {

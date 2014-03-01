@@ -8,20 +8,20 @@ public class TimeDataPoint implements ValuePair<String>{
     }
 
     @Override
-    public String getX() {
+    public String x() {
         return Long.toString(timestamp);
     }
 
     @Override
-    public String getY() {
+    public String y() {
         return value;
     }
 
-    public long getTimestampInMs() {
+    public long timestamp() {
         return timestamp;
     }
 
-    public String getValue() {
+    public String value() {
         return value;
     }
 

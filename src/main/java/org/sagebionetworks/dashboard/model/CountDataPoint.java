@@ -8,20 +8,20 @@ public class CountDataPoint implements ValuePair<String> {
     }
 
     @Override
-    public String getX() {
+    public String x() {
         return id;
     }
 
     @Override
-    public String getY() {
+    public String y() {
         return Long.toString(count);
     }
 
-    public String getId() {
+    public String id() {
         return id;
     }
 
-    public long getCount() {
+    public long count() {
         return count;
     }
 

@@ -14,7 +14,7 @@ public class UserIdToName implements CountDataPointConverter {
 
     @Override
     public CountDataPoint convert(final CountDataPoint in) {
-        String id = in.getId();
+        String id = in.id();
         String name = null;
         try {
             name = synapseDao.getUserName(id);
@@ -24,7 +24,7 @@ public class UserIdToName implements CountDataPointConverter {
         if (name == null) {
             name = id;
         }
-        CountDataPoint out = new CountDataPoint(name, in.getCount());
+        CountDataPoint out = new CountDataPoint(name, in.count());
         return out;
     }
 }

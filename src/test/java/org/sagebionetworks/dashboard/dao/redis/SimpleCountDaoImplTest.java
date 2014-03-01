@@ -40,11 +40,11 @@ public class SimpleCountDaoImplTest extends AbstractRedisDaoTest {
         List<TimeDataPoint> results = simpleCountDao.get(metricId1, dt, dt.plusDays(2));
         assertNotNull(results);
         assertEquals(2, results.size());
-        assertEquals("2", results.get(0).getValue());
-        assertEquals("1", results.get(1).getValue());
+        assertEquals("2", results.get(0).value());
+        assertEquals("1", results.get(1).value());
         results = simpleCountDao.get(metricId2, dt, dt.plusDays(2));
         assertNotNull(results);
         assertEquals(1, results.size());
-        assertEquals("1", results.get(0).getValue());
+        assertEquals("1", results.get(0).value());
     }
 }

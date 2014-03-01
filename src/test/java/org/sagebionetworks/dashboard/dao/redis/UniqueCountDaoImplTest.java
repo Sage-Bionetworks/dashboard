@@ -61,48 +61,48 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         List<CountDataPoint> results = uniqueCountDao.topCounts(m1, day1, Long.MAX_VALUE);
         assertNotNull(results);
         assertEquals(1, results.size());
-        assertEquals(id1, results.get(0).getId());
-        assertEquals(1L, results.get(0).getCount());
+        assertEquals(id1, results.get(0).id());
+        assertEquals(1L, results.get(0).count());
 
         // Only look at top 1
         results = uniqueCountDao.topCounts(m2, day1, 1L);
         assertEquals(1, results.size());
-        assertEquals(id2, results.get(0).getId());
-        assertEquals(3L, results.get(0).getCount());
+        assertEquals(id2, results.get(0).id());
+        assertEquals(3L, results.get(0).count());
         // Top 2
         results = uniqueCountDao.topCounts(m2, day1, 2L);
         assertEquals(2, results.size());
-        assertEquals(id2, results.get(0).getId());
-        assertEquals(3L, results.get(0).getCount());
-        assertEquals(id3, results.get(1).getId());
-        assertEquals(2L, results.get(1).getCount());
+        assertEquals(id2, results.get(0).id());
+        assertEquals(3L, results.get(0).count());
+        assertEquals(id3, results.get(1).id());
+        assertEquals(2L, results.get(1).count());
         results = uniqueCountDao.topCounts(m2, day1, Long.MAX_VALUE);
         assertEquals(3, results.size());
-        assertEquals(id2, results.get(0).getId());
-        assertEquals(3L, results.get(0).getCount());
-        assertEquals(id3, results.get(1).getId());
-        assertEquals(2L, results.get(1).getCount());
-        assertEquals(id1, results.get(2).getId());
-        assertEquals(1L, results.get(2).getCount());
+        assertEquals(id2, results.get(0).id());
+        assertEquals(3L, results.get(0).count());
+        assertEquals(id3, results.get(1).id());
+        assertEquals(2L, results.get(1).count());
+        assertEquals(id1, results.get(2).id());
+        assertEquals(1L, results.get(2).count());
         // Verify day 2 results for m2
         results = uniqueCountDao.topCounts(m2, day2, Long.MAX_VALUE);
         assertEquals(1, results.size());
-        assertEquals(id1, results.get(0).getId());
-        assertEquals(2L, results.get(0).getCount());
+        assertEquals(id1, results.get(0).id());
+        assertEquals(2L, results.get(0).count());
 
         // Verify results as time series
         List<TimeDataPoint> dataPoints = uniqueCountDao.uniqueCounts(m1, day1, day2);
         assertNotNull(dataPoints);
         assertEquals(1, dataPoints.size());
-        assertEquals("1", dataPoints.get(0).getValue());
+        assertEquals("1", dataPoints.get(0).value());
         dataPoints = uniqueCountDao.uniqueCounts(m2, day1, day2);
         assertNotNull(dataPoints);
         assertEquals(2, dataPoints.size());
-        assertEquals("3", dataPoints.get(0).getValue());
-        assertEquals("1", dataPoints.get(1).getValue());
+        assertEquals("3", dataPoints.get(0).value());
+        assertEquals("1", dataPoints.get(1).value());
         dataPoints = uniqueCountDao.uniqueCounts(m1, day1, day1);
         assertEquals(1, dataPoints.size());
-        assertEquals("1", dataPoints.get(0).getValue());
+        assertEquals("1", dataPoints.get(0).value());
 
         // Verify we get back an empty results set for a future time
         dataPoints = uniqueCountDao.uniqueCounts(m1, day1.plusYears(1), day2.plusYears(1));

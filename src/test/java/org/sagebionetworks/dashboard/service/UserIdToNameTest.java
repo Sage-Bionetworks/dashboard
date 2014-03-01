@@ -24,11 +24,11 @@ public class UserIdToNameTest {
         // Test
         CountDataPoint in = new CountDataPoint("id", 5L);
         CountDataPoint out = idToName.convert(in);
-        assertEquals("name", out.getId());
-        assertEquals(5L, out.getCount());
+        assertEquals("name", out.id());
+        assertEquals(5L, out.count());
         in = new CountDataPoint("null", 3L);
         out = idToName.convert(in);
-        assertEquals("null", out.getId());
-        assertEquals(3L, out.getCount());
+        assertEquals("null", out.id());
+        assertEquals(3L, out.count());
     }
 }
