@@ -72,8 +72,8 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         for (int i = 0; i < sumList.size(); i++) {
             TimeDataPoint iSum = sumList.get(i);
             TimeDataPoint iN = nList.get(i);
-            long average = Long.parseLong(iSum.getValue()) / Long.parseLong(iN.getValue());
-            avgList.add(new TimeDataPoint(iSum.getTimestampInMs(), Long.toString(average)));
+            long average = Long.parseLong(iSum.value()) / Long.parseLong(iN.value());
+            avgList.add(new TimeDataPoint(iSum.timestamp(), Long.toString(average)));
         }
         return avgList;
     }
