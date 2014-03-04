@@ -36,7 +36,7 @@ public class SynapseDaoImpl implements SynapseDao {
             String session = getSession();
             name = synapseClient.getUserName(userId, session);
             if (name != null) {
-                valueOps.set(key, name, EXPIRE_HOURS, TimeUnit.HOURS);
+                valueOps.set(key, name);
             }
         }
         return name;
