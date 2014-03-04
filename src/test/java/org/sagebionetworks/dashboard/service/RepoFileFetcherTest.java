@@ -39,21 +39,21 @@ public class RepoFileFetcherTest {
         String key = UUID.randomUUID().toString();
         S3ObjectSummary summary = new S3ObjectSummary();
         summary.setKey(key);
-        summary.setSize(10000000); // 10 MB
+        summary.setSize(100000); // 100 KB
         List<S3ObjectSummary> summaryList = new ArrayList<>();
         summaryList.add(summary);
         // File 2 is "rolling" and should be ignored
         key = UUID.randomUUID().toString() + "-rolling.csv.gz";
         summary = new S3ObjectSummary();
         summary.setKey(key);
-        summary.setSize(10000000); // 10 MB
+        summary.setSize(100000); // 100 KB
         summaryList.add(summary);
         // File 3 is the last and should set the marker
         key = UUID.randomUUID().toString();
         final String marker = key;
         summary = new S3ObjectSummary();
         summary.setKey(key);
-        summary.setSize(10000000); // 10 MB
+        summary.setSize(100000); // 100 KB
         summaryList.add(summary);
 
         ObjectListing objListing = mock(ObjectListing.class);
@@ -69,7 +69,7 @@ public class RepoFileFetcherTest {
         ReflectionTestUtils.setField(fetcher, "s3", s3, AmazonS3.class);
 
         List<String> files = fetcher.nextBatch();
-        // Should get back a full batch of 20 files as each file is 10 MB and the max total size per batch is 200 MB
+        // Should get back a full batch of 20 files as each file is 100 KB and the max total size per batch is 2 MB
         assertEquals(20, files.size());
         @SuppressWarnings("unchecked")
         Map<String, String> markerMap = (Map<String, String>)ReflectionTestUtils.getField(fetcher, "folderMarkerMap");

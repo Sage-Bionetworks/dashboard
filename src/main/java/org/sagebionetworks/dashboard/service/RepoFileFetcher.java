@@ -27,7 +27,7 @@ public class RepoFileFetcher {
     /**  How many days to fetch. */
     private static final int DAYS = 200;
     /** The max number of bytes in one batch. */
-    private static final long BATCH_SIZE = 200000000L; // 200 MB
+    private static final long BATCH_SIZE = 2L * 1000L * 1000L; // 2 MB per batch
 
     @Resource
     private RepoFolderFetcher repoFolderFetcher;
