@@ -46,7 +46,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         }
 
         KeyAssembler keyAssembler = new KeyAssembler(statistic, interval, timeseries);
-        List<Long> timestamps = keyAssembler.getTimestamps(from, to);
+        List<Long> timestamps = keyAssembler.getPosixTimestamps(from, to);
         List<String> keys = new ArrayList<String>();
         for (Long timestamp : timestamps) {
             keys.add(keyAssembler.getKey(metricId, timestamp.longValue()));

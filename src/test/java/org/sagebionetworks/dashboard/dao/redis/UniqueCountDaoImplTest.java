@@ -97,23 +97,30 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         List<TimeDataPoint> dataPoints = uniqueCountDao.counts(m2, id1, Interval.week, day1, day3);
         assertNotNull(dataPoints);
         assertEquals(2, dataPoints.size());
-        assertEquals(PosixTimeUtil.floorToWeek(day1), dataPoints.get(0).timestamp());
+        assertEquals(PosixTimeUtil.floorToWeek(day1) * 1000L, dataPoints.get(0).timestamp());
         assertEquals("3", dataPoints.get(0).value());
-        assertEquals(PosixTimeUtil.floorToWeek(day3), dataPoints.get(1).timestamp());
+        assertEquals(PosixTimeUtil.floorToWeek(day3) * 1000L, dataPoints.get(1).timestamp());
         assertEquals("5", dataPoints.get(1).value());
 
         // unique counts
         dataPoints = uniqueCountDao.uniqueCounts(m1, Interval.day, day1, day2);
         assertNotNull(dataPoints);
         assertEquals(1, dataPoints.size());
+        assertEquals(PosixTimeUtil.floorToDay(day1) * 1000L, dataPoints.get(0).timestamp());
         assertEquals("1", dataPoints.get(0).value());
         dataPoints = uniqueCountDao.uniqueCounts(m2, Interval.day, day1, day2);
         assertNotNull(dataPoints);
         assertEquals(2, dataPoints.size());
+        assertEquals(PosixTimeUtil.floorToDay(day1) * 1000L, dataPoints.get(0).timestamp());
         assertEquals("3", dataPoints.get(0).value());
+        assertEquals(PosixTimeUtil.floorToDay(day2) * 1000L, dataPoints.get(1).timestamp());
         assertEquals("1", dataPoints.get(1).value());
+        dataPoints = uniqueCountDao.uniqueCounts(m2, Interval.day, day1, day3);
+        assertNotNull(dataPoints);
+        assertEquals(3, dataPoints.size());
         dataPoints = uniqueCountDao.uniqueCounts(m1, Interval.day, day1, day1);
         assertEquals(1, dataPoints.size());
+        assertEquals(PosixTimeUtil.floorToDay(day1) * 1000L, dataPoints.get(0).timestamp());
         assertEquals("1", dataPoints.get(0).value());
 
         // Verify we get back an empty results set for a future time

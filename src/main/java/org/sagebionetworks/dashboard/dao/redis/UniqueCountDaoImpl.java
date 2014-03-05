@@ -10,7 +10,6 @@ import static org.sagebionetworks.dashboard.model.Statistic.n;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -46,29 +45,26 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
     @Override
     public List<TimeDataPoint> counts(String metricId, String id, Interval interval, DateTime from, DateTime to) {
         final String shortId = nameIdDao.getId(id); // Swap for a shorter id
-        final List<String> keys = getKeys(metricId, interval, from, to);
-        final List<Boolean> exists = keyExists(keys);
+        final List<KeyPiece> keys = getKeys(metricId, interval, from, to);
+        final List<KeyPiece> existingKeys = getExistingKeys(keys);
         List<Object> counts = redisTemplate.executePipelined(new RedisCallback<Object>() {
             @Override
             public Object doInRedis(RedisConnection conn) throws DataAccessException {
                 StringRedisConnection redisConn = (StringRedisConnection)conn;
-                for (int i = 0; i < keys.size(); i++) {
-                    if (exists.get(i)) {
-                        redisConn.zScore(keys.get(i), shortId);
-                    }
+                for (KeyPiece k : existingKeys) {
+                    redisConn.zScore(k.key, shortId);
                 }
                 return null;
             }
         });
-        List<TimeDataPoint> results = new ArrayList<TimeDataPoint>(keys.size());
-        List<Long> timestamps = getTimestamps(interval, from, to);
-        Iterator<Object> countsIterator = counts.iterator();
-        for (int i = 0; i < timestamps.size(); i++) {
-            if (exists.get(i)) {
-                results.add(new TimeDataPoint(
-                        timestamps.get(i).longValue(),
-                        Long.toString(((Double)countsIterator.next()).longValue())));
-            }
+        if (existingKeys.size() != counts.size()) {
+            throw new RuntimeException("Impedence mismatch between the list of existing keys and the list of counts.");
+        }
+        List<TimeDataPoint> results = new ArrayList<TimeDataPoint>(existingKeys.size());
+        for (int i = 0; i < existingKeys.size(); i++) {
+            results.add(new TimeDataPoint(
+                    existingKeys.get(i).posixTime * 1000L,
+                    Long.toString(((Double)counts.get(i)).longValue())));
         }
         return Collections.unmodifiableList(results);
     }
@@ -83,20 +79,31 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
                     nameIdDao.getName(tuple.getValue()), // Get back the original id
                     tuple.getScore().longValue()));
         }
-        return results;
+        return Collections.unmodifiableList(results);
     }
 
     @Override
     public List<TimeDataPoint> uniqueCounts(String metricId, Interval interval, DateTime from, DateTime to) {
-        final List<String> keys = getKeys(metricId, interval, from, to);
-        final List<Boolean> exists = keyExists(keys);
-        List<TimeDataPoint> results = new ArrayList<TimeDataPoint>(keys.size());
-        for (int i = 0; i < keys.size(); i++) {
-            if (exists.get(i)) {
-                String count = zsetOps.size(keys.get(i)).toString();
-                long timestamp = PosixTimeUtil.floorToDay(from) * 1000L;
-                results.add(new TimeDataPoint(timestamp, count));
+        final List<KeyPiece> keys = getKeys(metricId, interval, from, to);
+        final List<KeyPiece> existingKeys = getExistingKeys(keys);
+        List<Object> counts = redisTemplate.executePipelined(new RedisCallback<Object>() {
+            @Override
+            public Object doInRedis(RedisConnection conn) throws DataAccessException {
+                StringRedisConnection redisConn = (StringRedisConnection)conn;
+                for (KeyPiece k : existingKeys) {
+                    redisConn.zCard(k.key);
+                }
+                return null;
             }
+        });
+        if (existingKeys.size() != counts.size()) {
+            throw new RuntimeException("Impedence mismatch between the list of existing keys and the list of counts.");
+        }
+        List<TimeDataPoint> results = new ArrayList<TimeDataPoint>(existingKeys.size());
+        for (int i = 0; i < existingKeys.size(); i++) {
+            results.add(new TimeDataPoint(
+                    existingKeys.get(i).posixTime * 1000L,
+                    ((Long)counts.get(i)).toString()));
         }
         return Collections.unmodifiableList(results);
     }
@@ -107,41 +114,46 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
         redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
     }
 
-    private List<Boolean> keyExists(final List<String> keys) {
-        List<Object> objects = redisTemplate.executePipelined(new RedisCallback<Object>() {
+    private List<KeyPiece> getExistingKeys (final List<KeyPiece> keys) {
+        List<Object> flags = redisTemplate.executePipelined(new RedisCallback<Object>() {
             @Override
             public Object doInRedis(RedisConnection conn) throws DataAccessException {
                 StringRedisConnection redisConn = (StringRedisConnection)conn;
-                for (String key : keys) {
-                    redisConn.exists(key);
+                for (KeyPiece k : keys) {
+                    redisConn.exists(k.key);
                 }
                 return null;
             }
         });
-        List<Boolean> flags = new ArrayList<Boolean>(objects.size());
-        for (Object obj : objects) {
-            flags.add((Boolean)obj);
+        if (flags.size() != keys.size()) {
+            throw new RuntimeException("Impedence mismatch between the list of keys and their boolean flags.");
         }
-        return flags;
+        List<KeyPiece> existing = new ArrayList<KeyPiece>(keys.size());
+        for (int i = 0; i < keys.size(); i++) {
+            if ((Boolean)flags.get(i)) {
+                existing.add(keys.get(i));
+            }
+        }
+        return existing;
     }
 
-    private List<String> getKeys(String metricId, Interval interval, DateTime from, DateTime to) {
-        List<Long> flooredTimestamps = getTimestamps(interval, from, to);
-        List<String> keys = new ArrayList<String>(flooredTimestamps.size());
-        for (Long timestamp : flooredTimestamps) {
-            keys.add(getKey(metricId, interval, timestamp.longValue()));
+    private List<KeyPiece> getKeys(String metricId, Interval interval, DateTime from, DateTime to) {
+        List<Long> posixTimestamps = getPosixTimestamps(interval, from, to);
+        List<KeyPiece> keys = new ArrayList<KeyPiece>(posixTimestamps.size());
+        for (Long timestamp : posixTimestamps) {
+            keys.add(new KeyPiece(getKey(metricId, interval, timestamp.longValue()), timestamp));
         }
         return keys;
     }
 
-    private List<Long> getTimestamps(Interval interval, DateTime from, DateTime to) {
+    private List<Long> getPosixTimestamps(Interval interval, DateTime from, DateTime to) {
         switch (interval) {
             case day:
-                return KEY_ASSEMBLER_DAY.getTimestamps(from, to);
+                return KEY_ASSEMBLER_DAY.getPosixTimestamps(from, to);
             case week:
-                return KEY_ASSEMBLER_WEEK.getTimestamps(from, to);
+                return KEY_ASSEMBLER_WEEK.getPosixTimestamps(from, to);
             case month:
-                return KEY_ASSEMBLER_MONTH.getTimestamps(from, to);
+                return KEY_ASSEMBLER_MONTH.getPosixTimestamps(from, to);
             default:
                 throw new IllegalArgumentException("Interval " + interval + " is not supported.");
         }
@@ -185,4 +197,13 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
 
     @Resource
     private NameIdDao nameIdDao;
+
+    private static class KeyPiece {
+        private String key;
+        private long posixTime;
+        private KeyPiece (String key, long posixTime) {
+            this.key = key;
+            this.posixTime = posixTime;
+        }
+    }
 }
