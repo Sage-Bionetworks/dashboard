@@ -1,5 +1,6 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -45,6 +46,7 @@ public class SynapseDaoImplTest extends AbstractRedisDaoTest {
         key = Key.SYNAPSE_USER_ID_NAME + ":" + "273950";
         expire = redisTemplate.getExpire(key, TimeUnit.HOURS);
         assertNotNull(expire);
-        assertTrue(expire.longValue() == 12L || expire.longValue() == 11L);
+        assertEquals(0L, expire.longValue());  // Expire is not set
+        assertTrue(redisTemplate.hasKey(key)); // And the key is still there
     }
 }

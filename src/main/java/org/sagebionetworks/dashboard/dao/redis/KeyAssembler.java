@@ -54,7 +54,7 @@ class KeyAssembler {
         }
     }
 
-    List<Long> getTimestamps(final DateTime from, final DateTime to) {
+    List<Long> getPosixTimestamps(final DateTime from, final DateTime to) {
         switch (interval) {
             case m3:
                 return getTimestamps(

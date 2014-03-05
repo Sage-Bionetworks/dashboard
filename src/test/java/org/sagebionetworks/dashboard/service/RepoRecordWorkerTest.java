@@ -147,10 +147,10 @@ public class RepoRecordWorkerTest {
         metadata.setContentEncoding("gzip");
         metadata.setContentType("application/x-gzip");
         metadata.setContentLength(bytes.length);
-  
+
         final AmazonS3 s3 = ServiceContext.getS3Client();
         final String bucket = ServiceContext.getBucket();
-        final String key = "00022/" + UUID.randomUUID().toString() + ".csv.gz";
+        final String key = "000000023/2014-02-28/" + UUID.randomUUID().toString() + ".csv.gz";
         final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         s3.putObject(bucket, key, bais, metadata);
         bais.close();

@@ -28,13 +28,13 @@ public class RepoRecordWorker {
     private RepoUpdateService repoUpdateService;
 
     @Resource
-    private RepoRecordFetcher repoRecordFetcher;
+    private RepoFileFetcher repoFileFetcher;
 
     public void doWork() {
 
         final AmazonS3 s3 = ServiceContext.getS3Client();
         final String bucket = ServiceContext.getBucket();
-        List<String> batch = repoRecordFetcher.getBatch();
+        List<String> batch = repoFileFetcher.nextBatch();
         for (final String key : batch) {
 
             final String etag = lockDao.acquire(key);

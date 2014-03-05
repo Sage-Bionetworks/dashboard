@@ -5,6 +5,7 @@ import static org.sagebionetworks.dashboard.dao.redis.RedisConstants.EXPIRE_DAYS
 import static org.sagebionetworks.dashboard.model.Interval.day;
 import static org.sagebionetworks.dashboard.model.Interval.hour;
 import static org.sagebionetworks.dashboard.model.Interval.m3;
+import static org.sagebionetworks.dashboard.model.Statistic.avg;
 import static org.sagebionetworks.dashboard.model.Statistic.max;
 import static org.sagebionetworks.dashboard.model.Statistic.n;
 import static org.sagebionetworks.dashboard.model.Statistic.sum;
@@ -40,12 +41,12 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
             final Statistic statistic, final Interval interval) {
 
         // Average is derived from sum/n
-        if (Statistic.avg.equals(statistic)) {
+        if (avg.equals(statistic)) {
             return getAvg(metricId, from, to, interval);
         }
 
         KeyAssembler keyAssembler = new KeyAssembler(statistic, interval, timeseries);
-        List<Long> timestamps = keyAssembler.getTimestamps(from, to);
+        List<Long> timestamps = keyAssembler.getPosixTimestamps(from, to);
         List<String> keys = new ArrayList<String>();
         for (Long timestamp : timestamps) {
             keys.add(keyAssembler.getKey(metricId, timestamp.longValue()));
