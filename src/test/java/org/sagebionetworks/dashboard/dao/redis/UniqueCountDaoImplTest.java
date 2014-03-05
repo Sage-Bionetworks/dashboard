@@ -16,7 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
+import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
+import org.sagebionetworks.dashboard.util.PosixTimeUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
@@ -40,72 +42,82 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         final String id1 = "id1";
         final String id2 = "id2";
         final String id3 = "id3";
-        final DateTime day1 = new DateTime(2011, 11, 15, 8, 51, DateTimeZone.UTC);
-        final DateTime day2 = new DateTime(2011, 11, 16, 8, 51, DateTimeZone.UTC);
+        final DateTime day1 = new DateTime(2011, 11, 15, 8, 51, DateTimeZone.UTC); // Monday
+        final DateTime day2 = new DateTime(2011, 11, 16, 8, 51, DateTimeZone.UTC); // Tuesday
+        final DateTime day3 = new DateTime(2011, 11, 22, 8, 51, DateTimeZone.UTC); // next Monday
 
-        // (m1, day1, id1) = 1
-        // (m2, day1, id2) = 3
-        // (m2, day1, id3) = 2
-        // (m2, day1, id1) = 1
-        // (m2, day2, id1) = 2
-        uniqueCountDao.put(m1, day1, id1);
-        uniqueCountDao.put(m2, day1, id3);
-        uniqueCountDao.put(m2, day1, id2);
-        uniqueCountDao.put(m2, day1, id2);
-        uniqueCountDao.put(m2, day1, id2);
-        uniqueCountDao.put(m2, day1, id3);
-        uniqueCountDao.put(m2, day1, id1);
-        uniqueCountDao.put(m2, day2, id1);
-        uniqueCountDao.put(m2, day2, id1);
+        // Set up the following counts:
+        // (m1, id1, day1) = 1
+        // (m2, id2, day1) = 3
+        // (m2, id3, day1) = 2
+        // (m2, id1, day1) = 1
+        // (m2, id1, day2) = 2
+        // (m2, id1, day3) = 5
+        uniqueCountDao.put(m1, id1, day1);
+        uniqueCountDao.put(m2, id3, day1);
+        uniqueCountDao.put(m2, id2, day1);
+        uniqueCountDao.put(m2, id2, day1);
+        uniqueCountDao.put(m2, id2, day1);
+        uniqueCountDao.put(m2, id3, day1);
+        uniqueCountDao.put(m2, id1, day1);
+        uniqueCountDao.put(m2, id1, day2);
+        uniqueCountDao.put(m2, id1, day2);
+        uniqueCountDao.put(m2, id1, day3);
+        uniqueCountDao.put(m2, id1, day3);
+        uniqueCountDao.put(m2, id1, day3);
+        uniqueCountDao.put(m2, id1, day3);
+        uniqueCountDao.put(m2, id1, day3);
 
-        List<CountDataPoint> results = uniqueCountDao.topCounts(m1, day1, Long.MAX_VALUE);
-        assertNotNull(results);
-        assertEquals(1, results.size());
-        assertEquals(id1, results.get(0).id());
-        assertEquals(1L, results.get(0).count());
+        // m1 by day
+        List<CountDataPoint> counts = uniqueCountDao.topCounts(m1, Interval.day, day1, 0L, 100L);
+        assertNotNull(counts);
+        assertEquals(1, counts.size());
+        assertEquals(id1, counts.get(0).id());
+        assertEquals(1L, counts.get(0).count());
 
-        // Only look at top 1
-        results = uniqueCountDao.topCounts(m2, day1, 1L);
-        assertEquals(1, results.size());
-        assertEquals(id2, results.get(0).id());
-        assertEquals(3L, results.get(0).count());
+        // m2 by month Top 1
+        counts = uniqueCountDao.topCounts(m2, Interval.month, day2, 0L, 1L);
+        assertEquals(1, counts.size());
+        assertEquals(id1, counts.get(0).id());
+        assertEquals(8L, counts.get(0).count());
         // Top 2
-        results = uniqueCountDao.topCounts(m2, day1, 2L);
-        assertEquals(2, results.size());
-        assertEquals(id2, results.get(0).id());
-        assertEquals(3L, results.get(0).count());
-        assertEquals(id3, results.get(1).id());
-        assertEquals(2L, results.get(1).count());
-        results = uniqueCountDao.topCounts(m2, day1, Long.MAX_VALUE);
-        assertEquals(3, results.size());
-        assertEquals(id2, results.get(0).id());
-        assertEquals(3L, results.get(0).count());
-        assertEquals(id3, results.get(1).id());
-        assertEquals(2L, results.get(1).count());
-        assertEquals(id1, results.get(2).id());
-        assertEquals(1L, results.get(2).count());
-        // Verify day 2 results for m2
-        results = uniqueCountDao.topCounts(m2, day2, Long.MAX_VALUE);
-        assertEquals(1, results.size());
-        assertEquals(id1, results.get(0).id());
-        assertEquals(2L, results.get(0).count());
+        counts = uniqueCountDao.topCounts(m2, Interval.month, day2, 0L, 2L);
+        assertEquals(2, counts.size());
+        assertEquals(id1, counts.get(0).id());
+        assertEquals(8L, counts.get(0).count());
+        assertEquals(id2, counts.get(1).id());
+        assertEquals(3L, counts.get(1).count());
+        // Next page
+        counts = uniqueCountDao.topCounts(m2, Interval.month, day2, 2L, 1000000L);
+        assertEquals(1, counts.size());
+        assertEquals(id3, counts.get(0).id());
+        assertEquals(2L, counts.get(0).count());
 
-        // Verify results as time series
-        List<TimeDataPoint> dataPoints = uniqueCountDao.uniqueCounts(m1, day1, day2);
+        // m2 id1 counts by week
+        List<TimeDataPoint> dataPoints = uniqueCountDao.counts(m2, id1, Interval.week, day1, day3);
+        assertNotNull(dataPoints);
+        assertEquals(2, dataPoints.size());
+        assertEquals(PosixTimeUtil.floorToWeek(day1), dataPoints.get(0).timestamp());
+        assertEquals("3", dataPoints.get(0).value());
+        assertEquals(PosixTimeUtil.floorToWeek(day3), dataPoints.get(1).timestamp());
+        assertEquals("5", dataPoints.get(1).value());
+
+        // unique counts
+        dataPoints = uniqueCountDao.uniqueCounts(m1, Interval.day, day1, day2);
         assertNotNull(dataPoints);
         assertEquals(1, dataPoints.size());
         assertEquals("1", dataPoints.get(0).value());
-        dataPoints = uniqueCountDao.uniqueCounts(m2, day1, day2);
+        dataPoints = uniqueCountDao.uniqueCounts(m2, Interval.day, day1, day2);
         assertNotNull(dataPoints);
         assertEquals(2, dataPoints.size());
         assertEquals("3", dataPoints.get(0).value());
         assertEquals("1", dataPoints.get(1).value());
-        dataPoints = uniqueCountDao.uniqueCounts(m1, day1, day1);
+        dataPoints = uniqueCountDao.uniqueCounts(m1, Interval.day, day1, day1);
         assertEquals(1, dataPoints.size());
         assertEquals("1", dataPoints.get(0).value());
 
         // Verify we get back an empty results set for a future time
-        dataPoints = uniqueCountDao.uniqueCounts(m1, day1.plusYears(1), day2.plusYears(1));
+        dataPoints = uniqueCountDao.uniqueCounts(m1, Interval.day, day1.plusYears(1), day2.plusYears(1));
         assertNotNull(dataPoints);
         assertEquals(0, dataPoints.size());
     }
@@ -116,12 +128,12 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         final String metricId = this.getClass().getName() + ".testKeyExpire";
         final String id = "id";
         DateTime dt = new DateTime(2005, 9, 25, 9, 30, DateTimeZone.UTC);
-        uniqueCountDao.put(metricId, dt, id);
+        uniqueCountDao.put(metricId, id, dt);
 
         Set<String> keys = redisTemplate.keys("*" + metricId + "*");
         for (String key : keys) {
             long expires = redisTemplate.getExpire(key, TimeUnit.DAYS);
-            assertTrue(expires == 180L || expires == 179L);
+            assertTrue(expires == 200L || expires == 199L);
         }
     }
 }

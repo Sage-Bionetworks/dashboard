@@ -159,7 +159,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         Set<String> keys = redisTemplate.keys("*" + metricId + "*");
         for (String key : keys) {
             long expires = redisTemplate.getExpire(key, TimeUnit.DAYS);
-            assertTrue(expires == 180L || expires == 179L);
+            assertTrue(expires == 200L || expires == 199L);
         }
     }
 }

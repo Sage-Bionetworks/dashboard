@@ -11,7 +11,7 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
 
     @Override
     void write(String metricId, DateTime timestamp, String id) {
-        uniqueCountDao.put(metricId, timestamp, id);
+        uniqueCountDao.put(metricId, id, timestamp);
     }
 
     @Resource

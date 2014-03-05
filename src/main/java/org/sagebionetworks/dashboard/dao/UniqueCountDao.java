@@ -4,34 +4,54 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
+import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 
+/**
+ * Counts a set of unique IDs. Each ID in the set has an associated count.
+ */
 public interface UniqueCountDao {
 
     /**
-     * Puts an ID. Adds one to the count of the specified ID.
+     * Increased the count of the specified ID by one. If the ID is not in
+     * the set yet, it will be added with a count of one.
      *
      * @param metricId   The ID of the metric.
-     * @param timestamp  The time when this metric was recorded.
-     * @param id         The ID whose count is tracked by this metric.
+     * @param id         The object ID whose count is to be increased.
+     * @param timestamp  The time-stamp when this metric was captured.
      */
-    void put(String metricId, DateTime timestamp, String id);
+    void put(String metricId, String id, DateTime timestamp);
 
     /**
-     * Gets the list of counts sorted at descending order for the specified day.
+     * Gets the list of counts for a particular ID over a period of time. For example,
+     * the list of session counts for a user over a period of time.
      *
      * @param metricId   The ID of the metric.
-     * @param timestamp  The day of the metric.
-     * @param n          The max number of counts to retrieve.
+     * @param id         The object ID.
+     * @param interval   Aggregation interval. By day, by week, or by month.
+     * @param from       The start time of the metric.
+     * @param to         The end time of the metric.
      */
-    List<CountDataPoint> topCounts(String metricId, DateTime timestamp, long n);
+    List<TimeDataPoint> counts(String metricId, String id, Interval interval, DateTime from, DateTime to);
 
     /**
-     * The number of unique objects for the specified range of days.
+     * Gets the list of IDs for the specified time with their counts sorted at descending order.
      *
      * @param metricId   The ID of the metric.
-     * @param from       The start day of the metric.
-     * @param to         The end day of the metric.
+     * @param interval   Aggregation interval. By day, by week, or by month.
+     * @param timestamp  The time of the metric.
+     * @param offset     Zero-based offset.
+     * @param size       The max number of counts to retrieve.
      */
-    List<TimeDataPoint> uniqueCounts(String metricId, DateTime from, DateTime to);
+    List<CountDataPoint> topCounts(String metricId, Interval interval, DateTime timestamp, long offset, long size);
+
+    /**
+     * The number of unique objects for the specified time.
+     *
+     * @param metricId   The ID of the metric.
+     * @param interval   Aggregation interval. By day, by week, or by month.
+     * @param from       The start time of the metric.
+     * @param to         The start time of the metric.
+     */
+    List<TimeDataPoint> uniqueCounts(String metricId, Interval interval, DateTime from, DateTime to);
 }
