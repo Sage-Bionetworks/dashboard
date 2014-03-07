@@ -40,10 +40,9 @@ public class App {
         redisTemplate.delete(keys);
 
         // Load metrics
-        int count = 0;
-        for (File file : files) {
-            count++;
-            System.out.println("Loading file " + count + " of " + total);
+        for (int i = files.size() - 1; i >= 0; i--) {
+            File file = files.get(i);
+            System.out.println("Loading file " + (files.size() - i) + " of " + total);
             InputStream is = new FileInputStream(file);
             try {
                 updateService.update(is, file.getPath(), new UpdateCallback() {

@@ -69,16 +69,16 @@ public class RepoFileFetcherTest {
         ReflectionTestUtils.setField(fetcher, "s3", s3, AmazonS3.class);
 
         List<String> files = fetcher.nextBatch();
-        // Should get back a full batch of 20 files as each file is 100 KB and the max total size per batch is 2 MB
-        assertEquals(20, files.size());
+        // Should get back a full batch of 60 files as each file is 100 KB and the max total size per batch is 6 MB
+        assertEquals(60, files.size());
         @SuppressWarnings("unchecked")
         Map<String, String> markerMap = (Map<String, String>)ReflectionTestUtils.getField(fetcher, "folderMarkerMap");
-        // Each folder gets 2 files (file 1 and 3) into the batch and there are 20 files in the batch
-        // We should cut off at folder 10
-        assertTrue(markerMap.containsKey("009"));
-        assertFalse(markerMap.containsKey("010"));
+        // Each folder gets 2 files (file 1 and 3) into the batch and there are 60 files in the batch
+        // We should cut off at folder 30
+        assertTrue(markerMap.containsKey("029"));
+        assertFalse(markerMap.containsKey("030"));
         // Each folder should have the correct marker
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i++) {
             assertEquals(marker, markerMap.get(String.format("%03d", i)));
         }
     }
