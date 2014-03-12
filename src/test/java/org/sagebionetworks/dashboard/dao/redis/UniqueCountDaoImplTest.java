@@ -45,6 +45,7 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         final DateTime day1 = new DateTime(2011, 11, 15, 8, 51, DateTimeZone.UTC); // Monday
         final DateTime day2 = new DateTime(2011, 11, 16, 8, 51, DateTimeZone.UTC); // Tuesday
         final DateTime day3 = new DateTime(2011, 11, 22, 8, 51, DateTimeZone.UTC); // next Monday
+        final DateTime day4 = new DateTime(2012, 1, 22, 8, 51, DateTimeZone.UTC);  // next year, for testing the month interval
 
         // Set up the following counts:
         // (m1, id1, day1) = 1
@@ -67,6 +68,7 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         uniqueCountDao.put(m2, id1, day3);
         uniqueCountDao.put(m2, id1, day3);
         uniqueCountDao.put(m2, id1, day3);
+        uniqueCountDao.put(m2, id1, day4);
 
         // m1 by day
         List<CountDataPoint> counts = uniqueCountDao.topCounts(m1, Interval.day, day1, 0L, 100L);
@@ -127,6 +129,10 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         dataPoints = uniqueCountDao.uniqueCounts(m1, Interval.day, day1.plusYears(1), day2.plusYears(1));
         assertNotNull(dataPoints);
         assertEquals(0, dataPoints.size());
+
+        dataPoints = uniqueCountDao.uniqueCounts(m2, Interval.month, day1, day4.plusMonths(1));
+        assertNotNull(dataPoints);
+        assertEquals(2, dataPoints.size());
     }
 
     @Test
