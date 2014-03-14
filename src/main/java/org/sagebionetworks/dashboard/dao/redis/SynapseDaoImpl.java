@@ -5,6 +5,7 @@ import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_ENTITY_ID_NAME
 import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_SESSION;
 import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_USER_ID_NAME;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -54,6 +55,24 @@ public class SynapseDaoImpl implements SynapseDao {
             }
         }
         return name;
+    }
+
+    @Override
+    public List<String> getUserNames(List<String> userIds) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> getEntityNames(List<String> entityIds) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> getProjects(List<String> entityIds) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private String getSession() {

@@ -89,7 +89,7 @@ public class RepoFolderFetcher {
             prefixList.add(folder.toString());
         }
         logger.info("A list of " + prefixList.size() + " folders, spanning at maximum "
-                + days + " days, have been retried.");
+                + days + " days, have been retrieved.");
         return prefixList;
     }
 

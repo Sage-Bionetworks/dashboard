@@ -27,7 +27,7 @@ public class RepoFileFetcher {
     /**  How many days to fetch. */
     private static final int DAYS = 200;
     /** The max number of bytes in one batch. */
-    private static final long BATCH_SIZE = 2L * 1000L * 1000L; // 2 MB per batch
+    private static final long BATCH_SIZE = 6L * 1000L * 1000L; // 6 MB per batch
 
     @Resource
     private RepoFolderFetcher repoFolderFetcher;
@@ -90,10 +90,17 @@ public class RepoFileFetcher {
             for (S3ObjectSummary obj : objListing.getObjectSummaries()) {
                 final String key = obj.getKey();
                 if (isValidKey(key)) {
-                    batch.add(key);
+                    // TODO: Check if the file has already been successfully processed.
+                    //       Only add the file to the batch and updates the quota when
+                    //       it has not been processed.
+                    if (true) {
+                        batch.add(key);
+                        quota = quota - obj.getSize();
+                        logger.info("Added key " + key + " to the batch.");
+                    }
+                    // Update the marker so that we visit new files on the next batch
                     folderMarkerMap.put(folder, key);
-                    logger.info("Added key " + key + " to the batch.");
-                    quota = quota - obj.getSize();
+                    // Exit early when no more quota left
                     if (quota <= 0) {
                         return quota;
                     }
