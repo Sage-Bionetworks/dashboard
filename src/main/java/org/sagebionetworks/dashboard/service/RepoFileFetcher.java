@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
+import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class RepoFileFetcher {
 
     @Resource
     private RepoFolderFetcher repoFolderFetcher;
+
+    @Resource
+    private FileStatusDao fileStatusDao;
 
     // For each folder, record the last marker used so that
     // the next batch for the same folder will start from the marker
@@ -90,10 +94,8 @@ public class RepoFileFetcher {
             for (S3ObjectSummary obj : objListing.getObjectSummaries()) {
                 final String key = obj.getKey();
                 if (isValidKey(key)) {
-                    // TODO: Check if the file has already been successfully processed.
-                    //       Only add the file to the batch and updates the quota when
-                    //       it has not been processed.
-                    if (true) {
+                    // Make sure the file hasn't been processed yet
+                    if (!fileStatusDao.isCompleted(key) && !fileStatusDao.isFailed(key)) {
                         batch.add(key);
                         quota = quota - obj.getSize();
                         logger.info("Added key " + key + " to the batch.");
