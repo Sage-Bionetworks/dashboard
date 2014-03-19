@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans  xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:context="http://www.springframework.org/schema/context"
         xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:c="http://www.springframework.org/schema/c"
         xmlns:task="http://www.springframework.org/schema/task"
         xsi:schemaLocation="
-            http://www.springframework.org/schema/beans
-            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-            http://www.springframework.org/schema/context
-            http://www.springframework.org/schema/context/spring-context-3.2.xsd
-            http://www.springframework.org/schema/task
-            http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+                http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context-3.2.xsd
+                http://www.springframework.org/schema/task
+                http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
     <context:component-scan base-package="
             org.sagebionetworks.dashboard.dao.redis,
@@ -25,6 +26,13 @@
     <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate"
             p:connection-factory-ref="jedisConnFactory" />
 
-    <task:annotation-driven />
+    <bean id="dwDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close"
+            p:driverClassName="org.postgresql.Driver"
+            p:url="jdbc:postgresql://localhost:5432/dashboard"
+            p:username="${dashboardContext.dwUsername}"
+            p:password="${dashboardContext.dwPassword}" />
+
+    <bean id="dwTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"
+            c:dataSource-ref="dwDataSource" />
 
 </beans>
