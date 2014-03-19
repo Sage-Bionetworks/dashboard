@@ -113,12 +113,11 @@ public class DashboardContext {
     }
 
     private void populateNameValueMap(ContextReader reader) {
-        for (Entry<String, String> entry : nameValueMap.entrySet()) {
-            String key = entry.getKey();
+        for (String key : nameValueMap.keySet()) {
             String val = reader.read(key);
             if (prod) {
-                key = key + "." + PROD;
-                String prodVal = reader.read(key);
+                String prodKey = key + "." + PROD;
+                String prodVal = reader.read(prodKey);
                 val = (prodVal == null ? val : prodVal);
             }
             if (val != null) {

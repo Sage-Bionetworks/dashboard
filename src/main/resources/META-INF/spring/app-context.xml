@@ -13,7 +13,8 @@
     <context:component-scan base-package="
             org.sagebionetworks.dashboard.dao.redis,
             org.sagebionetworks.dashboard.metric,
-            org.sagebionetworks.dashboard.service" />
+            org.sagebionetworks.dashboard.service,
+            org.sagebionetworks.dashboard" />
 
     <!-- Redis Configuration -->
 

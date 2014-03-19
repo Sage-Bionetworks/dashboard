@@ -35,6 +35,4 @@
     <bean id="dwTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"
             c:dataSource-ref="dwDataSource" />
 
-    <task:annotation-driven />
-
 </beans>
