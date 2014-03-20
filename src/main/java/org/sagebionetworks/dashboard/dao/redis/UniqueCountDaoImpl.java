@@ -43,7 +43,7 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
     }
 
     @Override
-    public List<TimeDataPoint> counts(String metricId, String id, Interval interval, DateTime from, DateTime to) {
+    public List<TimeDataPoint> get(String metricId, String id, Interval interval, DateTime from, DateTime to) {
         final String shortId = nameIdDao.getId(id); // Swap for a shorter id
         final List<KeyPiece> keys = getKeys(metricId, interval, from, to);
         final List<KeyPiece> existingKeys = getExistingKeys(keys);
@@ -70,7 +70,7 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
     }
 
     @Override
-    public List<CountDataPoint> topCounts(String metricId, Interval interval, DateTime timestamp, long offset, long size) {
+    public List<CountDataPoint> getTop(String metricId, Interval interval, DateTime timestamp, long offset, long size) {
         final String key = getKey(metricId, interval, timestamp);
         Collection<TypedTuple<String>> data = zsetOps.reverseRangeWithScores(key, offset, offset + size - 1);
         List<CountDataPoint> results = new ArrayList<CountDataPoint>();
@@ -83,7 +83,7 @@ public class UniqueCountDaoImpl implements UniqueCountDao {
     }
 
     @Override
-    public List<TimeDataPoint> uniqueCounts(String metricId, Interval interval, DateTime from, DateTime to) {
+    public List<TimeDataPoint> getUnique(String metricId, Interval interval, DateTime from, DateTime to) {
         final List<KeyPiece> keys = getKeys(metricId, interval, from, to);
         final List<KeyPiece> existingKeys = getExistingKeys(keys);
         List<Object> counts = redisTemplate.executePipelined(new RedisCallback<Object>() {

@@ -32,7 +32,7 @@ public interface UniqueCountDao {
      * @param from       The start time of the metric.
      * @param to         The end time of the metric.
      */
-    List<TimeDataPoint> counts(String metricId, String id, Interval interval, DateTime from, DateTime to);
+    List<TimeDataPoint> get(String metricId, String id, Interval interval, DateTime from, DateTime to);
 
     /**
      * Gets the list of IDs for the specified time with their counts sorted at descending order.
@@ -43,7 +43,7 @@ public interface UniqueCountDao {
      * @param offset     Zero-based offset.
      * @param size       The max number of counts to retrieve.
      */
-    List<CountDataPoint> topCounts(String metricId, Interval interval, DateTime timestamp, long offset, long size);
+    List<CountDataPoint> getTop(String metricId, Interval interval, DateTime timestamp, long offset, long size);
 
     /**
      * The number of unique objects for the specified time.
@@ -53,5 +53,5 @@ public interface UniqueCountDao {
      * @param from       The start time of the metric.
      * @param to         The start time of the metric.
      */
-    List<TimeDataPoint> uniqueCounts(String metricId, Interval interval, DateTime from, DateTime to);
+    List<TimeDataPoint> getUnique(String metricId, Interval interval, DateTime from, DateTime to);
 }

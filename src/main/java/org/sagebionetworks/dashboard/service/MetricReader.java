@@ -35,7 +35,7 @@ public class MetricReader {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
         }
         String metricId = getMetricId(metricName);
-        return timeSeriesDao.timeSeries(metricId, from, to, s, a);
+        return timeSeriesDao.get(metricId, from, to, s, a);
     }
 
     public List<CountDataPoint> getTop(String metricName, Interval interval, DateTime timestamp, int offset, int size) {
@@ -43,7 +43,7 @@ public class MetricReader {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
         }
         String metricId = getMetricId(metricName);
-        return uniqueCountDao.topCounts(metricId, interval, timestamp, offset, size);
+        return uniqueCountDao.getTop(metricId, interval, timestamp, offset, size);
     }
 
     public List<TimeDataPoint> getUniqueCount(String metricName, Interval interval, DateTime from, DateTime to) {
@@ -51,7 +51,7 @@ public class MetricReader {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
         }
         String metricId = getMetricId(metricName);
-        return uniqueCountDao.uniqueCounts(metricId, interval, from, to);
+        return uniqueCountDao.getUnique(metricId, interval, from, to);
     }
 
     public List<TimeDataPoint> getCount(String metricName, String id, Interval interval, DateTime from, DateTime to) {
@@ -59,7 +59,7 @@ public class MetricReader {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
         }
         String metricId = getMetricId(metricName);
-        return uniqueCountDao.counts(metricId, id, interval, from, to);
+        return uniqueCountDao.get(metricId, id, interval, from, to);
     }
 
     public List<TimeDataPoint> getCount(String metricName, DateTime from, DateTime to) {

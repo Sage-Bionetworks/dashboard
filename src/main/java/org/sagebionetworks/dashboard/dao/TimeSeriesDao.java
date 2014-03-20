@@ -30,6 +30,6 @@ public interface TimeSeriesDao {
      * @param statistic     Statistic n, sum, average, or max.
      * @param interval      Aggregates by minute, hour, or day.
      */
-    List<TimeDataPoint> timeSeries(String metricId, DateTime from, DateTime to,
+    List<TimeDataPoint> get(String metricId, DateTime from, DateTime to,
             Statistic statistic, Interval interval);
 }

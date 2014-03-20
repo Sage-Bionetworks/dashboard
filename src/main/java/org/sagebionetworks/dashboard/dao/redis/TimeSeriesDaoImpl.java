@@ -37,7 +37,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
     }
 
     @Override
-    public List<TimeDataPoint> timeSeries(final String metricId, final DateTime from, final DateTime to,
+    public List<TimeDataPoint> get(final String metricId, final DateTime from, final DateTime to,
             final Statistic statistic, final Interval interval) {
 
         // Average is derived from sum/n
@@ -67,8 +67,8 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
     private List<TimeDataPoint> getAvg(final String metricId, final DateTime from, final DateTime to,
             final Interval interval) {
 
-        List<TimeDataPoint> sumList = timeSeries(metricId, from, to, sum, interval);
-        List<TimeDataPoint> nList = timeSeries(metricId, from, to, n, interval);
+        List<TimeDataPoint> sumList = get(metricId, from, to, sum, interval);
+        List<TimeDataPoint> nList = get(metricId, from, to, n, interval);
         List<TimeDataPoint> avgList = new ArrayList<TimeDataPoint>(sumList.size());
         for (int i = 0; i < sumList.size(); i++) {
             TimeDataPoint iSum = sumList.get(i);

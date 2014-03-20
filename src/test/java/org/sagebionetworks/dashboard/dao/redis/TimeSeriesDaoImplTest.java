@@ -84,7 +84,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
 
         final DateTime start = new DateTime(2005, 2, 1, 0, 0, 0, 0, DateTimeZone.UTC);
         final DateTime end = new DateTime(2005, 3, 1, 0, 0, 0, 0, DateTimeZone.UTC);
-        List<TimeDataPoint> sumListM3 = timeSeriesDao.timeSeries(python, start, end, sum, m3);
+        List<TimeDataPoint> sumListM3 = timeSeriesDao.get(python, start, end, sum, m3);
         assertEquals(4, sumListM3.size());
         TimeDataPoint dp = sumListM3.get(0);
         assertEquals(1107855000000L, dp.timestamp());
@@ -99,7 +99,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1108118520000L, dp.timestamp());
         assertEquals("3", dp.value());
 
-        List<TimeDataPoint> sumListHour = timeSeriesDao.timeSeries(python, start, end, sum, hour);
+        List<TimeDataPoint> sumListHour = timeSeriesDao.get(python, start, end, sum, hour);
         assertEquals(3, sumListHour.size());
         dp = sumListHour.get(0);
         assertEquals(1107853200000L, dp.timestamp());
@@ -111,7 +111,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1108116000000L, dp.timestamp());
         assertEquals("3", dp.value());
 
-        List<TimeDataPoint> sumListDay = timeSeriesDao.timeSeries(python, start, end, sum, day);
+        List<TimeDataPoint> sumListDay = timeSeriesDao.get(python, start, end, sum, day);
         assertEquals(2, sumListDay.size());
         dp = sumListDay.get(0);
         assertEquals(1107820800000L, dp.timestamp());
@@ -120,7 +120,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1108080000000L, dp.timestamp());
         assertEquals("3", dp.value());
 
-        List<TimeDataPoint> nListDay = timeSeriesDao.timeSeries(python, start, end, n, day);
+        List<TimeDataPoint> nListDay = timeSeriesDao.get(python, start, end, n, day);
         assertEquals(2, nListDay.size());
         dp = nListDay.get(0);
         assertEquals(1107820800000L, dp.timestamp());
@@ -129,7 +129,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1108080000000L, dp.timestamp());
         assertEquals("1", dp.value());
 
-        List<TimeDataPoint> maxListDay = timeSeriesDao.timeSeries(python, start, end, max, day);
+        List<TimeDataPoint> maxListDay = timeSeriesDao.get(python, start, end, max, day);
         assertEquals(2, maxListDay.size());
         dp = maxListDay.get(0);
         assertEquals(1107820800000L, dp.timestamp());
@@ -138,7 +138,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
         assertEquals(1108080000000L, dp.timestamp());
         assertEquals("3", dp.value());
 
-        List<TimeDataPoint> avgListDay = timeSeriesDao.timeSeries(python, start, end, avg, day);
+        List<TimeDataPoint> avgListDay = timeSeriesDao.get(python, start, end, avg, day);
         assertEquals(2, avgListDay.size());
         dp = avgListDay.get(0);
         assertEquals(1107820800000L, dp.timestamp());
