@@ -28,7 +28,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
-public abstract class AbstractUniqueCountDao implements UniqueCountDao {
+abstract class AbstractUniqueCountDao implements UniqueCountDao {
 
     @Override
     public List<TimeDataPoint> get(String metricId, String id, Interval interval, DateTime from, DateTime to) {
@@ -109,7 +109,7 @@ public abstract class AbstractUniqueCountDao implements UniqueCountDao {
         }
     }
 
-    private List<KeyPiece> getExistingKeys (final List<KeyPiece> keys) {
+    private List<KeyPiece> getExistingKeys(final List<KeyPiece> keys) {
         List<Object> flags = redisTemplate.executePipelined(new RedisCallback<Object>() {
             @Override
             public Object doInRedis(RedisConnection conn) throws DataAccessException {
