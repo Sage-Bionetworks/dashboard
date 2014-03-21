@@ -5,7 +5,7 @@ import static org.sagebionetworks.dashboard.model.Interval.day;
 import static org.sagebionetworks.dashboard.model.Interval.month;
 import static org.sagebionetworks.dashboard.model.Interval.week;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -30,7 +30,8 @@ public class UniqueCountDaoImpl extends AbstractUniqueCountDao {
     private void put(String metricId, String shortId, Interval interval, DateTime timestamp) {
         String key = getKey(metricId, interval, timestamp);
         zsetOps.incrementScore(key, shortId, 1.0d);
-        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
+        Date expireAt = DateTime.now().plusDays(EXPIRE_DAYS).toDate();
+        redisTemplate.expireAt(key, expireAt);
     }
 
     @Resource

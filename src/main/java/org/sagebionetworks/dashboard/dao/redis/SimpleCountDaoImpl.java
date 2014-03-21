@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
+import static org.sagebionetworks.dashboard.dao.redis.RedisConstants.EXPIRE_DAYS;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +13,7 @@ import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +24,7 @@ public class SimpleCountDaoImpl implements SimpleCountDao {
     public void put(String metricId, DateTime timestamp) {
         String key = KEY_ASSEMBLER.getKey(metricId, timestamp);
         valueOps.increment(key, 1L);
+        redisTemplate.expireAt(key, DateTime.now().plusDays(EXPIRE_DAYS).toDate());
     }
 
     @Override
@@ -47,6 +51,9 @@ public class SimpleCountDaoImpl implements SimpleCountDao {
             Statistic.n,
             Interval.day,
             NameSpace.count);
+
+    @Resource
+    private StringRedisTemplate redisTemplate;
 
     @Resource(name="redisTemplate")
     private ValueOperations<String, String> valueOps;

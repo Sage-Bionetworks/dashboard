@@ -2,8 +2,11 @@ package org.sagebionetworks.dashboard.dao.redis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
@@ -46,5 +49,16 @@ public class SimpleCountDaoImplTest extends AbstractRedisDaoTest {
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals("1", results.get(0).value());
+    }
+
+    @Test
+    public void testExpire() {
+        String metricId = getClass().getName() + ".testExpire";
+        simpleCountDao.put(metricId, new DateTime(2013, 12, 10, 17, 11, DateTimeZone.UTC));
+        Set<String> keys = redisTemplate.keys("*" + metricId + "*");
+        for (String key : keys) {
+            long expires = redisTemplate.getExpire(key, TimeUnit.DAYS);
+            assertTrue(expires == 200L || expires == 199L);
+        }
     }
 }

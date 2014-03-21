@@ -151,7 +151,7 @@ public class TimeSeriesDaoImplTest extends AbstractRedisDaoTest {
     @Test
     public void testKeyExpire() throws InterruptedException {
 
-        final String metricId = this.getClass().getName() + ".testKeyExpire";
+        final String metricId = getClass().getName() + ".testKeyExpire";
         long val = 83L;
         DateTime dt = new DateTime(2005, 9, 25, 9, 30, DateTimeZone.UTC);
         timeSeriesDao.put(metricId, dt, val);

@@ -138,7 +138,7 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
     @Test
     public void testKeyExpire() throws InterruptedException {
 
-        final String metricId = this.getClass().getName() + ".testKeyExpire";
+        final String metricId = getClass().getName() + ".testKeyExpire";
         final String id = "id";
         DateTime dt = new DateTime(2005, 9, 25, 9, 30, DateTimeZone.UTC);
         uniqueCountDao.put(metricId, id, dt);
