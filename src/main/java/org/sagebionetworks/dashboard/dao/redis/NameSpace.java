@@ -20,6 +20,9 @@ enum NameSpace {
     /** Counts by unique IDs. */
     uniquecount,
 
+    /** Count of bits. */
+    bitcount,
+
     /** Simple counts. */
     count
 }

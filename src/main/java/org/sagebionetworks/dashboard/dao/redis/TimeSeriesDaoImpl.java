@@ -13,7 +13,6 @@ import static org.sagebionetworks.dashboard.model.Statistic.sum;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
@@ -37,7 +36,7 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
     }
 
     @Override
-    public List<TimeDataPoint> timeSeries(final String metricId, final DateTime from, final DateTime to,
+    public List<TimeDataPoint> get(final String metricId, final DateTime from, final DateTime to,
             final Statistic statistic, final Interval interval) {
 
         // Average is derived from sum/n
@@ -67,8 +66,8 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
     private List<TimeDataPoint> getAvg(final String metricId, final DateTime from, final DateTime to,
             final Interval interval) {
 
-        List<TimeDataPoint> sumList = timeSeries(metricId, from, to, sum, interval);
-        List<TimeDataPoint> nList = timeSeries(metricId, from, to, n, interval);
+        List<TimeDataPoint> sumList = get(metricId, from, to, sum, interval);
+        List<TimeDataPoint> nList = get(metricId, from, to, n, interval);
         List<TimeDataPoint> avgList = new ArrayList<TimeDataPoint>(sumList.size());
         for (int i = 0; i < sumList.size(); i++) {
             TimeDataPoint iSum = sumList.get(i);
@@ -85,24 +84,24 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
         // n
         String key = (new KeyAssembler(n, interval, timeseries)).getKey(metricId, timestamp);
         valueOps.increment(key, 1L);
-        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
+        redisTemplate.expireAt(key, DateTime.now().plusDays(EXPIRE_DAYS).toDate());
         // sum
         key = (new KeyAssembler(sum, interval, timeseries)).getKey(metricId, timestamp);
         valueOps.increment(key, value);
-        redisTemplate.expire(key, EXPIRE_DAYS, TimeUnit.DAYS);
+        redisTemplate.expireAt(key, DateTime.now().plusDays(EXPIRE_DAYS).toDate());
         // max -- optimistically work around race conditions
         final String maxKey = (new KeyAssembler(max, interval, timeseries)).getKey(metricId, timestamp);
         String strMax = valueOps.get(maxKey);
         long redisMax = strMax == null ? -1L : Long.parseLong(strMax);
         long max = value;
-        int i = 0;
-        while (redisMax < max && i < 5) {
+        int retries = 0;
+        while (redisMax < max && retries < 5) {
             // in case some other client set the max in the middle
             strMax = valueOps.getAndSet(maxKey, Long.toString(max));
-            redisTemplate.expire(maxKey, EXPIRE_DAYS, TimeUnit.DAYS);
+            redisTemplate.expireAt(maxKey, DateTime.now().plusDays(EXPIRE_DAYS).toDate());
             redisMax = max;
             max = strMax == null ? -1L : Long.parseLong(strMax);
-            i++;
+            retries++;
         }
         if (redisMax < max) {
             throw new RuntimeException(

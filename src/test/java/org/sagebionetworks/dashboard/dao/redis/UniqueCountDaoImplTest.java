@@ -71,32 +71,32 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         uniqueCountDao.put(m2, id1, day4);
 
         // m1 by day
-        List<CountDataPoint> counts = uniqueCountDao.topCounts(m1, Interval.day, day1, 0L, 100L);
+        List<CountDataPoint> counts = uniqueCountDao.getTop(m1, Interval.day, day1, 0L, 100L);
         assertNotNull(counts);
         assertEquals(1, counts.size());
         assertEquals(id1, counts.get(0).id());
         assertEquals(1L, counts.get(0).count());
 
         // m2 by month Top 1
-        counts = uniqueCountDao.topCounts(m2, Interval.month, day2, 0L, 1L);
+        counts = uniqueCountDao.getTop(m2, Interval.month, day2, 0L, 1L);
         assertEquals(1, counts.size());
         assertEquals(id1, counts.get(0).id());
         assertEquals(8L, counts.get(0).count());
         // Top 2
-        counts = uniqueCountDao.topCounts(m2, Interval.month, day2, 0L, 2L);
+        counts = uniqueCountDao.getTop(m2, Interval.month, day2, 0L, 2L);
         assertEquals(2, counts.size());
         assertEquals(id1, counts.get(0).id());
         assertEquals(8L, counts.get(0).count());
         assertEquals(id2, counts.get(1).id());
         assertEquals(3L, counts.get(1).count());
         // Next page
-        counts = uniqueCountDao.topCounts(m2, Interval.month, day2, 2L, 1000000L);
+        counts = uniqueCountDao.getTop(m2, Interval.month, day2, 2L, 1000000L);
         assertEquals(1, counts.size());
         assertEquals(id3, counts.get(0).id());
         assertEquals(2L, counts.get(0).count());
 
         // m2 id1 counts by week
-        List<TimeDataPoint> dataPoints = uniqueCountDao.counts(m2, id1, Interval.week, day1, day3);
+        List<TimeDataPoint> dataPoints = uniqueCountDao.get(m2, id1, Interval.week, day1, day3);
         assertNotNull(dataPoints);
         assertEquals(2, dataPoints.size());
         assertEquals(PosixTimeUtil.floorToWeek(day1) * 1000L, dataPoints.get(0).timestamp());
@@ -105,32 +105,32 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         assertEquals("5", dataPoints.get(1).value());
 
         // unique counts
-        dataPoints = uniqueCountDao.uniqueCounts(m1, Interval.day, day1, day2);
+        dataPoints = uniqueCountDao.getUnique(m1, Interval.day, day1, day2);
         assertNotNull(dataPoints);
         assertEquals(1, dataPoints.size());
         assertEquals(PosixTimeUtil.floorToDay(day1) * 1000L, dataPoints.get(0).timestamp());
         assertEquals("1", dataPoints.get(0).value());
-        dataPoints = uniqueCountDao.uniqueCounts(m2, Interval.day, day1, day2);
+        dataPoints = uniqueCountDao.getUnique(m2, Interval.day, day1, day2);
         assertNotNull(dataPoints);
         assertEquals(2, dataPoints.size());
         assertEquals(PosixTimeUtil.floorToDay(day1) * 1000L, dataPoints.get(0).timestamp());
         assertEquals("3", dataPoints.get(0).value());
         assertEquals(PosixTimeUtil.floorToDay(day2) * 1000L, dataPoints.get(1).timestamp());
         assertEquals("1", dataPoints.get(1).value());
-        dataPoints = uniqueCountDao.uniqueCounts(m2, Interval.day, day1, day3);
+        dataPoints = uniqueCountDao.getUnique(m2, Interval.day, day1, day3);
         assertNotNull(dataPoints);
         assertEquals(3, dataPoints.size());
-        dataPoints = uniqueCountDao.uniqueCounts(m1, Interval.day, day1, day1);
+        dataPoints = uniqueCountDao.getUnique(m1, Interval.day, day1, day1);
         assertEquals(1, dataPoints.size());
         assertEquals(PosixTimeUtil.floorToDay(day1) * 1000L, dataPoints.get(0).timestamp());
         assertEquals("1", dataPoints.get(0).value());
 
         // Verify we get back an empty results set for a future time
-        dataPoints = uniqueCountDao.uniqueCounts(m1, Interval.day, day1.plusYears(1), day2.plusYears(1));
+        dataPoints = uniqueCountDao.getUnique(m1, Interval.day, day1.plusYears(1), day2.plusYears(1));
         assertNotNull(dataPoints);
         assertEquals(0, dataPoints.size());
 
-        dataPoints = uniqueCountDao.uniqueCounts(m2, Interval.month, day1, day4.plusMonths(1));
+        dataPoints = uniqueCountDao.getUnique(m2, Interval.month, day1, day4.plusMonths(1));
         assertNotNull(dataPoints);
         assertEquals(2, dataPoints.size());
     }
@@ -138,7 +138,7 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
     @Test
     public void testKeyExpire() throws InterruptedException {
 
-        final String metricId = this.getClass().getName() + ".testKeyExpire";
+        final String metricId = getClass().getName() + ".testKeyExpire";
         final String id = "id";
         DateTime dt = new DateTime(2005, 9, 25, 9, 30, DateTimeZone.UTC);
         uniqueCountDao.put(metricId, id, dt);
