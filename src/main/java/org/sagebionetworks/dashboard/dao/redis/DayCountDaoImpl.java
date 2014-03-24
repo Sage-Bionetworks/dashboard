@@ -38,7 +38,8 @@ public class DayCountDaoImpl extends AbstractUniqueCountDao {
         if (!isDaySet(bitCountKey, day)) {
             setDay(bitCountKey, day);
             final String key = getKey(metricId, interval, timestamp);
-            zsetOps.incrementScore(key, shortId, 1.0d);
+            long dayCount = getDayCount(bitCountKey);
+            zsetOps.add(key, shortId, dayCount);
             redisTemplate.expireAt(key, DateTime.now().plusDays(EXPIRE_DAYS).toDate());
         }
     }
@@ -72,6 +73,16 @@ public class DayCountDaoImpl extends AbstractUniqueCountDao {
             public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
                 StringRedisConnection conn = (StringRedisConnection)connection;
                 return conn.getBit(key, day);
+            }
+        });
+    }
+
+    private Long getDayCount(final String key) {
+        return redisTemplate.execute(new RedisCallback<Long> () {
+            @Override
+            public Long doInRedis(RedisConnection connection) throws DataAccessException {
+                StringRedisConnection conn = (StringRedisConnection)connection;
+                return conn.bitCount(key);
             }
         });
     }
