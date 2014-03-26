@@ -51,7 +51,15 @@ public class MetricReader {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
         }
         String metricId = getMetricId(metricName);
-        return uniqueCountDao.getUnique(metricId, interval, from, to);
+        return uniqueCountDao.getUnique(metricId, interval, from, to, 0L, Long.MAX_VALUE);
+    }
+
+    public List<TimeDataPoint> getUniqueCount(String metricName, Interval interval, DateTime from, DateTime to, long min, long max) {
+        if (metricName == null || metricName.isEmpty()) {
+            throw new IllegalArgumentException("Metric name cannot be null or empty.");
+        }
+        String metricId = getMetricId(metricName);
+        return uniqueCountDao.getUnique(metricId, interval, from, to, min, max);
     }
 
     public List<TimeDataPoint> getCount(String metricName, String id, Interval interval, DateTime from, DateTime to) {

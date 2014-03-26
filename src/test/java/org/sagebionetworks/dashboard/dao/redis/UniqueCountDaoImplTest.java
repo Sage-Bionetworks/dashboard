@@ -105,32 +105,47 @@ public class UniqueCountDaoImplTest extends AbstractRedisDaoTest {
         assertEquals("5", dataPoints.get(1).value());
 
         // unique counts
-        dataPoints = uniqueCountDao.getUnique(m1, Interval.day, day1, day2);
+        dataPoints = uniqueCountDao.getUnique(m1, Interval.day, day1, day2, 0L, Long.MAX_VALUE);
         assertNotNull(dataPoints);
         assertEquals(1, dataPoints.size());
         assertEquals(PosixTimeUtil.floorToDay(day1) * 1000L, dataPoints.get(0).timestamp());
         assertEquals("1", dataPoints.get(0).value());
-        dataPoints = uniqueCountDao.getUnique(m2, Interval.day, day1, day2);
+        dataPoints = uniqueCountDao.getUnique(m2, Interval.day, day1, day2, 0L, Long.MAX_VALUE);
         assertNotNull(dataPoints);
         assertEquals(2, dataPoints.size());
         assertEquals(PosixTimeUtil.floorToDay(day1) * 1000L, dataPoints.get(0).timestamp());
         assertEquals("3", dataPoints.get(0).value());
         assertEquals(PosixTimeUtil.floorToDay(day2) * 1000L, dataPoints.get(1).timestamp());
         assertEquals("1", dataPoints.get(1).value());
-        dataPoints = uniqueCountDao.getUnique(m2, Interval.day, day1, day3);
+        dataPoints = uniqueCountDao.getUnique(m2, Interval.day, day1, day3, 0L, Long.MAX_VALUE);
         assertNotNull(dataPoints);
         assertEquals(3, dataPoints.size());
-        dataPoints = uniqueCountDao.getUnique(m1, Interval.day, day1, day1);
+        assertEquals("3", dataPoints.get(0).y()); // day1: {id1: 1, id2: 3, id3: 2}
+        assertEquals("1", dataPoints.get(1).y()); // day2: {id1: 2}
+        assertEquals("1", dataPoints.get(2).y()); // day3: {id1: 5}
+        dataPoints = uniqueCountDao.getUnique(m2, Interval.day, day1, day3, 2L, Long.MAX_VALUE);
+        assertNotNull(dataPoints);
+        assertEquals(3, dataPoints.size());       // Cut off at 2 (inclusive)
+        assertEquals("2", dataPoints.get(0).y()); // day1: {id2: 3, id3: 2}
+        assertEquals("1", dataPoints.get(1).y()); // day2: {id1: 2}
+        assertEquals("1", dataPoints.get(2).y()); // day3: {id1: 5}
+        dataPoints = uniqueCountDao.getUnique(m2, Interval.day, day1, day3, 3L, Long.MAX_VALUE);
+        assertNotNull(dataPoints);
+        assertEquals(3, dataPoints.size());       // Cut off at 3 (inclusive)
+        assertEquals("1", dataPoints.get(0).y()); // day1: {id2: 3}
+        assertEquals("0", dataPoints.get(1).y()); // day2: {}
+        assertEquals("1", dataPoints.get(2).y()); // day3: {id1: 5}
+        dataPoints = uniqueCountDao.getUnique(m1, Interval.day, day1, day1, 0L, Long.MAX_VALUE);
         assertEquals(1, dataPoints.size());
         assertEquals(PosixTimeUtil.floorToDay(day1) * 1000L, dataPoints.get(0).timestamp());
         assertEquals("1", dataPoints.get(0).value());
 
         // Verify we get back an empty results set for a future time
-        dataPoints = uniqueCountDao.getUnique(m1, Interval.day, day1.plusYears(1), day2.plusYears(1));
+        dataPoints = uniqueCountDao.getUnique(m1, Interval.day, day1.plusYears(1), day2.plusYears(1), 0L, Long.MAX_VALUE);
         assertNotNull(dataPoints);
         assertEquals(0, dataPoints.size());
 
-        dataPoints = uniqueCountDao.getUnique(m2, Interval.month, day1, day4.plusMonths(1));
+        dataPoints = uniqueCountDao.getUnique(m2, Interval.month, day1, day4.plusMonths(1), 0L, Long.MAX_VALUE);
         assertNotNull(dataPoints);
         assertEquals(2, dataPoints.size());
     }
