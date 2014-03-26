@@ -6,7 +6,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.RedisConnectionFailureException;
@@ -20,8 +20,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 public abstract class AbstractRedisDaoTest {
 
+    private static final ConfigurableApplicationContext context =
+            new ClassPathXmlApplicationContext("/META-INF/spring/app-context.xml");
+
     @BeforeClass
     public static void beforeClass() {
+        context.registerShutdownHook();
         // Test that the Redis connection exists before testing anything else
         StringRedisTemplate redisTemplate = getRedisTemplate();
         redisTemplate.execute(new RedisCallback<String>() {
@@ -47,11 +51,10 @@ public abstract class AbstractRedisDaoTest {
 
     private static StringRedisTemplate getRedisTemplate() {
         // Manually load the context since this is within a static method
-        ApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/test-context.xml");
         StringRedisTemplate redisTemplate = context.getBean(StringRedisTemplate.class);
         return redisTemplate;
     }
-    
+
     private static void clearRedis() {
         // Remove all the keys
         StringRedisTemplate redisTemplate = getRedisTemplate();

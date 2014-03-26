@@ -52,6 +52,8 @@ public interface UniqueCountDao {
      * @param interval   Aggregation interval. By day, by week, or by month.
      * @param from       The start time of the metric.
      * @param to         The start time of the metric.
+     * @param min        The minimum count of an ID to be included in the results.
+     * @param max        The maximum count of an ID to be included in the results.
      */
-    List<TimeDataPoint> getUnique(String metricId, Interval interval, DateTime from, DateTime to);
+    List<TimeDataPoint> getUnique(String metricId, Interval interval, DateTime from, DateTime to, long min, long max);
 }

@@ -71,7 +71,7 @@ abstract class AbstractUniqueCountDao implements UniqueCountDao {
     }
 
     @Override
-    public List<TimeDataPoint> getUnique(String metricId, Interval interval, DateTime from, DateTime to) {
+    public List<TimeDataPoint> getUnique(String metricId, Interval interval, DateTime from, DateTime to, final long min, final long max) {
         final List<KeyPiece> keys = getKeys(metricId, interval, from, to);
         final List<KeyPiece> existingKeys = getExistingKeys(keys);
         List<Object> counts = redisTemplate.executePipelined(new RedisCallback<Object>() {
@@ -79,7 +79,7 @@ abstract class AbstractUniqueCountDao implements UniqueCountDao {
             public Object doInRedis(RedisConnection conn) throws DataAccessException {
                 StringRedisConnection redisConn = (StringRedisConnection)conn;
                 for (KeyPiece k : existingKeys) {
-                    redisConn.zCard(k.key);
+                    redisConn.zCount(k.key, min, max);
                 }
                 return null;
             }
