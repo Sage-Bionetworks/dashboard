@@ -22,6 +22,8 @@ public class CreateUserMetric implements UniqueCountMetric {
             new MethodFilter("post"),
             new UriCreateUserFilter()));
 
+    // TODO: DASH-77. UserIdReader is not useful here.
+    // Object ID and user ID always null during 'POST user'
     private final RecordReader<String> reader = new UserIdReader();
 
     @Override
