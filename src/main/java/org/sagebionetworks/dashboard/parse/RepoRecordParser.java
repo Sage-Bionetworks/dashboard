@@ -33,7 +33,8 @@ public class RepoRecordParser implements RecordParser {
                 "vmId",
                 "instance",
                 "stack",
-                "success"};
+                "success",
+                "responseStatus"};
 
         Map<String, Integer> mappings = new HashMap<String, Integer>();
         for (int i = 0; i < headers.length; i++) {
@@ -76,6 +77,10 @@ public class RepoRecordParser implements RecordParser {
 
     private RepoRecord parse(String[] line) {
         RepoRecord record = new RepoRecord();
+        String session = getString("sessionId", line);
+        if (session == null) {
+            throw new RuntimeException("Missing session.");
+        }
         record.setSessionId(getString("sessionId", line));
         record.setTimestamp(getLong("timestamp", line));
         record.setUserId(getString("userId", line));
@@ -83,7 +88,7 @@ public class RepoRecordParser implements RecordParser {
         record.setMethod(getString("method", line));
         record.setUri(getString("requestURL", line));
         record.setQueryString(getString("queryString", line));
-        record.setStatus(getString("success", line));
+        record.setStatus(getString("responseStatus", line));
         record.setLatency(getLong("elapseMS", line));
         record.setUserAgent(getString("userAgent", line));
         record.setStack(getString("stack", line));
@@ -91,15 +96,25 @@ public class RepoRecordParser implements RecordParser {
         return record;
     }
 
+    /**
+     * Reads the field as a String. If the field does not exist or
+     * if the field's value is null or empty, null is returned.
+     */
     private String getString(String header, String[] line) {
         int i = headerMappings.get(header).intValue();
-        String str = line[i];
-        if (str != null && !str.isEmpty()) {
-            return str;
+        if (i < line.length) {
+            String str = line[i];
+            if (str != null && !str.isEmpty()) { // This resets empty string to null
+                return str;
+            }
         }
-        return null; // This resets empty string to null
+        return null;
     }
 
+    /**
+     * Reads the field as a Long. If the field does not exist or
+     * if the field's value is null or empty, null is returned.
+     */
     private Long getLong(String header, String[] line) {
         String str = getString(header, line);
         if (str != null) {

@@ -10,11 +10,11 @@ public class SuccessFilter implements RecordFilter {
         if (status == null || status.isEmpty()) {
             return false; // Success or not we don't know
         }
-        if ("false".equalsIgnoreCase(status)) {
-            return false; // This is an failure
+        if (status.startsWith("4") || status.startsWith("5")) {
+            return false;
         }
-        if ("true".equalsIgnoreCase(status)) {
-            return true; // This is a success
+        if (status.startsWith("2") || status.startsWith("3")) {
+            return true;
         }
         return false; // We don't know
     }

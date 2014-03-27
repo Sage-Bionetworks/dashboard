@@ -10,11 +10,11 @@ public class ErrorFilter implements RecordFilter {
         if (status == null || status.isEmpty()) {
             return false; // Error or not we don't know
         }
-        if ("false".equalsIgnoreCase(status)) {
-            return true; // This is an error
+        if (status.startsWith("4") || status.startsWith("5")) {
+            return true;
         }
-        if ("true".equalsIgnoreCase(status)) {
-            return false; // This is not an error
+        if (status.startsWith("2") || status.startsWith("3")) {
+            return false;
         }
         return false; // We don't know
     }

@@ -16,31 +16,25 @@ public class SuccessFilterTest {
         record.setStatus("");
         assertFalse(filter.matches(record));
 
-        record.setStatus("false");
-        assertFalse(filter.matches(record));
-        record.setStatus("False");
-        assertFalse(filter.matches(record));
-        record.setStatus("FALSE");
-        assertFalse(filter.matches(record));
-
-        record.setStatus("true");
-        assertTrue(filter.matches(record));
-        record.setStatus("True");
-        assertTrue(filter.matches(record));
-        record.setStatus("TRUE");
-        assertTrue(filter.matches(record));
-
-        // Not implemented yet
-        record.setStatus("200");
-        assertFalse(filter.matches(record));
-        record.setStatus("Ok");
-        assertFalse(filter.matches(record));
-        record.setStatus("OK");
-        assertFalse(filter.matches(record));
-
-        record.setStatus("500");
+        record.setStatus("400");
         assertFalse(filter.matches(record));
         record.setStatus("404");
+        assertFalse(filter.matches(record));
+        record.setStatus("500");
+        assertFalse(filter.matches(record));
+
+        record.setStatus("200");
+        assertTrue(filter.matches(record));
+        record.setStatus("301");
+        assertTrue(filter.matches(record));
+        record.setStatus("303");
+        assertTrue(filter.matches(record));
+
+        record.setStatus("Ok");
+        assertFalse(filter.matches(record));
+        record.setStatus("True");
+        assertFalse(filter.matches(record));
+        record.setStatus("False");
         assertFalse(filter.matches(record));
     }
 }
