@@ -18,31 +18,29 @@ public class ErrorFilterTest {
         record.setStatus("");
         assertFalse(filter.matches(record));
 
-        record.setStatus("false");
+        record.setStatus("400");
         assertTrue(filter.matches(record));
-        record.setStatus("False");
+        record.setStatus("403");
         assertTrue(filter.matches(record));
-        record.setStatus("FALSE");
+        record.setStatus("404");
         assertTrue(filter.matches(record));
-
-        record.setStatus("true");
-        assertFalse(filter.matches(record));
-        record.setStatus("True");
-        assertFalse(filter.matches(record));
-        record.setStatus("TRUE");
-        assertFalse(filter.matches(record));
+        record.setStatus("500");
+        assertTrue(filter.matches(record));
+        record.setStatus("503");
+        assertTrue(filter.matches(record));
 
         record.setStatus("200");
         assertFalse(filter.matches(record));
-        record.setStatus("Ok");
+        record.setStatus("301");
         assertFalse(filter.matches(record));
-        record.setStatus("OK");
+        record.setStatus("302");
         assertFalse(filter.matches(record));
 
-        // Not implemented yet
-        record.setStatus("500");
+        record.setStatus("true");
         assertFalse(filter.matches(record));
-        record.setStatus("404");
+        record.setStatus("false");
+        assertFalse(filter.matches(record));
+        record.setStatus("OK");
         assertFalse(filter.matches(record));
     }
 }
