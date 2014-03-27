@@ -22,6 +22,8 @@ public class ChangePasswordMetric implements UniqueCountMetric {
             new MethodFilter("post"),
             new UriChangePasswordFilter()));
 
+    // TODO: DASH-77. UserIdReader is not useful here.
+    // Object ID and user ID always null during 'POST password'
     private final RecordReader<String> reader = new UserIdReader();
 
     @Override
