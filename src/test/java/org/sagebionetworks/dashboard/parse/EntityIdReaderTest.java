@@ -22,7 +22,7 @@ public class EntityIdReaderTest {
         record.setUri("/repo/v1/entity/syn12345");
         assertEquals("syn12345", reader.read(record));
         record.setUri("/repo/v1/entity/SYN12345");
-        assertEquals("SYN12345", reader.read(record));
+        assertEquals("syn12345", reader.read(record));
         record.setObjectId("syn1");
         assertEquals("syn1", reader.read(record));
     }
