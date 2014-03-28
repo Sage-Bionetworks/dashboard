@@ -1,12 +1,14 @@
 package org.sagebionetworks.dashboard.parse;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EntityIdReader implements RecordReader<String> {
 
-    private static final Pattern SYN_ID = Pattern.compile(
-            "syn[1-9][0-9]*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SYN_ID = Pattern.compile("syn\\d+", Pattern.CASE_INSENSITIVE);
+
+    private final RecordReader<String> objIdReader = new ObjectIdReader(SYN_ID);
+    private final RecordReader<String> uriIdReader = new UriIdReader(SYN_ID);
+    private final RecordReader<String> qryIdReader = new QueryStringIdReader(SYN_ID);
 
     /**
      * Reads the entity ID from the record. It tries in the following order:
@@ -19,27 +21,15 @@ public class EntityIdReader implements RecordReader<String> {
     @Override
     public String read(Record record) {
         // Object ID
-        final String entityId = record.getObjectId();
-        if (entityId != null && !entityId.isEmpty()
-                && SYN_ID.matcher(entityId).matches()) {
-            return entityId;
-        }
+        String entityId = objIdReader.read(record);
         // Request URI
-        final String uri = record.getUri();
-        if (uri != null && !uri.isEmpty()) {
-            Matcher matcher = SYN_ID.matcher(uri);
-            if (matcher.find()) {
-                return matcher.group();
-            }
+        if (entityId == null) {
+            entityId = uriIdReader.read(record);
         }
         // Query String
-        final String query = record.getQueryString();
-        if (query != null && !query.isEmpty()) {
-            Matcher matcher = SYN_ID.matcher(query);
-            if (matcher.find()) {
-                return matcher.group().toLowerCase();
-            }
+        if (entityId == null) {
+            entityId = qryIdReader.read(record);
         }
-        return null;
+        return entityId;
     }
 }
