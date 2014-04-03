@@ -14,7 +14,7 @@ run {
 jar {
     group = 'org.sagebionetworks'
     baseName = 'dashboard'
-    version =  '0.5.10'
+    version =  '0.5.12'
 }
 
 repositories {
