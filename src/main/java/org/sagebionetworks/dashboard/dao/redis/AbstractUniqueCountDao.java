@@ -50,9 +50,11 @@ abstract class AbstractUniqueCountDao implements UniqueCountDao {
         }
         List<TimeDataPoint> results = new ArrayList<TimeDataPoint>(existingKeys.size());
         for (int i = 0; i < existingKeys.size(); i++) {
+            Double count = (Double)counts.get(i);
+            count = (count == null ? Double.valueOf(0.0) : count);
             results.add(new TimeDataPoint(
                     existingKeys.get(i).posixTime * 1000L,
-                    Long.toString(((Double)counts.get(i)).longValue())));
+                    Long.toString(count.longValue())));
         }
         return Collections.unmodifiableList(results);
     }

@@ -76,7 +76,7 @@ public class RepoUpdateService {
         } catch (Throwable e) {
             UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.FAILED);
             callback.call(result);
-            logger.error(result + " with exception " + e);
+            logger.error(result.toString(), e);
         } finally {
             try {
                 if (br != null) {
