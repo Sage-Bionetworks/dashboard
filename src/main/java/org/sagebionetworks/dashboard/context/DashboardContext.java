@@ -23,6 +23,8 @@ public class DashboardContext {
 
     private static final String USER_HOME = System.getProperty("user.home");
     private static final String GRADLE_PROPERTIES_FILE = USER_HOME + "/.gradle/gradle.properties";
+
+    // The following two variables are loaded from either the environment or the command line
     private static final String PROD = "prod";
     private static final String PWD = "pwd";
 
