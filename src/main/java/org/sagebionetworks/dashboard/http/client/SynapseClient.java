@@ -1,11 +1,10 @@
 package org.sagebionetworks.dashboard.http.client;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.Properties;
+
+import javax.annotation.Resource;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,37 +17,21 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
+import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Component("synapseClient")
 public class SynapseClient {
 
+    @Resource
+    private DashboardContext dashboardContext;
+
     public SynapseClient() {
-        String user = System.getProperty(SYNAPSE_USR);
-        String password = System.getProperty(SYNAPSE_PWD);
-        if (user == null || password == null) {
-            String userHome = System.getProperty("user.home");
-            File gradleConfig = new File(userHome + "/.gradle/gradle.properties");
-            InputStream inputStream = null;
-            try {
-                inputStream = new FileInputStream(gradleConfig);
-                Properties properties = new Properties();
-                properties.load(inputStream);
-                user = properties.getProperty(SYNAPSE_USR);
-                password = properties.getProperty(SYNAPSE_PWD);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } finally {
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
+        String user = dashboardContext.getSynapseUser();
+        String password = dashboardContext.getSynapsePassword();
         usr = user;
         pwd = password;
         client = new DefaultHttpClient();
@@ -155,9 +138,6 @@ public class SynapseClient {
     private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";
     private static final String AUTH_LOGIN = AUTH + "/session";
     private static final String REPO = "https://repo-prod.prod.sagebase.org/repo/v1";
-
-    private static final String SYNAPSE_USR = "synapseUsr";
-    private static final String SYNAPSE_PWD = "synapsePwd";
 
     private final HttpClient client;
     private final String usr;

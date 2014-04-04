@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public abstract class AbstractRedisDaoTest {
 
     private static final ConfigurableApplicationContext context =
-            new ClassPathXmlApplicationContext("/META-INF/spring/app-context.xml");
+            new ClassPathXmlApplicationContext("/META-INF/spring/test-context.xml");
 
     @BeforeClass
     public static void beforeClass() {

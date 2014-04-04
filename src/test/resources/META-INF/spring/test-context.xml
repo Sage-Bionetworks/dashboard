@@ -14,6 +14,8 @@
                 http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
     <context:component-scan base-package="
+            org.sagebionetworks.dashboard.context,
+            org.sagebionetworks.dashboard.http.client,
             org.sagebionetworks.dashboard.dao.redis,
             org.sagebionetworks.dashboard.metric,
             org.sagebionetworks.dashboard.service" />
@@ -34,5 +36,12 @@
 
     <bean id="dwTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"
             c:dataSource-ref="dwDataSource" />
+
+    <bean id="awsCredentials" class="com.amazonaws.auth.BasicAWSCredentials"
+            c:accessKey-ref="${dashboardContext.awsAccessKey}"
+            c:secretKey-ref="${dashboardContext.awsSecretKey}" />
+
+    <bean id="s3Client" class="com.amazonaws.services.s3.AmazonS3Client"
+            c:awsCredentials-ref="awsCredentials" />
 
 </beans>

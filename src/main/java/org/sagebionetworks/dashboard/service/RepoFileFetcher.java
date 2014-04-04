@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
+import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,12 @@ public class RepoFileFetcher {
     private static final long BATCH_SIZE = 6L * 1000L * 1000L; // 6 MB per batch
 
     @Resource
+    private DashboardContext dashboardContext;
+
+    @Resource
+    private AmazonS3 s3Client;
+
+    @Resource
     private RepoFolderFetcher repoFolderFetcher;
 
     @Resource
@@ -38,14 +45,7 @@ public class RepoFileFetcher {
 
     // For each folder, record the last marker used so that
     // the next batch for the same folder will start from the marker
-    private final Map<String, String> folderMarkerMap;
-
-    private final AmazonS3 s3;
-
-    public RepoFileFetcher() {
-        folderMarkerMap = new ConcurrentHashMap<>();
-        s3 = ServiceContext.getS3Client();
-    }
+    private final Map<String, String> folderMarkerMap = new ConcurrentHashMap<>();
 
     /**
      * Gets the next batch of files. The batch includes files that
@@ -78,7 +78,7 @@ public class RepoFileFetcher {
 
         logger.info("Filling the batch for folder " + folder + "...");
 
-        String bucket = ServiceContext.getBucket();
+        String bucket = dashboardContext.getAccessRecordBucket();
         ListObjectsRequest request = new ListObjectsRequest()
                 .withBucketName(bucket)
                 .withPrefix(folder);
@@ -89,7 +89,7 @@ public class RepoFileFetcher {
             request.setMarker(marker);
         }
 
-        ObjectListing objListing  = s3.listObjects(request);
+        ObjectListing objListing = s3Client.listObjects(request);
         do {
             for (S3ObjectSummary obj : objListing.getObjectSummaries()) {
                 final String key = obj.getKey();
@@ -108,7 +108,7 @@ public class RepoFileFetcher {
                     }
                 }
             }
-            objListing = s3.listNextBatchOfObjects(objListing);
+            objListing = s3Client.listNextBatchOfObjects(objListing);
         } while (objListing.getObjectSummaries().size() > 0);
         return quota;
     }

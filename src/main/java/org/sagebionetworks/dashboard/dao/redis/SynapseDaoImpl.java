@@ -20,7 +20,6 @@ import org.springframework.stereotype.Repository;
 public class SynapseDaoImpl implements SynapseDao {
 
     public SynapseDaoImpl() {
-        synapseClient = new SynapseClient();
         // Get the team of dashboard users
         final String session = synapseClient.login();
         dashboardTeamId = synapseClient.getTeamId(TEAM_NAME, session);
@@ -104,6 +103,8 @@ public class SynapseDaoImpl implements SynapseDao {
     @Resource(name = "redisTemplate")
     private ValueOperations<String, String> valueOps;
 
-    private final SynapseClient synapseClient;
+    @Resource
+    private SynapseClient synapseClient;
+
     private final Long dashboardTeamId;
 }

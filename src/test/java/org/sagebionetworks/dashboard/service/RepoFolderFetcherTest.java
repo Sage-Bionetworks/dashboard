@@ -15,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -28,6 +29,12 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 public class RepoFolderFetcherTest {
 
     @Resource
+    private DashboardContext dashboardContext;
+
+    @Resource
+    private AmazonS3 s3Client;
+
+    @Resource
     private RepoFolderFetcher repoFolderFetcher;
 
     private List<String> keyList;
@@ -37,16 +44,15 @@ public class RepoFolderFetcherTest {
     @Before
     public void before() throws Exception {
 
+        assertNotNull(s3Client);
         assertNotNull(repoFolderFetcher);
 
         // Clear S3 objects under this test.
-        final AmazonS3 s3 = ServiceContext.getS3Client();
-        assertNotNull(s3);
-        final String bucket = ServiceContext.getBucket();
+        final String bucket = dashboardContext.getAccessRecordBucket();
         final String prefix = getClass().getSimpleName();
-        ObjectListing objListing = s3.listObjects(bucket, prefix);
+        ObjectListing objListing = s3Client.listObjects(bucket, prefix);
         for (S3ObjectSummary obj : objListing.getObjectSummaries()) {
-            s3.deleteObject(bucket, obj.getKey());
+            s3Client.deleteObject(bucket, obj.getKey());
         }
 
         // Create test objects in S3
@@ -75,7 +81,7 @@ public class RepoFolderFetcherTest {
     @After
     public void after() throws Exception {
         for (String key : keyList) {
-            ServiceContext.getS3Client().deleteObject(ServiceContext.getBucket(), key);
+            s3Client.deleteObject(dashboardContext.getAccessRecordBucket(), key);
         }
     }
 
@@ -98,7 +104,7 @@ public class RepoFolderFetcherTest {
         final ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType("text/html");
         metadata.setContentLength(bytes.length);
-        ServiceContext.getS3Client().putObject(ServiceContext.getBucket(), key, inputStream, metadata);
+        s3Client.putObject(dashboardContext.getAccessRecordBucket(), key, inputStream, metadata);
         inputStream.close();
     }
 }

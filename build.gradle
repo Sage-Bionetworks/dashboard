@@ -14,7 +14,7 @@ run {
 jar {
     group = 'org.sagebionetworks'
     baseName = 'dashboard'
-    version =  '0.5.12'
+    version =  '0.5.13'
 }
 
 repositories {
@@ -32,6 +32,7 @@ dependencies {
     compile 'com.amazonaws:aws-java-sdk:1.7.3'
     compile 'org.apache.httpcomponents:httpclient:4.2.6'
     compile 'org.postgresql:postgresql:9.3-1101-jdbc41'
+    compile 'org.jasypt:jasypt:1.9.2'
     compile 'org.slf4j:slf4j-api:' + slf4jVersion
     testCompile 'junit:junit:4.11'
     testCompile 'org.mockito:mockito-core:1.9.5'
