@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
+
+import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,11 +28,11 @@ public class RepoFolderFetcher {
     // Create test stacks outside this cutoff point
     private static final String STACK_END   = "000001000";
 
-    private final AmazonS3 s3;
+    @Resource
+    private DashboardContext dashboardContext;
 
-    public RepoFolderFetcher() {
-        s3 = ServiceContext.getS3Client();
-    }
+    @Resource
+    private AmazonS3 s3Client;
 
     /**
      * Gets the most recent folders as S3 prefixes ordered reversely by date.
@@ -50,7 +53,7 @@ public class RepoFolderFetcher {
             throw new IllegalArgumentException("The number of days must be > 0.");
         }
         // Get the list of stacks
-        final String bucket = ServiceContext.getBucket();
+        final String bucket = dashboardContext.getAccessRecordBucket();
         ListObjectsRequest listStacks = new ListObjectsRequest();
         listStacks.setBucketName(bucket);
         // Using a delimiter switches the listObjects() call to
@@ -58,7 +61,7 @@ public class RepoFolderFetcher {
         // the list of object summaries will be empty.
         listStacks.setDelimiter("/");
         listStacks.setMarker(stackStart);
-        ObjectListing stackListing = s3.listObjects(listStacks);
+        ObjectListing stackListing = s3Client.listObjects(listStacks);
         List<String> stackList = new ArrayList<String>();
         getStacks(stackList, stackListing, stackEnd);
         // For each stack, get the list of dates
@@ -68,7 +71,7 @@ public class RepoFolderFetcher {
             listDates.withBucketName(bucket);
             listDates.withPrefix(stack);
             listDates.withDelimiter("/");
-            ObjectListing dateListing = s3.listObjects(listDates);
+            ObjectListing dateListing = s3Client.listObjects(listDates);
             List<String> dates = dateListing.getCommonPrefixes();
             for (String date : dates) {
                 date = date.replace(stack, "");
@@ -108,7 +111,7 @@ public class RepoFolderFetcher {
             stackList.add(stack);
         }
         if (objListing.isTruncated()) {
-            getStacks(stackList, s3.listNextBatchOfObjects(objListing), stackEnd);
+            getStacks(stackList, s3Client.listNextBatchOfObjects(objListing), stackEnd);
         }
     }
 

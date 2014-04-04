@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,13 +43,31 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RepoRecordWorkerTest {
 
+    @Resource
+    private DashboardContext dashboardContext;
+
+    @Resource
+    private AmazonS3 s3Client;
+
+    @Resource
+    private StringRedisTemplate redisTemplate;
+
+    @Resource
+    private FileStatusDao fileStatusDao;
+
+    @Resource
+    private RepoRecordWorker repoRecordWorker;
+
     private String keySuccess;
     private String keyFailure;
 
     @Before
     public void before() throws Exception {
-        assertNotNull(repoRecordWorker);
+        assertNotNull(dashboardContext);
+        assertNotNull(s3Client);
         assertNotNull(redisTemplate);
+        assertNotNull(fileStatusDao);
+        assertNotNull(repoRecordWorker);
         clearRedis();
         cleanS3();
         String[] success = {
@@ -67,13 +86,12 @@ public class RepoRecordWorkerTest {
     @After
     public void after() {
         clearRedis();
-        final AmazonS3 s3 = ServiceContext.getS3Client();
-        final String bucket = ServiceContext.getBucket();
+        final String bucket = dashboardContext.getAccessRecordBucket();
         if (keySuccess != null) {
-            s3.deleteObject(bucket, keySuccess);
+            s3Client.deleteObject(bucket, keySuccess);
         }
         if (keyFailure != null) {
-            s3.deleteObject(bucket, keyFailure);
+            s3Client.deleteObject(bucket, keyFailure);
         }
     }
 
@@ -99,17 +117,16 @@ public class RepoRecordWorkerTest {
      * fail to clean, we do not want to do too much extra work.
      */
     private void cleanS3() throws IOException {
-        final AmazonS3 s3 = ServiceContext.getS3Client();
-        final String bucket = ServiceContext.getBucket();
+        final String bucket = dashboardContext.getAccessRecordBucket();
         final List<KeyVersion> toDelete = new ArrayList<>();
         final DateTime now = DateTime.now(DateTimeZone.UTC);
         final Date yesterday = now.minusDays(1).toDate();
         ObjectListing listing = null;
         do {
             if (listing == null) {
-                listing = s3.listObjects(bucket);
+                listing = s3Client.listObjects(bucket);
             } else {
-                listing = s3.listNextBatchOfObjects(listing);
+                listing = s3Client.listNextBatchOfObjects(listing);
             }
             for (S3ObjectSummary obj : listing.getObjectSummaries()) {
                 Date date = obj.getLastModified();
@@ -125,7 +142,7 @@ public class RepoRecordWorkerTest {
             int to = 300;
             while (from < toDelete.size()) {
                 to = to > toDelete.size() ? toDelete.size() : to;
-                s3.deleteObjects(new DeleteObjectsRequest(bucket)
+                s3Client.deleteObjects(new DeleteObjectsRequest(bucket)
                         .withKeys(toDelete.subList(from, to)));
                 from = to;
                 to = to + 300;
@@ -148,22 +165,12 @@ public class RepoRecordWorkerTest {
         metadata.setContentType("application/x-gzip");
         metadata.setContentLength(bytes.length);
 
-        final AmazonS3 s3 = ServiceContext.getS3Client();
-        final String bucket = ServiceContext.getBucket();
+        final String bucket = dashboardContext.getAccessRecordBucket();
         final String key = "000000023/2014-02-28/" + UUID.randomUUID().toString() + ".csv.gz";
         final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        s3.putObject(bucket, key, bais, metadata);
+        s3Client.putObject(bucket, key, bais, metadata);
         bais.close();
 
         return key;
     }
-
-    @Resource
-    private FileStatusDao fileStatusDao;
-
-    @Resource
-    private RepoRecordWorker repoRecordWorker;
-
-    @Resource
-    private StringRedisTemplate redisTemplate;
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.sagebionetworks.dashboard.dao.LockDao;
 import org.slf4j.Logger;
@@ -19,6 +20,12 @@ public class RepoRecordWorker {
     private final Logger logger = LoggerFactory.getLogger(RepoRecordWorker.class);
 
     @Resource
+    private DashboardContext dashboardContext;
+
+    @Resource
+    private AmazonS3 s3Client;
+
+    @Resource
     private FileStatusDao fileStatusDao;
 
     @Resource
@@ -32,8 +39,7 @@ public class RepoRecordWorker {
 
     public void doWork() {
 
-        final AmazonS3 s3 = ServiceContext.getS3Client();
-        final String bucket = ServiceContext.getBucket();
+        final String bucket = dashboardContext.getAccessRecordBucket();
         List<String> batch = repoFileFetcher.nextBatch();
         for (final String key : batch) {
 
@@ -50,7 +56,7 @@ public class RepoRecordWorker {
                 continue;
             }
 
-            S3Object file = s3.getObject(bucket, key);
+            S3Object file = s3Client.getObject(bucket, key);
             try {
                 repoUpdateService.update(file.getObjectContent(), key, new UpdateCallback() {
                     @Override

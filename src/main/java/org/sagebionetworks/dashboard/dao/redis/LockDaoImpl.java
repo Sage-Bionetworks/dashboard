@@ -59,7 +59,7 @@ public class LockDaoImpl implements LockDao {
         return redisTemplate.execute(callback);
     }
 
-    @Resource(name = "redisTemplate")
+    @Resource(name="redisTemplate")
     private ValueOperations<String, String> valOps;
 
     @Resource

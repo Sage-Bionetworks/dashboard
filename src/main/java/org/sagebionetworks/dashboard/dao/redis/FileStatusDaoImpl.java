@@ -57,9 +57,9 @@ public class FileStatusDaoImpl implements FileStatusDao {
         return failures;
     }
 
-    @Resource(name = "redisTemplate")
+    @Resource(name="redisTemplate")
     private SetOperations<String, String> setOps;
 
-    @Resource(name = "redisTemplate")
+    @Resource(name="redisTemplate")
     private HashOperations<String, String, String> hashOps;
 }

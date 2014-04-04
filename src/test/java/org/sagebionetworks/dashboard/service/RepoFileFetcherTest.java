@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -75,10 +76,14 @@ public class RepoFileFetcherTest {
         when(fileStatusDao.isCompleted(key4)).thenReturn(true);
         when(fileStatusDao.isFailed(key4)).thenReturn(false);
 
+        DashboardContext context = mock(DashboardContext.class);
+        when(context.getAccessRecordBucket()).thenReturn("bucket");
+
         RepoFileFetcher fetcher = new RepoFileFetcher();
         ReflectionTestUtils.setField(fetcher, "repoFolderFetcher", folderFetcher, RepoFolderFetcher.class);
-        ReflectionTestUtils.setField(fetcher, "s3", s3, AmazonS3.class);
+        ReflectionTestUtils.setField(fetcher, "s3Client", s3, AmazonS3.class);
         ReflectionTestUtils.setField(fetcher, "fileStatusDao", fileStatusDao, FileStatusDao.class);
+        ReflectionTestUtils.setField(fetcher, "dashboardContext", context, DashboardContext.class);
 
         List<String> files = fetcher.nextBatch();
         // Should get back a full batch of 60 files as each file is 100 KB and the max total size per batch is 6 MB
