@@ -27,8 +27,8 @@
     <bean id="dwDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close"
             p:driverClassName="org.postgresql.Driver"
             p:url="jdbc:postgresql://localhost:5432/dashboard"
-            p:username="${dashboardContext.dwUsername}"
-            p:password="${dashboardContext.dwPassword}" />
+            p:username="#{dashboardContext.dwUsername}"
+            p:password="#{dashboardContext.dwPassword}" />
 
     <bean id="dwTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"
             c:dataSource-ref="dwDataSource" />
@@ -36,8 +36,8 @@
     <!-- AWS -->
 
     <bean id="awsCredentials" class="com.amazonaws.auth.BasicAWSCredentials"
-            c:accessKey-ref="${dashboardContext.awsAccessKey}"
-            c:secretKey-ref="${dashboardContext.awsSecretKey}" />
+            c:accessKey="#{dashboardContext.awsAccessKey}"
+            c:secretKey="#{dashboardContext.awsSecretKey}" />
 
     <bean id="s3Client" class="com.amazonaws.services.s3.AmazonS3Client"
             c:awsCredentials-ref="awsCredentials" />

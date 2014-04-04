@@ -40,6 +40,8 @@ public class DashboardContext {
     public DashboardContext(InputStream properties) {
 
         prod = Boolean.parseBoolean(readEnvOrProperty(PROD));
+        logger.info("Prod: " + prod);
+
         String pwd = readEnvOrProperty(PWD);
         if (pwd == null || pwd.isEmpty()) {
             logger.warn("Missing descryptor passward.");
@@ -116,12 +118,21 @@ public class DashboardContext {
     }
 
     private void readGradle() {
+        InputStream inputStream = null;
         try {
             File file = new File(GRADLE_PROPERTIES_FILE);
-            FileInputStream fileStream = new FileInputStream(file);
-            readProperties(fileStream);
+            inputStream = new FileInputStream(file);
+            readProperties(inputStream);
         } catch (FileNotFoundException x) {
             logger.info("Missing Gradle properties file: " + GRADLE_PROPERTIES_FILE);
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+            }
         }
     }
 
@@ -139,9 +150,7 @@ public class DashboardContext {
             return;
         } finally {
             try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
+                inputStream.close();
             } catch (IOException x) {
                 logger.error(x.getMessage());
             }

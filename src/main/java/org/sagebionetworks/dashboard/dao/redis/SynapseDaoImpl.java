@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SynapseDao;
 import org.sagebionetworks.dashboard.http.client.SynapseClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
@@ -19,8 +20,10 @@ import org.springframework.stereotype.Repository;
 @Repository("synapseDao")
 public class SynapseDaoImpl implements SynapseDao {
 
-    public SynapseDaoImpl() {
+    @Autowired
+    public SynapseDaoImpl(SynapseClient synapseClient) {
         // Get the team of dashboard users
+        this.synapseClient = synapseClient;
         final String session = synapseClient.login();
         dashboardTeamId = synapseClient.getTeamId(TEAM_NAME, session);
         if (dashboardTeamId == null) {
@@ -100,11 +103,10 @@ public class SynapseDaoImpl implements SynapseDao {
     @Resource
     private StringRedisTemplate redisTemplate;
 
-    @Resource(name = "redisTemplate")
+    @Resource(name="redisTemplate")
     private ValueOperations<String, String> valueOps;
 
-    @Resource
-    private SynapseClient synapseClient;
+    private final SynapseClient synapseClient;
 
     private final Long dashboardTeamId;
 }

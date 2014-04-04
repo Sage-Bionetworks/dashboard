@@ -30,10 +30,6 @@ public class SynapseClient {
     private DashboardContext dashboardContext;
 
     public SynapseClient() {
-        String user = dashboardContext.getSynapseUser();
-        String password = dashboardContext.getSynapsePassword();
-        usr = user;
-        pwd = password;
         client = new DefaultHttpClient();
     }
 
@@ -42,6 +38,8 @@ public class SynapseClient {
      */
     public String login() {
 
+        String usr = dashboardContext.getSynapseUser();
+        String pwd = dashboardContext.getSynapsePassword();
         String login = "{\"email\":\"" + usr + "\", \"password\":\"" + pwd + "\"}";
         HttpEntity entity = new StringEntity(login, ContentType.APPLICATION_JSON);
         HttpPost post = new HttpPost(AUTH_LOGIN);
@@ -140,6 +138,4 @@ public class SynapseClient {
     private static final String REPO = "https://repo-prod.prod.sagebase.org/repo/v1";
 
     private final HttpClient client;
-    private final String usr;
-    private final String pwd;
 }
