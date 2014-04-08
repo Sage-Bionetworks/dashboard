@@ -16,9 +16,9 @@ public class RepoUserScheduler {
     private RepoUserWorker repoUserWorker;
 
     /**
-     * Scheduled to run once every day.
+     * Scheduled to run every 8 hour.
      */
-    @Scheduled(fixedRate=(24L * 60L * 60L * 1000L))
+    @Scheduled(fixedRate=(8L * 60L * 60L * 1000L))
     public void run() {
         repoUserWorker.doWork();
     }

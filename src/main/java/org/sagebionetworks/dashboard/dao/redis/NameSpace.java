@@ -14,12 +14,6 @@ enum NameSpace {
     /** Cached Synapse data. */
     synapse,
 
-    /** Users. */
-    user,
-
-    /** User emails. */
-    email,
-
     /** Time series metrics. */
     timeseries,
 

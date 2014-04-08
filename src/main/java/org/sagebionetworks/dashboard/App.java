@@ -29,9 +29,7 @@ public class App {
 
         final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/app-context.xml");
         final RepoUserWorker userWorker = context.getBean(RepoUserWorker.class);
-        System.out.println("Refreshing the list of Synapse users...");
         userWorker.doWork();
-        System.out.println("Done refreshing the list of Synapse users.");
 
         final List<File> files = new ArrayList<File>();
         getCsvGzFiles(filePath, files);

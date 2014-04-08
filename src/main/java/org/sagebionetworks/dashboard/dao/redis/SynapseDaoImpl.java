@@ -64,9 +64,10 @@ public class SynapseDaoImpl implements SynapseDao {
 
     @Override
     public void refreshUsers() {
+        final String session = getSession();
         long offset = 0L;
         final long limit = 200L;
-        List<SynapseUser> users = synapseClient.getUsers(offset, limit);
+        List<SynapseUser> users = synapseClient.getUsers(offset, limit, session);
         while (users.size() > 0) {
             for (SynapseUser user : users) {
                 final String userId = user.getUserId();
@@ -81,7 +82,7 @@ public class SynapseDaoImpl implements SynapseDao {
                 }
             }
             offset = offset + limit;
-            users = synapseClient.getUsers(offset, limit);
+            users = synapseClient.getUsers(offset, limit, session);
         }
         redisTemplate.expire(SYNAPSE_USER_ID_EMAIL, EXPIRE_HOURS, TimeUnit.HOURS);
         redisTemplate.expire(SYNAPSE_USER_EMAIL_ID, EXPIRE_HOURS, TimeUnit.HOURS);

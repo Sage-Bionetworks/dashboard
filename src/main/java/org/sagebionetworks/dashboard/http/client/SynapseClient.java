@@ -39,7 +39,6 @@ public class SynapseClient {
      * @return Session token
      */
     public String login() {
-
         String usr = dashboardContext.getSynapseUser();
         String pwd = dashboardContext.getSynapsePassword();
         String login = "{\"email\":\"" + usr + "\", \"password\":\"" + pwd + "\"}";
@@ -47,11 +46,14 @@ public class SynapseClient {
         HttpPost post = new HttpPost(AUTH_LOGIN);
         post.setEntity(entity);
         JsonNode root = executeRequest(post);
-        return readText(root, "sessionToken");
+        String session = readText(root, "sessionToken");
+        if (session == null) {
+            throw new RuntimeException("Login failed -- session token is null.");
+        }
+        return session;
     }
 
     public String getUserName(final String userId, final String session) {
-
         String uri = REPO + "/userProfile/" + userId;
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
@@ -60,7 +62,6 @@ public class SynapseClient {
     }
 
     public String getEntityName(final String entityId, final String session) {
-
         String uri = REPO + "/entity/" + entityId + "/type";
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
@@ -69,7 +70,6 @@ public class SynapseClient {
     }
 
     public Long getTeamId(final String teamName, final String session) {
-
         String uri = REPO + "/teams?fragment=" + teamName;
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
@@ -86,7 +86,6 @@ public class SynapseClient {
     }
 
     public boolean isMemberOfTeam(final String userId, final Long teamId, final String session) {
-
         if (userId == null) {
             return false;
         }
@@ -97,10 +96,11 @@ public class SynapseClient {
         return root.get("isMember").asBoolean();
     }
 
-    public List<SynapseUser> getUsers(long offset, long limit) {
+    public List<SynapseUser> getUsers(final long offset, final long limit, final String session) {
         List<SynapseUser> users = new ArrayList<SynapseUser>();
         String uri = REPO + "/user?offset=" + offset + "&limit=" + limit;
         HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode node = executeRequest(get);
         Iterator<JsonNode> iterator = node.get("results").elements();
         while(iterator.hasNext()) {

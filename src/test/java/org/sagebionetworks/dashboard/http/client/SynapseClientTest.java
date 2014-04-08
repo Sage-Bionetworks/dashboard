@@ -51,7 +51,7 @@ public class SynapseClientTest {
         assertNotNull(session);
         assertFalse(session.isEmpty());
 
-        List<SynapseUser> users = synapseClient.getUsers(0, 10);
+        List<SynapseUser> users = synapseClient.getUsers(0, 10, session);
         assertNotNull(users);
         assertEquals(10, users.size());
         for (SynapseUser user : users) {

@@ -16,8 +16,8 @@ public class RepoUserWorker {
     private SynapseDao synapseDao;
 
     public void doWork() {
-        logger.info("Updating users...");
+        logger.info("Refreshing the list of Synapse users...");
         synapseDao.refreshUsers();
-        logger.info("Done updating users...");
+        logger.info("Done refreshing the list of Synapse users...");
     }
 }
