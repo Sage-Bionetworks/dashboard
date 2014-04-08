@@ -47,6 +47,5 @@ public class SynapseDaoImplTest extends AbstractRedisDaoTest {
         expire = redisTemplate.getExpire(key, TimeUnit.HOURS);
         assertNotNull(expire);
         assertEquals(0L, expire.longValue());  // Expire is not set
-        assertTrue(redisTemplate.hasKey(key)); // And the key is still there
     }
 }

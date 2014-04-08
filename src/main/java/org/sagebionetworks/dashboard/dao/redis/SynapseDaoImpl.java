@@ -4,6 +4,8 @@ import static org.sagebionetworks.dashboard.dao.redis.Key.SEPARATOR;
 import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_ENTITY_ID_NAME;
 import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_SESSION;
 import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_USER_ID_NAME;
+import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_USER_ID_EMAIL;
+import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_USER_EMAIL_ID;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +14,9 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SynapseDao;
 import org.sagebionetworks.dashboard.http.client.SynapseClient;
+import org.sagebionetworks.dashboard.http.client.SynapseUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
@@ -33,13 +37,12 @@ public class SynapseDaoImpl implements SynapseDao {
 
     @Override
     public String getUserName(final String userId) {
-        final String key = SYNAPSE_USER_ID_NAME + SEPARATOR + userId;
-        String name = valueOps.get(key);
+        String name = hashOps.get(SYNAPSE_USER_ID_NAME, userId);
         if (name == null) {
             String session = getSession();
             name = synapseClient.getUserName(userId, session);
             if (name != null) {
-                valueOps.set(key, name);
+                hashOps.put(SYNAPSE_USER_ID_NAME, userId, name);
             }
         }
         return name;
@@ -57,6 +60,32 @@ public class SynapseDaoImpl implements SynapseDao {
             }
         }
         return name;
+    }
+
+    @Override
+    public void refreshUsers() {
+        long offset = 0L;
+        final long limit = 200L;
+        List<SynapseUser> users = synapseClient.getUsers(offset, limit);
+        while (users.size() > 0) {
+            for (SynapseUser user : users) {
+                final String userId = user.getUserId();
+                final String email = user.getEmail();
+                if (email != null && !email.isEmpty()) {
+                    hashOps.put(SYNAPSE_USER_ID_EMAIL, userId, email);
+                    hashOps.put(SYNAPSE_USER_EMAIL_ID, email, userId);
+                }
+                final String userName = user.getUserName();
+                if (userName != null && !userName.isEmpty()) {
+                    hashOps.put(SYNAPSE_USER_ID_NAME, userId, userName);
+                }
+            }
+            offset = offset + limit;
+            users = synapseClient.getUsers(offset, limit);
+        }
+        redisTemplate.expire(SYNAPSE_USER_ID_EMAIL, EXPIRE_HOURS, TimeUnit.HOURS);
+        redisTemplate.expire(SYNAPSE_USER_EMAIL_ID, EXPIRE_HOURS, TimeUnit.HOURS);
+        redisTemplate.expire(SYNAPSE_USER_ID_NAME, EXPIRE_HOURS, TimeUnit.HOURS);
     }
 
     @Override
@@ -105,6 +134,9 @@ public class SynapseDaoImpl implements SynapseDao {
 
     @Resource(name="redisTemplate")
     private ValueOperations<String, String> valueOps;
+
+    @Resource(name="redisTemplate")
+    private HashOperations<String, String, String> hashOps;
 
     private final SynapseClient synapseClient;
 

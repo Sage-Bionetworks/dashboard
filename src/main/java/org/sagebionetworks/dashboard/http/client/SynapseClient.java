@@ -2,7 +2,9 @@ package org.sagebionetworks.dashboard.http.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -45,9 +47,7 @@ public class SynapseClient {
         HttpPost post = new HttpPost(AUTH_LOGIN);
         post.setEntity(entity);
         JsonNode root = executeRequest(post);
-        JsonNode node = root.get("sessionToken");
-        String session = node.asText();
-        return session;
+        return readText(root, "sessionToken");
     }
 
     public String getUserName(final String userId, final String session) {
@@ -56,11 +56,7 @@ public class SynapseClient {
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
-        JsonNode node = root.get("userName");
-        if (node == null) {
-            return null;
-        }
-        return node.asText();
+        return readText(root, "userName");
     }
 
     public String getEntityName(final String entityId, final String session) {
@@ -69,11 +65,7 @@ public class SynapseClient {
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
-        JsonNode node = root.get("name");
-        if (node == null) {
-            return null;
-        }
-        return node.asText();
+        return readText(root, "name");
     }
 
     public Long getTeamId(final String teamName, final String session) {
@@ -105,6 +97,29 @@ public class SynapseClient {
         return root.get("isMember").asBoolean();
     }
 
+    public List<SynapseUser> getUsers(long offset, long limit) {
+        List<SynapseUser> users = new ArrayList<SynapseUser>();
+        String uri = REPO + "/user?offset=" + offset + "&limit=" + limit;
+        HttpGet get = new HttpGet(uri);
+        JsonNode node = executeRequest(get);
+        Iterator<JsonNode> iterator = node.get("results").elements();
+        while(iterator.hasNext()) {
+            JsonNode userNode = iterator.next();
+            String userId = readText(userNode, "ownerId");
+            String userName = readText(userNode, "userName");
+            String email = null;
+            JsonNode emails = userNode.get("emails");
+            if (emails != null && emails.size() > 0) {
+                    email = emails.get(0).asText();
+            }
+            String firstName = readText(userNode, "firstName");
+            String lastName = readText(userNode, "lastName");
+            SynapseUser user = new SynapseUser(userId, userName, email, firstName, lastName);
+            users.add(user);
+        }
+        return users;
+    }
+
     private JsonNode executeRequest(HttpUriRequest request) {
         InputStream inputStream = null;
         try {
@@ -131,6 +146,11 @@ public class SynapseClient {
                 }
             }
         }
+    }
+
+    private String readText(JsonNode jsonNode, String fieldName) {
+        JsonNode value = jsonNode.get(fieldName);
+        return (value == null ? null : value.asText());
     }
 
     private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";

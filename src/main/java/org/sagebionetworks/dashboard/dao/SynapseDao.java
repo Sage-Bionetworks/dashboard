@@ -21,4 +21,7 @@ public interface SynapseDao {
 
     /** Gets the list of IDs of the containing projects given entity IDs. */
     List<String> getProjects(List<String> entityIds);
+
+    /** Refresh the list of users. */
+    void refreshUsers();
 }
