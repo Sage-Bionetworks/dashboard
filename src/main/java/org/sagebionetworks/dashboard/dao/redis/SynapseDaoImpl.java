@@ -6,6 +6,7 @@ import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_SESSION;
 import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_USER_ID_NAME;
 import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_USER_ID_EMAIL;
 import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_USER_EMAIL_ID;
+import static org.sagebionetworks.dashboard.dao.redis.Key.SYNAPSE_ENTITY_BENEFACTOR;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -60,6 +61,20 @@ public class SynapseDaoImpl implements SynapseDao {
             }
         }
         return name;
+    }
+
+    @Override
+    public String getBenefactor(final String entityId) {
+        final String key = SYNAPSE_ENTITY_BENEFACTOR + SEPARATOR + entityId;
+        String benefactor = valueOps.get(key);
+        if (benefactor == null) {
+            String session = getSession();
+            benefactor = synapseClient.getBenefactor(entityId, session);
+            if (benefactor != null) {
+                valueOps.set(key, benefactor, EXPIRE_HOURS, TimeUnit.HOURS);
+            }
+        }
+        return benefactor;
     }
 
     @Override

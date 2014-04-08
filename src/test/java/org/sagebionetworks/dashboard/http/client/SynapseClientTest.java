@@ -61,4 +61,13 @@ public class SynapseClientTest {
             }
         }
     }
+
+    @Test
+    public void testGetBenector() {
+        String session = synapseClient.login();
+        assertNotNull(session);
+        assertFalse(session.isEmpty());
+        String benefactor = synapseClient.getBenefactor("syn2330782", session);
+        assertEquals("syn1734172", benefactor);
+    }
 }

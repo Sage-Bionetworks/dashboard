@@ -47,5 +47,10 @@ public class SynapseDaoImplTest extends AbstractRedisDaoTest {
         expire = redisTemplate.getExpire(key, TimeUnit.HOURS);
         assertNotNull(expire);
         assertEquals(0L, expire.longValue());  // Expire is not set
+
+        // Benefactor of the user guide is itself
+        String benefactor = synapseDao.getBenefactor("syn1669771");
+        assertNotNull(benefactor);
+        assertEquals("syn1669771", benefactor);
     }
 }

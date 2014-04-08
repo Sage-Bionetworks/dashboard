@@ -29,7 +29,9 @@ public class App {
 
         final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/app-context.xml");
         final RepoUserWorker userWorker = context.getBean(RepoUserWorker.class);
+        System.out.println("Loading Synapse users.");
         userWorker.doWork();
+        System.out.println("Done loading Synapse users.");
 
         final List<File> files = new ArrayList<File>();
         getCsvGzFiles(filePath, files);

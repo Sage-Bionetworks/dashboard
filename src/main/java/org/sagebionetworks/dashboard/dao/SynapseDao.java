@@ -13,6 +13,9 @@ public interface SynapseDao {
     /** Gets entity name. Can return null. */
     String getEntityName(String entityId);
 
+    /** Gets the ID of the benefactor. */
+    String getBenefactor(final String entityID);
+
     /** Gets the list of user names given IDs. */
     List<String> getUserNames(List<String> userIds);
 

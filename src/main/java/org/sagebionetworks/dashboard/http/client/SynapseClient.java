@@ -69,6 +69,14 @@ public class SynapseClient {
         return readText(root, "name");
     }
 
+    public String getBenefactor(final String entityId, final String session) {
+        String uri = REPO + "/entity/" + entityId + "/benefactor";
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+        return readText(root, "id");
+    }
+
     public Long getTeamId(final String teamName, final String session) {
         String uri = REPO + "/teams?fragment=" + teamName;
         HttpGet get = new HttpGet(uri);
