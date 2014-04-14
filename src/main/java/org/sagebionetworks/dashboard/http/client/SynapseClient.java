@@ -3,7 +3,7 @@ package org.sagebionetworks.dashboard.http.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -77,16 +77,36 @@ public class SynapseClient {
         return readText(root, "id");
     }
 
+    /**
+     * Given an entity, gets the containing project directly under the root.
+     */
+    public String getProject(final String entityId, final String session) {
+        String uri = REPO + "/entity/" + entityId + "/ancestors";
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+        int i = 0;
+        for (JsonNode ancestor : root.get("idList")) {
+            // Reads the second ancestor as the project
+            if (i == 1) {
+                return readText(ancestor, "id");
+            }
+            i++;
+        }
+        // If there is only one ancestor, it is the root, then this entity itself is a project.
+        if (i == 1) {
+            return entityId;
+        }
+        return null;
+    }
+
     public Long getTeamId(final String teamName, final String session) {
         String uri = REPO + "/teams?fragment=" + teamName;
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
-        Iterator<JsonNode> iterator = root.get("results").elements();
-        JsonNode team = null;
-        while (iterator.hasNext()) {
-            team = iterator.next();
-            if (teamName.equals(team.get("name").asText())) {
+        for (JsonNode team : root.get("results")) {
+            if (teamName.equals(readText(team, "name"))) {
                 return team.get("id").asLong();
             }
         }
@@ -110,9 +130,7 @@ public class SynapseClient {
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode node = executeRequest(get);
-        Iterator<JsonNode> iterator = node.get("results").elements();
-        while(iterator.hasNext()) {
-            JsonNode userNode = iterator.next();
+        for (JsonNode userNode : node.get("results")) {
             String userId = readText(userNode, "ownerId");
             String userName = readText(userNode, "userName");
             String email = null;
