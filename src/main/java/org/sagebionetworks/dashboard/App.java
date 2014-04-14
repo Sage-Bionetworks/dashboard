@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.sagebionetworks.dashboard.service.RepoUpdateService;
+import org.sagebionetworks.dashboard.service.RepoUserWorker;
 import org.sagebionetworks.dashboard.service.UpdateCallback;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -26,12 +27,17 @@ public class App {
             throw new IllegalArgumentException("File " + filePath.getPath() + " does not exist.");
         }
 
+        final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/app-context.xml");
+        final RepoUserWorker userWorker = context.getBean(RepoUserWorker.class);
+        System.out.println("Loading Synapse users.");
+        userWorker.doWork();
+        System.out.println("Done loading Synapse users.");
+
         final List<File> files = new ArrayList<File>();
         getCsvGzFiles(filePath, files);
         final int total = files.size();
         System.out.println("Total number of files: " + total);
 
-        final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/app-context.xml");
         context.registerShutdownHook();
         final RepoUpdateService updateService = context.getBean(RepoUpdateService.class);
 

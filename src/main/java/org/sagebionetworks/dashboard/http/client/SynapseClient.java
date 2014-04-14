@@ -2,7 +2,9 @@ package org.sagebionetworks.dashboard.http.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -37,7 +39,6 @@ public class SynapseClient {
      * @return Session token
      */
     public String login() {
-
         String usr = dashboardContext.getSynapseUser();
         String pwd = dashboardContext.getSynapsePassword();
         String login = "{\"email\":\"" + usr + "\", \"password\":\"" + pwd + "\"}";
@@ -45,39 +46,38 @@ public class SynapseClient {
         HttpPost post = new HttpPost(AUTH_LOGIN);
         post.setEntity(entity);
         JsonNode root = executeRequest(post);
-        JsonNode node = root.get("sessionToken");
-        String session = node.asText();
+        String session = readText(root, "sessionToken");
+        if (session == null) {
+            throw new RuntimeException("Login failed -- session token is null.");
+        }
         return session;
     }
 
     public String getUserName(final String userId, final String session) {
-
         String uri = REPO + "/userProfile/" + userId;
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
-        JsonNode node = root.get("userName");
-        if (node == null) {
-            return null;
-        }
-        return node.asText();
+        return readText(root, "userName");
     }
 
     public String getEntityName(final String entityId, final String session) {
-
         String uri = REPO + "/entity/" + entityId + "/type";
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
-        JsonNode node = root.get("name");
-        if (node == null) {
-            return null;
-        }
-        return node.asText();
+        return readText(root, "name");
+    }
+
+    public String getBenefactor(final String entityId, final String session) {
+        String uri = REPO + "/entity/" + entityId + "/benefactor";
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+        return readText(root, "id");
     }
 
     public Long getTeamId(final String teamName, final String session) {
-
         String uri = REPO + "/teams?fragment=" + teamName;
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
@@ -94,7 +94,6 @@ public class SynapseClient {
     }
 
     public boolean isMemberOfTeam(final String userId, final Long teamId, final String session) {
-
         if (userId == null) {
             return false;
         }
@@ -103,6 +102,30 @@ public class SynapseClient {
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
         return root.get("isMember").asBoolean();
+    }
+
+    public List<SynapseUser> getUsers(final long offset, final long limit, final String session) {
+        List<SynapseUser> users = new ArrayList<SynapseUser>();
+        String uri = REPO + "/user?offset=" + offset + "&limit=" + limit;
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode node = executeRequest(get);
+        Iterator<JsonNode> iterator = node.get("results").elements();
+        while(iterator.hasNext()) {
+            JsonNode userNode = iterator.next();
+            String userId = readText(userNode, "ownerId");
+            String userName = readText(userNode, "userName");
+            String email = null;
+            JsonNode emails = userNode.get("emails");
+            if (emails != null && emails.size() > 0) {
+                    email = emails.get(0).asText();
+            }
+            String firstName = readText(userNode, "firstName");
+            String lastName = readText(userNode, "lastName");
+            SynapseUser user = new SynapseUser(userId, userName, email, firstName, lastName);
+            users.add(user);
+        }
+        return users;
     }
 
     private JsonNode executeRequest(HttpUriRequest request) {
@@ -131,6 +154,11 @@ public class SynapseClient {
                 }
             }
         }
+    }
+
+    private String readText(JsonNode jsonNode, String fieldName) {
+        JsonNode value = jsonNode.get(fieldName);
+        return (value == null ? null : value.asText());
     }
 
     private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";
