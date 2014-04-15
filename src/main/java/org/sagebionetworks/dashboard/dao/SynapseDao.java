@@ -16,6 +16,9 @@ public interface SynapseDao {
     /** Gets the ID of the benefactor. */
     String getBenefactor(String entityId);
 
+    /** Gets the ID of the containing project. */
+    String getProject(String entityId);
+
     /** Gets the list of user names given IDs. */
     List<String> getUserNames(List<String> userIds);
 

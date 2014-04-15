@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class TopProjectByDayMetric implements DayCountMetric {
 
     @Resource
-    private RecordReader<String> benefactorIdReader;
+    private RecordReader<String> projectIdReader;
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             (RecordFilter)new ProdFilter()));
@@ -32,6 +32,6 @@ public class TopProjectByDayMetric implements DayCountMetric {
 
     @Override
     public RecordReader<String> getRecordReader() {
-        return benefactorIdReader;
+        return projectIdReader;
     }
 }

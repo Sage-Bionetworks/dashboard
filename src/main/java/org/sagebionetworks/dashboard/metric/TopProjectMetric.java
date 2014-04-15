@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class TopProjectMetric implements UniqueCountMetric {
 
     @Resource
-    private RecordReader<String> benefactorIdReader;
+    private RecordReader<String> projectIdReader;
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             (RecordFilter)new ProdFilter()));
@@ -32,6 +32,6 @@ public class TopProjectMetric implements UniqueCountMetric {
 
     @Override
     public RecordReader<String> getRecordReader() {
-        return benefactorIdReader;
+        return projectIdReader;
     }
 }

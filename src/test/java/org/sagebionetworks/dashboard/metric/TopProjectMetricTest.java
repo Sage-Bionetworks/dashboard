@@ -21,7 +21,7 @@ public class TopProjectMetricTest {
     @Test
     public void test() {
         assertEquals("topProjectMetric", topProjectMetric.getName());
-        assertTrue(topProjectMetric.getRecordReader() instanceof BenefactorIdReader);
+        assertTrue(topProjectMetric.getRecordReader() instanceof ProjectIdReader);
         assertEquals(1, topProjectMetric.getFilters().size());
         assertTrue(topProjectMetric.getFilters().get(0) instanceof ProdFilter);
     }

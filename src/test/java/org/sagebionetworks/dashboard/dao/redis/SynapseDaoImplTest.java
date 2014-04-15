@@ -52,5 +52,10 @@ public class SynapseDaoImplTest extends AbstractRedisDaoTest {
         String benefactor = synapseDao.getBenefactor("syn1669771");
         assertNotNull(benefactor);
         assertEquals("syn1669771", benefactor);
+
+        // Project
+        String project = synapseDao.getProject("syn1669771");
+        assertNotNull(project);
+        assertEquals("syn1669771", project);
     }
 }
