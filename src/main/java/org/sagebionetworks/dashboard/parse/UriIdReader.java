@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 /**
  * Extracts the ID value from the request URI field.
  */
-public class UriIdReader extends PatternBasedIdReader {
+public class UriIdReader extends RegexRecordReader {
 
     public UriIdReader(Pattern pattern) {
         super(pattern);
