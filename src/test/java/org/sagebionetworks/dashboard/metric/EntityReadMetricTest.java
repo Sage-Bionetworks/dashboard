@@ -5,15 +5,17 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.sagebionetworks.dashboard.parse.EntityIdReader;
+import org.sagebionetworks.dashboard.parse.MethodFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 
-public class TopEntityMetricTest {
+public class EntityReadMetricTest {
     @Test
     public void test() {
-        UniqueCountMetric metric = new TopEntityMetric();
-        assertEquals("topEntityMetric", metric.getName());
+        UniqueCountMetric metric = new EntityReadMetric();
+        assertEquals("entityReadMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof EntityIdReader);
-        assertEquals(1, metric.getFilters().size());
+        assertEquals(2, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
+        assertTrue(metric.getFilters().get(1) instanceof MethodFilter);
     }
 }

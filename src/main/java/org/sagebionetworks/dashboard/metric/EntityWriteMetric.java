@@ -5,22 +5,24 @@ import java.util.Collections;
 import java.util.List;
 
 import org.sagebionetworks.dashboard.parse.EntityIdReader;
+import org.sagebionetworks.dashboard.parse.MethodFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
+import org.sagebionetworks.dashboard.parse.UriEntityFilter;
 import org.springframework.stereotype.Component;
 
-@Component("topEntityMetric")
-public class TopEntityMetric implements UniqueCountMetric {
+@Component("entityWriteMetric")
+public class EntityWriteMetric implements UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            (RecordFilter)new ProdFilter()));
+            new ProdFilter(), new MethodFilter("POST", "PUT"), new UriEntityFilter()));
 
     private final RecordReader<String> reader = new EntityIdReader();
 
     @Override
     public String getName() {
-        return "topEntityMetric";
+        return "entityWriteMetric";
     }
 
     @Override
