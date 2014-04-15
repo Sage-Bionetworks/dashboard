@@ -3,7 +3,6 @@ package org.sagebionetworks.dashboard.http.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-//import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -78,7 +77,7 @@ public class SynapseClient {
     }
 
     /**
-     * Given an entity, gets the containing project directly under the root.
+     * Given an entity, gets the containing project that is directly under the root.
      */
     public String getProject(final String entityId, final String session) {
         String uri = REPO + "/entity/" + entityId + "/ancestors";

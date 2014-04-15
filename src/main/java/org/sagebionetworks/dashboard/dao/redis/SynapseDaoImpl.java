@@ -84,7 +84,7 @@ public class SynapseDaoImpl implements SynapseDao {
         String project = valueOps.get(key);
         if (project == null) {
             String session = getSession();
-            project = synapseClient.getBenefactor(entityId, session);
+            project = synapseClient.getProject(entityId, session);
             if (project != null) {
                 valueOps.set(key, project, EXPIRE_HOURS, TimeUnit.HOURS);
             }
