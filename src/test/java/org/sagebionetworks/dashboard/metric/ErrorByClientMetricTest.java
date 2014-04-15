@@ -8,11 +8,11 @@ import org.sagebionetworks.dashboard.parse.ClientReader;
 import org.sagebionetworks.dashboard.parse.ErrorFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 
-public class ClientErrorMetricTest {
+public class ErrorByClientMetricTest {
     @Test
     public void test() {
-        UniqueCountMetric metric = new ClientErrorMetric();
-        assertEquals("clientErrorMetric", metric.getName());
+        UniqueCountMetric metric = new ErrorByClientMetric();
+        assertEquals("errorByClientMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof ClientReader);
         assertEquals(2, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);

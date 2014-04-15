@@ -11,8 +11,8 @@ import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
-@Component("clientErrorMetric")
-public class ClientErrorMetric implements UniqueCountMetric {
+@Component("errorByClientMetric")
+public class ErrorByClientMetric implements UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new ErrorFilter()));
@@ -21,7 +21,7 @@ public class ClientErrorMetric implements UniqueCountMetric {
 
     @Override
     public String getName() {
-        return "clientErrorMetric";
+        return "errorByClientMetric";
     }
 
     @Override
