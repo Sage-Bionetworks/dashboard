@@ -82,5 +82,8 @@ public class SynapseClientTest {
         // This is a project itself -- should get back itself as the project
         project = synapseClient.getProject("syn1734172", session); // RA Challenge
         assertEquals("syn1734172", project);
+        // This is a file -- should get back the containing project
+        project = synapseClient.getProject("syn2330782", session); // RA Challenge
+        assertEquals("syn1734172", project);
     }
 }
