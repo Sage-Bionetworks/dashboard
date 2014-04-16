@@ -84,17 +84,19 @@ public class SynapseClient {
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
-        int i = 0;
-        for (JsonNode ancestor : root.get("idList")) {
-            // Reads the second ancestor as the project
-            if (i == 1) {
-                return readText(ancestor, "id");
+        if (root.has("idList")) { // Skip errors
+            int i = 0;
+            for (JsonNode ancestor : root.get("idList")) {
+                // Reads the second ancestor as the project
+                if (i == 1) {
+                    return readText(ancestor, "id");
+                }
+                i++;
             }
-            i++;
-        }
-        // If there is only one ancestor, it is the root, then this entity itself is a project.
-        if (i == 1) {
-            return entityId;
+            // If there is only one ancestor, it is the root, then this entity itself is a project.
+            if (i == 1) {
+                return entityId;
+            }
         }
         return null;
     }
