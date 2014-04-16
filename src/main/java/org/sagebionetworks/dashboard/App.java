@@ -10,6 +10,7 @@ import java.util.Set;
 import org.sagebionetworks.dashboard.service.RepoUpdateService;
 import org.sagebionetworks.dashboard.service.RepoUserWorker;
 import org.sagebionetworks.dashboard.service.UpdateCallback;
+import org.slf4j.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -29,14 +30,15 @@ public class App {
 
         final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/app-context.xml");
         final RepoUserWorker userWorker = context.getBean(RepoUserWorker.class);
-        System.out.println("Loading Synapse users.");
+        final Logger logger = org.slf4j.LoggerFactory.getLogger(App.class);
+        logger.info("Loading Synapse users.");
         userWorker.doWork();
-        System.out.println("Done loading Synapse users.");
+        logger.info("Done loading Synapse users.");
 
         final List<File> files = new ArrayList<File>();
         getCsvGzFiles(filePath, files);
         final int total = files.size();
-        System.out.println("Total number of files: " + total);
+        logger.info("Total number of files: " + total);
 
         context.registerShutdownHook();
         final RepoUpdateService updateService = context.getBean(RepoUpdateService.class);
@@ -49,13 +51,13 @@ public class App {
         // Load metrics
         for (int i = files.size() - 1; i >= 0; i--) {
             File file = files.get(i);
-            System.out.println("Loading file " + (files.size() - i) + " of " + total);
+            logger.info("Loading file " + (files.size() - i) + " of " + total);
             InputStream is = new FileInputStream(file);
             try {
                 updateService.update(is, file.getPath(), new UpdateCallback() {
                         @Override
                         public void call(UpdateResult result) {
-                            System.out.println(result.toString());
+                            logger.info(result.toString());
                         }
                     });
             } finally {

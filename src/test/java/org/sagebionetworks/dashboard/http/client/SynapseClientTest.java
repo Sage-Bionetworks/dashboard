@@ -70,4 +70,20 @@ public class SynapseClientTest {
         String benefactor = synapseClient.getBenefactor("syn2330782", session);
         assertEquals("syn1734172", benefactor);
     }
+
+    @Test
+    public void testGetProject() {
+        String session = synapseClient.login();
+        assertNotNull(session);
+        assertFalse(session.isEmpty());
+        // This is the root -- should get back nothing
+        String project = synapseClient.getProject("syn4489", session);
+        assertNull(project);
+        // This is a project itself -- should get back itself as the project
+        project = synapseClient.getProject("syn1734172", session); // RA Challenge
+        assertEquals("syn1734172", project);
+        // This is a file -- should get back the containing project
+        project = synapseClient.getProject("syn2330782", session); // RA Challenge
+        assertEquals("syn1734172", project);
+    }
 }

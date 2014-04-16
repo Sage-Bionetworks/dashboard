@@ -8,11 +8,11 @@ import org.sagebionetworks.dashboard.parse.ErrorFilter;
 import org.sagebionetworks.dashboard.parse.MethodUriReader;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 
-public class MethodErrorMetricTest {
+public class ErrorByMethodMetricTest {
     @Test
     public void test() {
-        UniqueCountMetric metric = new MethodErrorMetric();
-        assertEquals("methodErrorMetric", metric.getName());
+        UniqueCountMetric metric = new ErrorByMethodMetric();
+        assertEquals("errorByMethodMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof MethodUriReader);
         assertEquals(2, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);

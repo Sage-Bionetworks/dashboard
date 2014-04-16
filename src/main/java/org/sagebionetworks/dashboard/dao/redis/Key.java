@@ -33,4 +33,6 @@ class Key {
     static final String SYNAPSE_ENTITY_ID_NAME = NameSpace.synapse + SEPARATOR + ENTITY + SEPARATOR + ID_NAME;
     /** Synapse entity id -> benefactor id map. */
     static final String SYNAPSE_ENTITY_BENEFACTOR = NameSpace.synapse + SEPARATOR + ENTITY + SEPARATOR + "benefactor";
+    /** Synapse entity id -> project id map. */
+    static final String SYNAPSE_ENTITY_PROJECT = NameSpace.synapse + SEPARATOR + ENTITY + SEPARATOR + "project";
 }

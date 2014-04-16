@@ -4,24 +4,25 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.sagebionetworks.dashboard.parse.ClientReader;
-import org.sagebionetworks.dashboard.parse.ErrorFilter;
+import javax.annotation.Resource;
+
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
-@Component("clientErrorMetric")
-public class ClientErrorMetric implements UniqueCountMetric {
+@Component("topProjectByDayMetric")
+public class TopProjectByDayMetric implements DayCountMetric {
+
+    @Resource
+    private RecordReader<String> projectIdReader;
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            new ProdFilter(), new ErrorFilter()));
-
-    private final RecordReader<String> reader = new ClientReader();
+            (RecordFilter)new ProdFilter()));
 
     @Override
     public String getName() {
-        return "clientErrorMetric";
+        return "topProjectByDayMetric";
     }
 
     @Override
@@ -31,6 +32,6 @@ public class ClientErrorMetric implements UniqueCountMetric {
 
     @Override
     public RecordReader<String> getRecordReader() {
-        return reader;
+        return projectIdReader;
     }
 }
