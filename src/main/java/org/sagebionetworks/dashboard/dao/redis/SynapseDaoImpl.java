@@ -87,7 +87,7 @@ public class SynapseDaoImpl implements SynapseDao {
             project = synapseClient.getProject(entityId, session);
             if (project == null) {
                 // Explicitly set it to null to avoid repetitive lookups.
-                project = "UNKNOWN";
+                project = "null-project-id";
             }
             valueOps.set(key, project, EXPIRE_HOURS, TimeUnit.HOURS);
         }

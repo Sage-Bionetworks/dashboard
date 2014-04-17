@@ -4,23 +4,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.sagebionetworks.dashboard.parse.ErrorFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.StatusCodeReader;
 import org.springframework.stereotype.Component;
 
-@Component("statusCodeMetric")
-public class StatusCodeMetric implements UniqueCountMetric {
+@Component("errorStatusCodeMetric")
+public class ErrorStatusCodeMetric implements UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            (RecordFilter)new ProdFilter()));
+            new ProdFilter(), new ErrorFilter()));
 
     private final RecordReader<String> reader = new StatusCodeReader();
 
     @Override
     public String getName() {
-        return "statusCodeMetric";
+        return "errorStatusCodeMetric";
     }
 
     @Override
