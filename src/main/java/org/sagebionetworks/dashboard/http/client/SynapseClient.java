@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,10 @@ public class SynapseClient {
     private DashboardContext dashboardContext;
 
     public SynapseClient() {
-        client = new DefaultHttpClient();
+        PoolingClientConnectionManager cm = new PoolingClientConnectionManager();
+        cm.setMaxTotal(200);
+        cm.setDefaultMaxPerRoute(20);
+        client = new DefaultHttpClient(cm);
     }
 
     /**
