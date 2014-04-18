@@ -18,7 +18,7 @@ public class RepoUserScheduler {
     /**
      * Scheduled to run every 8 hour.
      */
-    @Scheduled(fixedRate=(8L * 60L * 60L * 1000L))
+    @Scheduled(initialDelay=1L, fixedRate=(8L * 60L * 60L * 1000L))
     public void run() {
         repoUserWorker.doWork();
     }
