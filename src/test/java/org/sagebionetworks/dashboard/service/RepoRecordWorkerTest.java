@@ -58,6 +58,9 @@ public class RepoRecordWorkerTest {
     @Resource
     private RepoRecordWorker repoRecordWorker;
 
+    @Resource
+    private RepoRepairWorker repoRepairWorker;
+
     private String keySuccess;
     private String keyFailure;
 
@@ -74,7 +77,7 @@ public class RepoRecordWorkerTest {
                 "syn123", "63", "1383058860156", null,
                 "repo-prod.sagebase.org", "18111", null, null,
                 "ed39b97b", null, "/repo/v1/entity/syn123", "22222", null,
-                "2013-10-29", "GET", "628c13a", "18", "prod", "true"
+                "2013-10-29", "GET", "628c13a", "18", "prod", "true", "202"
             };
         keySuccess = putS3Object(success);
         assertNotNull(keySuccess);
@@ -102,6 +105,7 @@ public class RepoRecordWorkerTest {
         assertFalse(fileStatusDao.isCompleted(keyFailure));
         assertTrue(fileStatusDao.isFailed(keyFailure));
         assertFalse(fileStatusDao.isFailed(keySuccess));
+        repoRepairWorker.doWork();
     }
 
     private void clearRedis() {

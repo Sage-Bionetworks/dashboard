@@ -38,43 +38,46 @@ public class RepoRecordWorker {
     private RepoFileFetcher repoFileFetcher;
 
     public void doWork() {
-
         final String bucket = dashboardContext.getAccessRecordBucket();
         List<String> batch = repoFileFetcher.nextBatch();
         for (final String key : batch) {
+            updateFile(bucket, key, 0);
+        }
+    }
 
-            final String etag = lockDao.acquire(key);
-            if (etag == null) {
-                // Fail to acquire lock
-                logger.info("Failed to acquire lock for file " + key + ". Skipping it...");
-                continue;
-            }
-            if (fileStatusDao.isCompleted(key) || fileStatusDao.isFailed(key)) {
-                // Already processed
-                lockDao.release(key, etag);
-                logger.info("File " + key + " already processed. Skipping it...");
-                continue;
-            }
+    public void updateFile(final String bucket, final String key, final int startingLine) {
 
-            S3Object file = s3Client.getObject(bucket, key);
-            try {
-                repoUpdateService.update(file.getObjectContent(), key, new UpdateCallback() {
-                    @Override
-                    public void call(UpdateResult result) {
-                        if (UpdateStatus.SUCCEEDED.equals(result.getStatus())) {
-                            fileStatusDao.setCompleted(key);
-                        } else {
-                            fileStatusDao.setFailed(key, result.getLineCount());
-                        }
+        // Try to acquire a lock on the file
+        final String etag = lockDao.acquire(key);
+        if (etag == null) {
+            logger.info("Failed to acquire lock for file " + key + ". Skipping it...");
+            return;
+        }
+        if (fileStatusDao.isCompleted(key)) {
+            lockDao.release(key, etag);
+            logger.info("File " + key + " already processed. Skipping it...");
+            return;
+        }
+
+        // Read the file to update the metrics
+        S3Object file = s3Client.getObject(bucket, key);
+        try {
+            repoUpdateService.update(file.getObjectContent(), key, startingLine, new UpdateCallback() {
+                @Override
+                public void call(UpdateResult result) {
+                    if (UpdateStatus.SUCCEEDED.equals(result.getStatus())) {
+                        fileStatusDao.setCompleted(key);
+                    } else {
+                        fileStatusDao.setFailed(key, result.getLineCount());
                     }
-                });
-            } finally {
-                try {
-                    file.close();
-                    lockDao.release(key, etag);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
                 }
+            });
+        } finally {
+            try {
+                file.close();
+                lockDao.release(key, etag);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }
