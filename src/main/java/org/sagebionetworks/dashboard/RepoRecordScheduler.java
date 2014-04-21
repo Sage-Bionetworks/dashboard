@@ -20,17 +20,17 @@ public class RepoRecordScheduler {
     private RepoRepairWorker repoRepairWorker;
 
     /**
-     * Initial delay of 5 minutes. Updates every 29 minutes.
+     * Initial delay of 7 minutes. Updates every 23 minutes.
      */
-    @Scheduled(initialDelay=(5L * 60L * 1000L), fixedRate=(29L * 60L * 1000L))
+    @Scheduled(initialDelay=(7L * 60L * 1000L), fixedRate=(23L * 60L * 1000L))
     public void runRecordWorker() {
         repoRecordWorker.doWork();
     }
 
     /**
-     * Initial delay of 33 minutes. Runs every 11 hours.
+     * Initial delay of 37 minutes. Runs every 17 hours.
      */
-    @Scheduled(initialDelay=(33L * 60L * 1000L), fixedRate=(11L * 60L * 60L * 1000L))
+    @Scheduled(initialDelay=(33L * 60L * 1000L), fixedRate=(17L * 60L * 60L * 1000L))
     public void runRepairWorker() {
         repoRepairWorker.doWork();
     }
