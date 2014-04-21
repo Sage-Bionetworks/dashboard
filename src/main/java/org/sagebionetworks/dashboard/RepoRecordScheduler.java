@@ -16,9 +16,9 @@ public class RepoRecordScheduler {
     private RepoRecordWorker repoRecordWorker;
 
     /**
-     * Initial delay of 5 minutes. Updates every 20 minutes.
+     * Initial delay of 5 minutes. Updates every 25 minutes.
      */
-    @Scheduled(initialDelay=(5L * 60L * 1000L), fixedRate=(20L * 60L * 1000L))
+    @Scheduled(initialDelay=(5L * 60L * 1000L), fixedRate=(25L * 60L * 1000L))
     public void run() {
         repoRecordWorker.doWork();
     }
