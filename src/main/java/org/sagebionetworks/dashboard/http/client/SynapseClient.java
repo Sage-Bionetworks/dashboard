@@ -20,6 +20,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,6 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component("synapseClient")
 public class SynapseClient {
+
+    private final Logger logger = LoggerFactory.getLogger(SynapseClient.class);
 
     @Resource
     private DashboardContext dashboardContext;
@@ -152,8 +156,16 @@ public class SynapseClient {
     }
 
     private JsonNode executeRequest(HttpUriRequest request) {
+        return executeRequest(request, 1L, 0);
+    }
+
+    private JsonNode executeRequest(final HttpUriRequest request, final long delayInMillis, final int retryCount) {
+        if (retryCount > 5) {
+            throw new RuntimeException("Failed after 5 retries.");
+        }
         InputStream inputStream = null;
         try {
+            Thread.sleep(delayInMillis);
             HttpResponse response = client.execute(request);
             if (HttpStatus.SC_UNAUTHORIZED == response.getStatusLine().getStatusCode()) {
                 throw new UnauthorizedException();
@@ -166,8 +178,10 @@ public class SynapseClient {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readValue(inputStream, JsonNode.class);
             return root;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            int numRetries = retryCount + 1;
+            logger.warn("Error executing request. Will retry " + numRetries, e);
+            return executeRequest(request, (delayInMillis << 1) + 100L, numRetries);
         } finally {
             if (inputStream != null) {
                 try {
