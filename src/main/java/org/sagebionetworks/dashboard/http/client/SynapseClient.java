@@ -180,7 +180,7 @@ public class SynapseClient {
             return root;
         } catch (Exception e) {
             int numRetries = retryCount + 1;
-            logger.warn("Error executing request. Will retry " + numRetries, e);
+            logger.warn("Error executing request. Will do retry #" + numRetries + ".", e);
             return executeRequest(request, (delayInMillis << 1) + 100L, numRetries);
         } finally {
             if (inputStream != null) {
