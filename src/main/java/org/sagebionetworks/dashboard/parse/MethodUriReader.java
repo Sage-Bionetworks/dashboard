@@ -1,6 +1,5 @@
 package org.sagebionetworks.dashboard.parse;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -9,12 +8,13 @@ import java.util.regex.Pattern;
  */
 public class MethodUriReader implements RecordReader<String> {
 
-    private static final Pattern ID = Pattern.compile("/[a-z]*(?<!v)(?<!wiki)(?<!wikiheadertree)(\\d+)");
+    private static final Pattern ID = Pattern.compile("/[a-z]*(?<!v)(?<!wiki)(?<!wikiheadertree)(?<!md)(\\d+)");
+    private static final Pattern MD5 = Pattern.compile("(?<=/md5)/[a-f0-9]+");
 
     @Override
     public String read(Record record) {
 
-        // Get the HTTP method
+        // HTTP method
         String method = record.getMethod();
         if (method != null && !method.isEmpty()) {
             method = method.toLowerCase();
@@ -22,25 +22,12 @@ public class MethodUriReader implements RecordReader<String> {
             method = "null-method";
         }
 
-        // Attach the URI if it is not null
+        // URI
         String uri = record.getUri();
         if (uri != null && !uri.isEmpty()) {
             uri = uri.toLowerCase();
-            final Matcher matcher = ID.matcher(uri);
-            StringBuilder uriBuilder = new StringBuilder();
-            int start = 0;
-            while (matcher.find()) {
-                // Append the non-matched part
-                int end = matcher.start();
-                uriBuilder.append(uri.substring(start, end));
-                start = matcher.end();
-                // Inspect the matched part to replace IDs
-                String matched = matcher.group();
-                matched = matched.replaceAll("\\d+", "{id}");
-                uriBuilder.append(matched);
-            }
-            uriBuilder.append(uri.substring(start, uri.length()));
-            uri = uriBuilder.toString();
+            uri = MD5.matcher(uri).replaceAll("/{md5}");
+            uri = ID.matcher(uri).replaceAll("/{id}");
         } else {
             uri = "null-uri";
         }
