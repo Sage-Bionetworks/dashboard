@@ -55,7 +55,17 @@ public class RepoUpdateService {
 
     private final RecordParser parser = new RepoRecordParser();
 
-    public void update(final InputStream in, final String filePath, final UpdateCallback callback) {
+    public void update(InputStream in, String filePath, UpdateCallback callback) {
+        update(in, filePath, 0, callback);
+    }
+
+    /**
+     * @param in             Input stream to read the metrics.
+     * @param filePath       The file path that's behind the input stream. This is used as the key track the progress.
+     * @param startLineIncl  1-based starting line number.
+     * @param callback       Callback to receive the update results.
+     */
+    public void update(final InputStream in, final String filePath, final int startLineIncl, final UpdateCallback callback) {
 
         GZIPInputStream gzis = null;
         InputStreamReader ir = null;
@@ -67,8 +77,10 @@ public class RepoUpdateService {
             br = new BufferedReader(ir);
             List<Record> records = parser.parse(br);
             for (Record record : records) {
-                updateRecord(record);
                 lineCount++;
+                if (lineCount >= startLineIncl) {
+                    updateRecord(record);
+                }
             }
             UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.SUCCEEDED);
             callback.call(result);

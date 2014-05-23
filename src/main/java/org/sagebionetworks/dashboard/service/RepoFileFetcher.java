@@ -52,7 +52,7 @@ public class RepoFileFetcher {
      * are NOT in previous batches.
      */
     public List<String> nextBatch() {
-        final String msg = "Computing the next batch of files to fetch";
+        final String msg = "Computing the batch of files to fetch";
         logger.info(msg + "...");
         long start = System.currentTimeMillis();
         final List<String> batch = new ArrayList<>();
