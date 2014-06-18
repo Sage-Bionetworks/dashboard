@@ -1,6 +1,8 @@
 dashboard development environment
 =========
 
+[![Build Status](https://travis-ci.org/Sage-Bionetworks/dashboard.svg?branch=master)](https://travis-ci.org/Sage-Bionetworks/dashboard)
+
 ### Virtual development environment via Vagrant
 
 1. Download and install [VirtualBox](https://www.virtualbox.org/).
