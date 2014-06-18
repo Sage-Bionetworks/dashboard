@@ -1,3 +1,10 @@
 language: java
 jdk: openjdk7
 services: redis-server
+env:
+  global:
+  - secure: gKVxtexLMwvQX6UYDDpcK81z7yq8SunLurP3yQCxKUWjMiZbbO3ZOjB2vngtw1su8mwi62J3BmZcYf0XqLJdcu7o/Ye3cr/dp59eageec6zhsJ/Lw6Ji/1kDA31kRguvzVoCnV6sd+xhYB3iwzOfOmyTT723aJo6lk6w+JslusU=
+  - secure: gXf9cBH6OiZ720m7/+VNr8y52ufHPrbwf54+n7Qg/dxH3QpcodQ5+uqRpeiRoHNlyCAgmQWt84M8NCgMTHNYOED7Yx1SHARjG9CYQaxWkeP4aQcejJT4mdAB2q8mmLaAerzwK/GuiEt+0ZnrgPE1sgbKBb4gdLlVjgyChunv1uI=
+  - secure: e4At5+5rCN1qd52yf/QT46w7GZ7Dk0Jnb9nLXppmkaQjjb/+3luoRtv06yOcEny0EPLfOqakP6YqURYqqDT6uSN7u10NAsncxcOPr8Uem0mRfy4rSJUW1Bo1t4p3Buol4UdIZIkL2f8OINuraQjNTWD4tvNPgXHQ5qjAralTjn8=
+  - secure: b73h1zoe0YQ4MKNg2fXDA+FX3l4GIfAszO6hsKMaet23qQs6e3F61hOCsyfCfI61GybSgsSjvV83P8y1uglfHmnMrf2jFa40wevNqao00IGbKgRLOVZxFE+jmZ0dyjb+rhdoO2YCRyfGTUR2WVpwpi+AXKuGnr+lAU5gxqXMPe8=
+  - secure: L4MdsShM+TFT3RiQXePIXd0HxsiZDp5ljSJyQ3UiQ+OTjxAnjNUcjnH8zE2QpCgp4V5O2fjT1TUvcKa2DEMfhnwr4Mf+tRr0mnbCUo7X4i9pVuoe//T2w8EP+XhLSXX5ATTE04buxjPbs7M8TPtfg8wkwTaQufu5+bumHBWLcMY=
