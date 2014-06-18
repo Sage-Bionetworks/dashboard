@@ -7,9 +7,10 @@ dashboard development environment
 2. Download and install [Vagrant](http://www.vagrantup.com/).
 3. At the project root, run `vagrant up`.
 4. Once the box is up, ssh to it `vagrant ssh`.
-5. Add the required configuration to `~/.gradle/gradle.properties`. This only needs to be done once.
+5. We now should be in the Vagrant box. Add the required configuration to `~/.gradle/gradle.properties`. This only needs to be done once.
 6. Go to the shared folder `cd /vagrant`.
-7. `gradlew --info clean build`.
+7. Run `gradlew --info clean build`.
+8. Run `gradlew eclipse` to generate the files for importing the project into Eclipse.
 
 If this works, we are done and the steps below can be skipped.
 
