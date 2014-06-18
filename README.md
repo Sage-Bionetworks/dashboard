@@ -1,39 +1,36 @@
 dashboard development environment
 =========
 
-### Redis
+[![Build Status](https://travis-ci.org/Sage-Bionetworks/dashboard.svg?branch=master)](https://travis-ci.org/Sage-Bionetworks/dashboard)
 
-####  Install Redis and start the Redis server
+### Virtual development environment via Vagrant
 
-    $ wget http://download.redis.io/releases/redis-2.8.3.tar.gz
-    $ tar xzf redis-2.8.3.tar.gz
-    $ cd redis-2.8.3
+1. Download and install [VirtualBox](https://www.virtualbox.org/).
+2. Download and install [Vagrant](http://www.vagrantup.com/).
+3. At the project root, run `vagrant up`.
+4. Once the box is up, ssh to it `vagrant ssh`.
+5. We now should be in the Vagrant box. Add the required configuration to `~/.gradle/gradle.properties`. This only needs to be done once.
+6. Go to the shared folder `cd /vagrant`.
+7. Run `./gradlew --info clean build`.
+8. Run `./gradlew eclipse` to generate the files for importing the project into Eclipse.
+
+If this works, we are done and the steps below can be skipped.
+
+### The traditional way
+
+Only follow the steps below if Vagrant is not working for you.
+
+#### Install Redis and start the Redis server
+
+    $ wget http://download.redis.io/releases/redis-2.8.6.tar.gz
+    $ tar xzf redis-2.8.6.tar.gz
+    $ cd redis-2.8.6
     $ make
     $ src/redis-server
     $ <ctrl-z>
     $ bg
 
-#### Test the Redis server
-
-    $ src/redis-cli
-    redis 127.0.0.1:6379> PING
-    PONG
-    redis 127.0.0.1:6379> QUIT
-
-#### Shut down Redis
-
-    $ cd <redis-home>
-    $ src/redis-cli
-    redis 127.0.0.1:6379> SHUTDOWN
-    redis 127.0.0.1:6379> QUIT
-
-### Gradle
-
-#### Download and install the latest Gradle
-
-Go to http://www.gradle.org/ and follow the instructions.
-
-#### Set up the Gradle properties file
+#### Set up the required configuration
 
     $ touch ~/.gradle/gradle.properties
 
@@ -45,17 +42,17 @@ Add the following lines:
     synapseUsr=<Your Synapse admin user account>
     synapsePwd=<Your Synapse admin account password>
 
-(Alternatively, these parameters can be passed in as command-line arguments and will overwrite the Gradle properties.)
+(Alternatively, these parameters can be passed in as command-line arguments which wil overwrite the Gradle properties.)
 
 ### Build and run the project
 
     $ cd <project-home>
-    $ gradle --info clean build
+    $ gradlew --info clean build
     ...
     BUILD SUCCESSFUL
     Total time: 1 mins 25.893 secs
 
-    $ gradle run -PfilePath=</local/path/to/access/log/files>
+    $ gradlew run -PfilePath=</local/path/to/access/log/files>
     :compileJava UP-TO-DATE
     :processResources UP-TO-DATE
     :classes UP-TO-DATE
