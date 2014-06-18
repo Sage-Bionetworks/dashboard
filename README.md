@@ -47,12 +47,12 @@ Add the following lines:
 ### Build and run the project
 
     $ cd <project-home>
-    $ gradlew --info clean build
+    $ ./gradlew --info clean build
     ...
     BUILD SUCCESSFUL
     Total time: 1 mins 25.893 secs
 
-    $ gradlew run -PfilePath=</local/path/to/access/log/files>
+    $ ./gradlew run -PfilePath=</local/path/to/access/log/files>
     :compileJava UP-TO-DATE
     :processResources UP-TO-DATE
     :classes UP-TO-DATE
