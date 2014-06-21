@@ -9,6 +9,12 @@ echo 'deb http://mirrors.kernel.org/debian wheezy-backports main' >> /etc/apt/so
 apt-get --quiet --yes update
 apt-get --quiet --yes --target-release wheezy-backports upgrade
 
-apt-get --quiet --yes --target-release wheezy-backports install redis-server
+# Java
 apt-get --quiet --yes --target-release wheezy-backports install openjdk-7-jdk
+
+# Redis
+apt-get --quiet --yes --target-release wheezy-backports install redis-server
+# Comment out binding to specific IP addresses so that the host can access the Redis server
+sed 's/^[[:space:]]*bind[[:space:]]/# &/g' /etc/redis/redis.conf | tee /etc/redis/redis.conf
+service redis-server restart
 
