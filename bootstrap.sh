@@ -15,10 +15,13 @@ apt-get --quiet --yes --target-release wheezy-backports install openjdk-7-jdk
 # PostgreSQL
 apt-get --quiet --yes --target-release wheezy-backports install postgresql
 apt-get --quiet --yes --target-release wheezy-backports install postgresql-client
+echo "listen_addresses = '*'" >> /etc/postgresql/9.1/main/postgresql.conf
+echo "host all all 10.0.0.0/16 trust" >> /etc/postgresql/9.1/main/pg_hba.conf
+service postgresql restart
 
 # Redis
 apt-get --quiet --yes --target-release wheezy-backports install redis-server
-# Comment out binding to specific IP addresses so that the host can access the Redis server
+# Comment out binding to specific IPs
 sed 's/^[[:space:]]*bind[[:space:]]/# &/g' /etc/redis/redis.conf | tee /etc/redis/redis.conf
 service redis-server restart
 
