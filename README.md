@@ -3,20 +3,38 @@ dashboard development environment
 
 [![Build Status](https://travis-ci.org/Sage-Bionetworks/dashboard.svg?branch=master)](https://travis-ci.org/Sage-Bionetworks/dashboard)
 
+### Set up the required configuration
+
+    $ touch ~/.gradle/gradle.properties
+
+Add the following lines:
+
+    access.record.bucket=<S3 bucket for the access records>
+
+    aws.access.key=<Your AWS dev account access key>
+    aws.secret.key=<Your AWS dev account secrete Key>
+
+    synapse.user=<Your Synapse admin user account>
+    synapse.password=<Your Synapse admin account password>
+
+    dw.username=<Data warehouse user>
+    dw.password=<Data warehouse password>
+
+(Alternatively, these parameters can be passed in as command-line arguments which will overwrite the above entries in the Gradle properties file.)
+
 ### Virtual development environment via Vagrant
 
 1. Download and install [VirtualBox](https://www.virtualbox.org/).
 2. Download and install [Vagrant](http://www.vagrantup.com/).
-3. At the project root, run `vagrant up`.
+3. At the project root, run `vagrant up`. Due to a Vagrant bug, after the Redis server has successfully restarted at the end, you may need to ctrl+c twice to exit the command.
 4. Once the box is up, ssh to it `vagrant ssh`.
-5. We now should be in the Vagrant box. Add the required configuration to `~/.gradle/gradle.properties`. This only needs to be done once.
-6. Go to the shared folder `cd /vagrant`.
-7. Run `./gradlew --info clean build`.
-8. Run `./gradlew eclipse` to generate the files for importing the project into Eclipse.
+5. Go to the shared folder `cd /vagrant`.
+6. Run `./gradlew --info clean build`.
+7. Run `./gradlew eclipse` to generate the files for importing the project into Eclipse.
 
 If this works, we are done and the steps below can be skipped.
 
-### The traditional way
+### The non-virtual way
 
 Only follow the steps below if Vagrant is not working for you.
 
@@ -30,29 +48,19 @@ Only follow the steps below if Vagrant is not working for you.
     $ <ctrl-z>
     $ bg
 
-#### Set up the required configuration
+#### Install PostgreSQL and start the PostgreSQL server
 
-    $ touch ~/.gradle/gradle.properties
-
-Add the following lines:
-
-    accessKey=<Your AWS dev account access key>
-    secretKey=<Your AWS dev account secrete Key>
-
-    synapseUsr=<Your Synapse admin user account>
-    synapsePwd=<Your Synapse admin account password>
-
-(Alternatively, these parameters can be passed in as command-line arguments which wil overwrite the Gradle properties.)
-
-### Build and run the project
+#### Build and run the project
 
     $ cd <project-home>
-    $ gradlew --info clean build
+    $ ./gradlew --info clean build
     ...
     BUILD SUCCESSFUL
     Total time: 1 mins 25.893 secs
 
-    $ gradlew run -PfilePath=</local/path/to/access/log/files>
+The package has a command-line interface that can be used to read local copies of access records and populates the Redis cache.
+
+    $ ./gradlew run -PfilePath=</local/path/to/access/log/files>
     :compileJava UP-TO-DATE
     :processResources UP-TO-DATE
     :classes UP-TO-DATE
