@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
 
+apply plugin: 'findbugs'
 apply plugin: 'jdepend'
 apply plugin: 'pmd'
 
@@ -40,6 +41,13 @@ dependencies {
     testCompile 'org.springframework:spring-test:' + springFrameworkVersion
     testRuntime 'org.slf4j:slf4j-log4j12:' + slf4jVersion
     testRuntime 'log4j:log4j:1.2.17'
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
 }
 
 tasks.withType(JDepend) {
