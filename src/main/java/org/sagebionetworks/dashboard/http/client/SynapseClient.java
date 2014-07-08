@@ -139,6 +139,9 @@ public class SynapseClient {
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode node = executeRequest(get);
+        if (node.get("results") == null) {
+            return users;
+        }
         for (JsonNode userNode : node.get("results")) {
             String userId = readText(userNode, "ownerId");
             String userName = readText(userNode, "userName");
