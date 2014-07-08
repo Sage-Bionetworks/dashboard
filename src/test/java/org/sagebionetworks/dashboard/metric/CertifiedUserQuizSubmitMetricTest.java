@@ -14,7 +14,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.parse.Record;
@@ -51,10 +50,11 @@ public class CertifiedUserQuizSubmitMetricTest {
         clearRedis();
     }
 
+    // valid uri and method 
     @Test
-    public void test() {
+    public void case1() {
         RecordParser parser = new RepoRecordParser();
-        String line = ",\"330\",\"1388278872156\",,\"repo-prod.prod.sagebase.org\",\"50032\",\"python-requests/1.2.3 CPython/2.7.4 Linux/3.8.0-19-generic\",\"limit=20&offset=40\",\"37dbacaa-d508-40bc-95df-027669c1defa\",,\"/repo/v1/certifiedUserTestResponse\",\"1976831\",,\"2013-12-29\",\"POST\",\"596b6cd4fe9c6b87:2490c0ea:142eda5a7fd:-7ffd\",\"000000024\",\"prod\",\"false\",\"500\"";
+        String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTestResponse\",\"1118328\",,\"2014-06-23\",\"POST\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
         
         Reader reader = new StringReader(line);
         List<Record> records = parser.parse(reader);
@@ -63,13 +63,67 @@ public class CertifiedUserQuizSubmitMetricTest {
         Metric<String> metric = new CertifiedUserQuizSubmitMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
-        DateTime dtFrom = new DateTime(2013, 10, 1, 0, 0);
-        DateTime dtTo = new DateTime(2013, 12, 31, 0, 0);
+        DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
+        DateTime dtTo = new DateTime(2014, 06, 30, 0, 0);
         List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
         assertNotNull(results);
         assertEquals(1, results.size());
-        assertEquals(1388275200000L, results.get(0).timestamp());
+        assertEquals(1403481600000L, results.get(0).timestamp());
         assertEquals("1", results.get(0).value());
+    }
+    
+    // similar but invalid uri
+    @Test
+    public void case2() {
+        
+        RecordParser parser = new RepoRecordParser();
+        String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTest\",\"1118328\",,\"2014-06-23\",\"POST\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
+                
+        Reader reader = new StringReader(line);
+        List<Record> records = parser.parse(reader);
+        assertNotNull(records);
+        assertEquals(1, records.size());
+        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        uniqueCountWriter.writeMetric(records.get(0), metric);
+
+        DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
+        DateTime dtTo = new DateTime(2014, 06, 30, 0, 0);
+        Boolean exception = false;
+        try {
+            @SuppressWarnings("unused")
+            List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
+        } catch (IllegalArgumentException e) {
+            // this test is supposed to throw an exception
+            exception = true;
+        }
+        assertTrue(exception);
+    }
+    
+    // invalid method
+    @Test
+    public void case3() {
+        
+        RecordParser parser = new RepoRecordParser();
+        String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTestResponse\",\"1118328\",,\"2014-06-23\",\"GET\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
+                
+        Reader reader = new StringReader(line);
+        List<Record> records = parser.parse(reader);
+        assertNotNull(records);
+        assertEquals(1, records.size());
+        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        uniqueCountWriter.writeMetric(records.get(0), metric);
+
+        DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
+        DateTime dtTo = new DateTime(2014, 06, 30, 0, 0);
+        Boolean exception = false;
+        try {
+            @SuppressWarnings("unused")
+            List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
+        } catch (IllegalArgumentException e) {
+            // this test is supposed to throw an exception
+            exception = true;
+        }
+        assertTrue(exception);
     }
     
     private void clearRedis() {
