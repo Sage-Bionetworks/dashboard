@@ -60,13 +60,12 @@ public class CertifiedUserQuizRequestMetricTest {
         List<Record> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new ErrorCountMetric();
+        Metric<String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2013, 10, 1, 0, 0);
         DateTime dtTo = new DateTime(2013, 12, 31, 0, 0);
-        String id = "";
-        List<TimeDataPoint> results = metricReader.getCount(metric.getName(), id, Interval.day, dtFrom, dtTo);
+        List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals(1388275200000L, results.get(0).timestamp());

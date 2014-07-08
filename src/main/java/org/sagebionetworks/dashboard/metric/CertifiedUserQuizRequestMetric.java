@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component("certifiedUserQuizRequestMetric")
 public class CertifiedUserQuizRequestMetric implements UniqueCountMetric {
     
-    private final RecordReader<String> reader = new UserIdReader();
+    private RecordReader<String> reader = new UserIdReader();
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new MethodFilter("get"), new UriCUQRequestFilter()));
