@@ -1,10 +1,11 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
+import java.util.Set;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.dashboard.metric.ClearRedis;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.dao.DataAccessException;
@@ -40,17 +41,27 @@ public abstract class AbstractRedisDaoTest {
                 }
             }
         });
-        ClearRedis.clearRedis(getRedisTemplate());
+        clearRedis();
     }
 
     @AfterClass
     public static void afterClass() {
-        ClearRedis.clearRedis(getRedisTemplate());
+        clearRedis();
     }
 
     private static StringRedisTemplate getRedisTemplate() {
         // Manually load the context since this is within a static method
         StringRedisTemplate redisTemplate = context.getBean(StringRedisTemplate.class);
         return redisTemplate;
+    }
+
+    private static void clearRedis() {
+        // Remove all the keys
+        StringRedisTemplate redisTemplate = getRedisTemplate();
+        Set<String> keys = redisTemplate.keys("*");
+        for (String key : keys) {
+            redisTemplate.delete(key);
+            Assert.assertFalse(redisTemplate.hasKey(key));
+        }
     }
 }
