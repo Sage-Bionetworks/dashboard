@@ -83,8 +83,7 @@ public class CertifiedUserQuizSubmitMetricTest {
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 06, 30, 0, 0);
-        @SuppressWarnings("unused")
-        List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
+        metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -102,8 +101,7 @@ public class CertifiedUserQuizSubmitMetricTest {
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 06, 30, 0, 0);
-        @SuppressWarnings("unused")
-        List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
+        metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
     }
 
     private void clearRedis() {
