@@ -1,11 +1,14 @@
 package org.sagebionetworks.dashboard.metric;
 
 import static org.junit.Assert.*;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.Resource;
+
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -47,9 +50,8 @@ public class CertifiedUserQuizRequestMetricTest {
         clearRedis();
     }
 
-    // valid uri and method
     @Test
-    public void case1() {
+    public void testValidUri() {
 
         RecordParser parser = new RepoRecordParser();
         String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTest\",\"1118328\",,\"2014-06-23\",\"GET\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
@@ -70,9 +72,8 @@ public class CertifiedUserQuizRequestMetricTest {
         assertEquals("1", results.get(0).value());
     }
 
-    // similar but invalid uri
-    @Test
-    public void case2() {
+    @Test(expected=IllegalArgumentException.class)
+    public void testInvalidUri() {
 
         RecordParser parser = new RepoRecordParser();
         String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTestResponse\",\"1118328\",,\"2014-06-23\",\"GET\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
@@ -86,20 +87,12 @@ public class CertifiedUserQuizRequestMetricTest {
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 06, 30, 0, 0);
-        Boolean exception = false;
-        try {
-            @SuppressWarnings("unused")
-            List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
-        } catch (IllegalArgumentException e) {
-            // this test is supposed to throw an exception
-            exception = true;
-        }
-        assertTrue(exception);
+        @SuppressWarnings("unused")
+        List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
     }
 
-    // invalid method
-    @Test
-    public void case3() {
+    @Test(expected=IllegalArgumentException.class)
+    public void testInvalidMethod() {
 
         RecordParser parser = new RepoRecordParser();
         String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTest\",\"1118328\",,\"2014-06-23\",\"POST\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
@@ -113,15 +106,8 @@ public class CertifiedUserQuizRequestMetricTest {
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 06, 30, 0, 0);
-        Boolean exception = false;
-        try {
-            @SuppressWarnings("unused")
-            List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
-        } catch (IllegalArgumentException e) {
-            // this test is supposed to throw an exception
-            exception = true;
-        }
-        assertTrue(exception);
+        @SuppressWarnings("unused")
+        List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
     }
 
     private void clearRedis() {
