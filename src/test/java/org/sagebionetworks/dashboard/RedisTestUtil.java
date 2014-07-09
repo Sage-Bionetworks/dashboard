@@ -1,4 +1,4 @@
-package org.sagebionetworks.dashboard.metric;
+package org.sagebionetworks.dashboard;
 
 import static org.junit.Assert.assertFalse;
 
@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-public class ClearRedis {
+public class RedisTestUtil {
 
     public static void clearRedis(StringRedisTemplate redisTemplate) {
         Set<String> keys = redisTemplate.keys("*");

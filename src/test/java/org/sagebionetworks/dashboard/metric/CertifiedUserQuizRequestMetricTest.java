@@ -14,6 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.sagebionetworks.dashboard.RedisTestUtil;
 import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.parse.Record;
@@ -42,12 +43,12 @@ public class CertifiedUserQuizRequestMetricTest {
     public void before() {
         assertNotNull(redisTemplate);
         assertNotNull(uniqueCountWriter);
-        ClearRedis.clearRedis(redisTemplate);
+        RedisTestUtil.clearRedis(redisTemplate);
     }
 
     @After
     public void after() {
-        ClearRedis.clearRedis(redisTemplate);
+        RedisTestUtil.clearRedis(redisTemplate);
     }
 
     @Test

@@ -1,13 +1,11 @@
 package org.sagebionetworks.dashboard.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -16,6 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.sagebionetworks.dashboard.RedisTestUtil;
 import org.sagebionetworks.dashboard.metric.ErrorCountMetric;
 import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
@@ -43,12 +42,12 @@ public class SimpleCountWriterIntegTest {
     public void before() {
         assertNotNull(redisTemplate);
         assertNotNull(simpleCountWriter);
-        clearRedis();
+        RedisTestUtil.clearRedis(redisTemplate);
     }
 
     @After
     public void after() {
-        clearRedis();
+        RedisTestUtil.clearRedis(redisTemplate);
     }
 
     @Test
@@ -70,13 +69,5 @@ public class SimpleCountWriterIntegTest {
         assertEquals(1, results.size());
         assertEquals(1388275200000L, results.get(0).timestamp());
         assertEquals("1", results.get(0).value());
-    }
-
-    private void clearRedis() {
-        Set<String> keys = redisTemplate.keys("*");
-        for (String key : keys) {
-            redisTemplate.delete(key);
-            assertFalse(redisTemplate.hasKey(key));
-        }
     }
 }
