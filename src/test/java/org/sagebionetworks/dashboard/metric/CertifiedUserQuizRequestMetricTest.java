@@ -42,12 +42,12 @@ public class CertifiedUserQuizRequestMetricTest {
     public void before() {
         assertNotNull(redisTemplate);
         assertNotNull(uniqueCountWriter);
-        clearRedis();
+        ClearRedis.clearRedis(redisTemplate);
     }
 
     @After
     public void after() {
-        clearRedis();
+        ClearRedis.clearRedis(redisTemplate);
     }
 
     @Test
@@ -106,13 +106,5 @@ public class CertifiedUserQuizRequestMetricTest {
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 06, 30, 0, 0);
         metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
-    }
-
-    private void clearRedis() {
-        Set<String> keys = redisTemplate.keys("*");
-        for (String key : keys) {
-            redisTemplate.delete(key);
-            assertFalse(redisTemplate.hasKey(key));
-        }
     }
 }

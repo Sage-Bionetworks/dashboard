@@ -1,11 +1,14 @@
 package org.sagebionetworks.dashboard.metric;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
-import java.util.Set;
+
 import javax.annotation.Resource;
+
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -39,12 +42,12 @@ public class CertifiedUserQuizSubmitMetricTest {
     public void before() {
         assertNotNull(redisTemplate);
         assertNotNull(uniqueCountWriter);
-        clearRedis();
+        ClearRedis.clearRedis(redisTemplate);
     }
 
     @After
     public void after() {
-        clearRedis();
+        ClearRedis.clearRedis(redisTemplate);;
     }
 
     @Test
@@ -102,13 +105,5 @@ public class CertifiedUserQuizSubmitMetricTest {
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 06, 30, 0, 0);
         metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
-    }
-
-    private void clearRedis() {
-        Set<String> keys = redisTemplate.keys("*");
-        for (String key : keys) {
-            redisTemplate.delete(key);
-            assertFalse(redisTemplate.hasKey(key));
-        }
     }
 }
