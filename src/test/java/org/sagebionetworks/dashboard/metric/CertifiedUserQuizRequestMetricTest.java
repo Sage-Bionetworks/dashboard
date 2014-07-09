@@ -1,14 +1,11 @@
 package org.sagebionetworks.dashboard.metric;
 
 import static org.junit.Assert.*;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.Resource;
-
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration("classpath:/META-INF/spring/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CertifiedUserQuizRequestMetricTest {
-    
+
     @Resource
     private StringRedisTemplate redisTemplate;
 
@@ -53,10 +50,10 @@ public class CertifiedUserQuizRequestMetricTest {
     // valid uri and method
     @Test
     public void case1() {
-        
+
         RecordParser parser = new RepoRecordParser();
         String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTest\",\"1118328\",,\"2014-06-23\",\"GET\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
-                
+
         Reader reader = new StringReader(line);
         List<Record> records = parser.parse(reader);
         assertNotNull(records);
@@ -72,14 +69,14 @@ public class CertifiedUserQuizRequestMetricTest {
         assertEquals(1403481600000L, results.get(0).timestamp());
         assertEquals("1", results.get(0).value());
     }
-    
+
     // similar but invalid uri
     @Test
     public void case2() {
-        
+
         RecordParser parser = new RepoRecordParser();
         String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTestResponse\",\"1118328\",,\"2014-06-23\",\"GET\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
-                
+
         Reader reader = new StringReader(line);
         List<Record> records = parser.parse(reader);
         assertNotNull(records);
@@ -99,14 +96,14 @@ public class CertifiedUserQuizRequestMetricTest {
         }
         assertTrue(exception);
     }
-    
+
     // invalid method
     @Test
     public void case3() {
-        
+
         RecordParser parser = new RepoRecordParser();
         String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTest\",\"1118328\",,\"2014-06-23\",\"POST\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
-                
+
         Reader reader = new StringReader(line);
         List<Record> records = parser.parse(reader);
         assertNotNull(records);
@@ -126,7 +123,7 @@ public class CertifiedUserQuizRequestMetricTest {
         }
         assertTrue(exception);
     }
-    
+
     private void clearRedis() {
         Set<String> keys = redisTemplate.keys("*");
         for (String key : keys) {
@@ -134,5 +131,4 @@ public class CertifiedUserQuizRequestMetricTest {
             assertFalse(redisTemplate.hasKey(key));
         }
     }
-
 }

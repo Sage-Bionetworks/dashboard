@@ -84,7 +84,7 @@ public class MetricReader {
         }
         if (!nameIdDao.hasName(metricName)) {
             throw new IllegalArgumentException(metricName + " is an invalid metric name or " + 
-        "metric does not have any data yet");
+                    "metric does not have any data yet");
         }
         return nameIdDao.getId(metricName);
     }
