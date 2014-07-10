@@ -1,15 +1,6 @@
+/*** Java ***/
+
 apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'eclipse'
-
-apply plugin: 'findbugs'
-apply plugin: 'jdepend'
-apply plugin: 'pmd'
-
-mainClassName = "org.sagebionetworks.dashboard.App"
-run {
-    args = [filePath]
-}
 
 jar {
     group = 'org.sagebionetworks'
@@ -43,6 +34,21 @@ dependencies {
     testRuntime 'log4j:log4j:1.2.17'
 }
 
+/*** Eclipse ***/
+
+apply plugin: 'eclipse'
+
+/*** Command-line Application ***/
+
+apply plugin: 'application'
+mainClassName = "org.sagebionetworks.dashboard.App"
+run {
+    args = [filePath]
+}
+
+/*** Code Quality Tools ***/
+
+apply plugin: 'findbugs'
 tasks.withType(FindBugs) {
     reports {
         xml.enabled = false
@@ -50,6 +56,7 @@ tasks.withType(FindBugs) {
     }
 }
 
+apply plugin: 'jdepend'
 tasks.withType(JDepend) {
     reports {
         xml.enabled = false
@@ -57,12 +64,27 @@ tasks.withType(JDepend) {
     }
 }
 
+apply plugin: 'pmd'
 tasks.withType(Pmd) {
     reports {
         xml.enabled = false
         html.enabled = true
     }
 }
+
+/*** Publish ***/
+
+buildscript {
+    repositories {
+         jcenter()
+    }
+    dependencies {
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.2.4'
+    }
+}
+apply plugin: 'artifactory-publish'
+
+/*** Wrapper ***/
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
