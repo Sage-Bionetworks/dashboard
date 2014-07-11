@@ -1,20 +1,16 @@
+group = 'org.sagebionetworks'
+project.ext.baseName = 'dashboard'
+version = '0.5.25-' + (new Date()).format(
+        'yyyyMMddHHmmss', TimeZone.getTimeZone("UTC"))
+
+/*** Java ***/
+
 apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'eclipse'
-
-apply plugin: 'findbugs'
-apply plugin: 'jdepend'
-apply plugin: 'pmd'
-
-mainClassName = "org.sagebionetworks.dashboard.App"
-run {
-    args = [filePath]
-}
 
 jar {
-    group = 'org.sagebionetworks'
-    baseName = 'dashboard'
-    version =  '0.5.23'
+    group = group
+    baseName = baseName
+    version = version
 }
 
 repositories {
@@ -29,8 +25,8 @@ dependencies {
     compile 'redis.clients:jedis:' + jedisVersion
     compile 'joda-time:joda-time:2.3'
     compile 'net.sf.opencsv:opencsv:2.3'
-    compile 'com.amazonaws:aws-java-sdk:1.7.12'
-    compile 'org.apache.httpcomponents:httpclient:4.3.3'
+    compile 'com.amazonaws:aws-java-sdk:1.8.3'
+    compile 'org.apache.httpcomponents:httpclient:4.3.4'
     compile 'org.postgresql:postgresql:9.3-1101-jdbc41'
     compile 'org.jasypt:jasypt:1.9.2'
     compile 'org.slf4j:slf4j-api:' + slf4jVersion
@@ -43,6 +39,21 @@ dependencies {
     testRuntime 'log4j:log4j:1.2.17'
 }
 
+/*** Eclipse ***/
+
+apply plugin: 'eclipse'
+
+/*** Command-line Application ***/
+
+apply plugin: 'application'
+mainClassName = "org.sagebionetworks.dashboard.App"
+run {
+    args = [filePath]
+}
+
+/*** Code Quality Tools ***/
+
+apply plugin: 'findbugs'
 tasks.withType(FindBugs) {
     reports {
         xml.enabled = false
@@ -50,6 +61,7 @@ tasks.withType(FindBugs) {
     }
 }
 
+apply plugin: 'jdepend'
 tasks.withType(JDepend) {
     reports {
         xml.enabled = false
@@ -57,12 +69,55 @@ tasks.withType(JDepend) {
     }
 }
 
+apply plugin: 'pmd'
 tasks.withType(Pmd) {
     reports {
         xml.enabled = false
         html.enabled = true
     }
 }
+
+/*** Artifactory ***/
+
+buildscript {
+    repositories {
+         jcenter()
+    }
+    dependencies {
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.2.4'
+    }
+}
+
+apply plugin: 'artifactory-publish'
+
+artifactory {
+    contextUrl = 'http://sagebionetworks.artifactoryonline.com/sagebionetworks'
+    publish {
+        contextUrl = 'http://sagebionetworks.artifactoryonline.com/sagebionetworks'
+        repository {
+            repoKey = 'libs-releases-local'
+            username = "${System.env.ARTI_USR}"
+            password = "${System.env.ARTI_PWD}"
+        }
+        defaults {
+            publications ('mavenJava')
+        }
+    }
+}
+
+/*** Maven Publishing ***/
+
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+/*** Wrapper ***/
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
