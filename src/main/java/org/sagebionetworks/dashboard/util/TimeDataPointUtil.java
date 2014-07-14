@@ -13,7 +13,6 @@ import org.sagebionetworks.dashboard.model.TimeDataPoint;
 public class TimeDataPointUtil {
 
     /**
-     * 
      * @param list - the list of TimeDataPoint lists
      * @param length - the number of TimeDataPoint lists in list
      * @return a map that the keys are the time stamp
@@ -49,8 +48,6 @@ public class TimeDataPointUtil {
     }
 
     /**
-     * 
-     * @param map
      * @return the list of time stamp in the map in sorted order
      */
     public static List<String> getMergeTimeStampList (Map<String, ArrayList<String>> map) {
@@ -60,10 +57,6 @@ public class TimeDataPointUtil {
     }
 
     /**
-     * 
-     * @param mergeTimeStampList
-     * @param map
-     * @param nth
      * @return the nth list of values in the map
      */
     public static List<String> getMergeValueList (List<String> mergeTimeStampList, 
