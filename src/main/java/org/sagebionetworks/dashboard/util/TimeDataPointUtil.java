@@ -12,29 +12,6 @@ import org.sagebionetworks.dashboard.model.TimeDataPoint;
 
 public class TimeDataPointUtil {
 
-    /*
-     * returns a time stamp list of a single TimeDataPoint list
-     */
-    private static ArrayList<String> getTimeStampList (List<TimeDataPoint> list) {
-        ArrayList<String> res = new ArrayList<String>();
-        for (TimeDataPoint data : list) {
-            res.add(data.x());
-        }
-        return res;
-    }
-
-    /*
-     * returns a merge time stamp list of a list of TimeDataPoint lists
-     */
-    private static ArrayList<String> getMergeTimeStampList (List<List<TimeDataPoint>> list) {
-        Set<String> res = new HashSet<String>();
-        for (List<TimeDataPoint> listdata : list) {
-            ArrayList<String> tmp = getTimeStampList(listdata);
-            res.addAll(tmp);
-        }
-        return new ArrayList<String>(res);
-    }
-
     /**
      * 
      * @param list - the list of TimeDataPoint lists
@@ -96,6 +73,21 @@ public class TimeDataPointUtil {
             res.add(map.get(timestamp).get(nth));
         }
         return res;
+    }
+
+    /*
+     * returns a merge time stamp list of a list of TimeDataPoint lists
+     */
+    private static ArrayList<String> getMergeTimeStampList (List<List<TimeDataPoint>> list) {
+        Set<String> res = new HashSet<String>();
+        for (List<TimeDataPoint> listdata : list) {
+            ArrayList<String> tmp = new ArrayList<String>();
+            for (TimeDataPoint data : listdata) {
+                tmp.add(data.x());
+            }
+            res.addAll(tmp);
+        }
+        return new ArrayList<String>(res);
     }
 
 }
