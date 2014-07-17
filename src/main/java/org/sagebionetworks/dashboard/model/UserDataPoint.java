@@ -1,10 +1,11 @@
 package org.sagebionetworks.dashboard.model;
 
+import org.sagebionetworks.dashboard.dao.redis.Key;
 
 public class UserDataPoint {
 
     public UserDataPoint(String key, long value) {
-        String[] tokens = key.split(":");
+        String[] tokens = key.split(Key.SEPARATOR);
         this.timestamp = tokens[0];
         this.userId = tokens[1];
         this.client = tokens[2];
@@ -28,8 +29,8 @@ public class UserDataPoint {
     }
 
     public String toString() {
-        return this.timestamp + ":" + this.userId + ":" + this.client +
-                ":" + Long.toString(nodownload);
+        return this.timestamp + Key.SEPARATOR + this.userId + Key.SEPARATOR + 
+                this.client + Key.SEPARATOR + Long.toString(nodownload);
     }
 
     private String userId;
