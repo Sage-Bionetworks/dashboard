@@ -7,6 +7,9 @@ import static org.sagebionetworks.dashboard.model.Interval.month;
 import static org.sagebionetworks.dashboard.model.Interval.week;
 import static org.sagebionetworks.dashboard.model.Statistic.n;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +22,7 @@ import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.UserDataPoint;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
 
 @Repository("fileDownloadInvDao")
@@ -26,18 +30,23 @@ public class FileDownloadInvDaoImpl implements FileDownloadInvDao{
 
     @Override
     public void put(String metricId, String entityId, DateTime timestamp,
-            UserDataPoint userData) {
-        String userDataId = nameIdDao.getId(userData.toString());
-        put(metricId, entityId, userDataId, day, timestamp);
-        put(metricId, entityId, userDataId, week, timestamp);
-        put(metricId, entityId, userDataId, month, timestamp);
+            Interval interval, String userData) {
+        String userDataId = nameIdDao.getId(userData);
+        put(metricId, entityId, userDataId, interval, timestamp);
     }
 
     @Override
-    public List<UserDataPoint> get(String metricId, String entityId,
-            DateTime timestamp, Interval interval) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<UserDataPoint> getTop(String metricId, String entityId,
+            DateTime timestamp, Interval interval, long offset, long size) {
+        final String key = getKey(metricId, entityId, interval, timestamp);
+        Collection<TypedTuple<String>> data = 
+                zsetOps.reverseRangeWithScores(key, offset, offset + size - 1);
+        List<UserDataPoint> results = new ArrayList<UserDataPoint>();
+        for (TypedTuple<String> tuple : data) {
+            results.add(new UserDataPoint(
+                    nameIdDao.getName(tuple.getValue()), tuple.getScore().longValue()));
+        }
+        return Collections.unmodifiableList(results);
     }
 
     @Resource

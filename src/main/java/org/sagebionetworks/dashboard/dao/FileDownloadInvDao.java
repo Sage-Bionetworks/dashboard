@@ -12,8 +12,8 @@ import org.sagebionetworks.dashboard.model.UserDataPoint;
 public interface FileDownloadInvDao {
 
     void put(String metricId, String entityId, DateTime timestamp, 
-            UserDataPoint userData);
+            Interval interval, String userData);
 
-    List<UserDataPoint> get(String metricId, String entityId, 
-            DateTime timestamp, Interval interval);
+    List<UserDataPoint> getTop(String metricId, String entityId, 
+            DateTime timestamp, Interval interval, long offset, long size);
 }
