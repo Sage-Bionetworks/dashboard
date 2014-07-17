@@ -9,10 +9,11 @@ import org.sagebionetworks.dashboard.model.UserDataPoint;
 /**
  * Metric for File Download Report
  */
-public interface FileDownloadInvestigationDao {
+public interface FileDownloadInvDao {
 
     void put(String metricId, String entityId, DateTime timestamp, 
-            Interval interval, UserDataPoint userData);
+            UserDataPoint userData);
 
-    List<UserDataPoint> get(String metricId, String entityId, DateTime timestamp, Interval interval);
+    List<UserDataPoint> get(String metricId, String entityId, 
+            DateTime timestamp, Interval interval);
 }

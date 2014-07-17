@@ -2,8 +2,8 @@ package org.sagebionetworks.dashboard.parse;
 
 import java.util.regex.Pattern;
 
-public class UriFileDownloadInvestigationFilter extends UriRegexFilter {
-    public UriFileDownloadInvestigationFilter(String entityId) {
+public class UriFileDownloadInvFilter extends UriRegexFilter {
+    public UriFileDownloadInvFilter(String entityId) {
         super(Pattern.compile(
                 // GET /repo/v1/entity/{id}/file
                 // GET /repo/v1/entity/{id}/version/{ver}/file

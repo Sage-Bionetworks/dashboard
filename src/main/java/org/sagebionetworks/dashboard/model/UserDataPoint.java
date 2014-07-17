@@ -1,10 +1,18 @@
 package org.sagebionetworks.dashboard.model;
 
+import org.joda.time.DateTime;
+
 public class UserDataPoint {
 
     public UserDataPoint(String userId, String timestamp, String client) {
         this.userId = userId;
         this.timestamp = timestamp;
+        this.client = client;
+    }
+
+    public UserDataPoint(String userId, DateTime timestamp, String client) {
+        this.userId = userId;
+        this.timestamp = timestamp.toString();
         this.client = client;
     }
 
