@@ -11,8 +11,12 @@ import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
+
+    private final Logger logger = LoggerFactory.getLogger(AbstractMetricWriter.class);
 
     @Override
     public void writeMetric(final Record record, final Metric<T> metric) {
@@ -22,6 +26,8 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
     @Override
     public void writeMetric(final Record record, final Metric<T> metric,
             final List<RecordFilter> additionalFilters) {
+
+        final long start = System.nanoTime();
 
         // Apply the filters first
         List<RecordFilter> filters = metric.getFilters();
@@ -36,6 +42,9 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
             }
         }
 
+        final long readStart = System.nanoTime();
+        logger.info("Filtering: " + (readStart - start));
+
         // Read the record
         final String metricName = metric.getName();
         final String metricId = nameIdDao.getId(metricName);
@@ -44,9 +53,15 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
         final RecordReader<T> reader = metric.getRecordReader();
         final T value = reader.read(record);
 
+        final long writeStart = System.nanoTime();
+        logger.info("Reading: " + (writeStart - readStart));
+
         // Write the metric
         if (value != null) {
-            write(metricId, timestamp, value);
+
+           write(metricId, timestamp, value);
+
+           logger.info("Writing: " + (System.nanoTime() - writeStart));
         }
     }
 

@@ -8,9 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import au.com.bytecode.opencsv.CSVReader;
 
 public class RepoRecordParser implements RecordParser {
+
+    private final Logger logger = LoggerFactory.getLogger(RepoRecordParser.class);
 
     public RepoRecordParser() {
 
@@ -45,6 +50,9 @@ public class RepoRecordParser implements RecordParser {
 
     @Override
     public List<Record> parse(Reader r) {
+
+        final long start = System.nanoTime();
+
         List<Record> records = new ArrayList<Record>();
         CSVReader reader = null;
         try {
@@ -72,6 +80,9 @@ public class RepoRecordParser implements RecordParser {
                     throw new RuntimeException(e);
                 }
             }
+
+            logger.info("Parsing: " + (System.nanoTime() - start));
+
         }
     }
 

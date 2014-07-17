@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.util.RandomIdGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisOperations;
@@ -22,13 +24,21 @@ import org.springframework.stereotype.Repository;
 @Repository("nameIdDao")
 public class NameIdDaoImpl implements NameIdDao {
 
+    private final Logger logger = LoggerFactory.getLogger(NameIdDaoImpl.class);
+
     @Override
     public String getId(final String name) {
+
+        final long start = System.nanoTime();
+
         BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
         String id = nameIdHash.get(name);
         if (id == null) {
             return generateId(name);
         }
+
+        logger.info("getId: " + (System.nanoTime() - start));
+
         return id;
     }
 
@@ -46,7 +56,13 @@ public class NameIdDaoImpl implements NameIdDao {
 
     @Override
     public boolean hasName(String name) {
+
+        final long start = System.nanoTime();
+
         BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
+
+        logger.info("hasName: " + (System.nanoTime() - start));
+
         return nameIdHash.hasKey(name);
     }
 
