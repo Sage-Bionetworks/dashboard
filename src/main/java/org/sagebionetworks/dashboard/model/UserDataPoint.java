@@ -28,7 +28,8 @@ public class UserDataPoint {
     }
 
     public String toString() {
-        return this.timestamp + ":" + this.userId + ":" + this.client;
+        return this.timestamp + ":" + this.userId + ":" + this.client +
+                ":" + Long.toString(nodownload);
     }
 
     private String userId;
