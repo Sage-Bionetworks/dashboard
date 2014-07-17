@@ -6,11 +6,9 @@ public class UserDataReader implements RecordReader<String> {
 
     @Override
     public String read(Record record) {
-        ClientSummaryReader clientReader = new ClientSummaryReader();
-
         Long timestamp = record.getTimestamp();
         String userId = record.getUserId();
-        String client = clientReader.read(record);
+        String client = (new ClientSummaryReader()).read(record);
         return Long.toString(timestamp) + Key.SEPARATOR + userId + Key.SEPARATOR + client;
     }
 }
