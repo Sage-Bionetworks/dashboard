@@ -12,6 +12,7 @@ import java.util.zip.GZIPInputStream;
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.metric.DayCountMetric;
+import org.sagebionetworks.dashboard.metric.ReportMetric;
 import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
 import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
 import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
@@ -52,6 +53,12 @@ public class RepoUpdateService {
 
     @Resource
     private DayCountWriter dayCountWriter;
+
+    @Resource
+    private Collection<ReportMetric> reportMetrics;
+
+    @Resource
+    private ReportWriter reportWriter;
 
     private final RecordParser parser = new RepoRecordParser();
 
@@ -121,6 +128,9 @@ public class RepoUpdateService {
         }
         for (DayCountMetric metric : dayCountMetrics) {
             dayCountWriter.writeMetric(record, metric);
+        }
+        for (ReportMetric metric : reportMetrics) {
+            reportWriter.writeMetric(record, metric);
         }
     }
 }
