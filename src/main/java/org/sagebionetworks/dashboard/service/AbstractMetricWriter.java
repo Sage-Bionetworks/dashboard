@@ -59,9 +59,9 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
         // Write the metric
         if (value != null) {
 
-           write(metricId, timestamp, value);
+            write(metricId, timestamp, value);
 
-           logger.info("Writing: " + (System.nanoTime() - writeStart));
+            logger.info("Writing: " + (System.nanoTime() - writeStart));
         }
     }
 
