@@ -29,10 +29,11 @@ import org.springframework.stereotype.Repository;
 public class FileDownloadInvDaoImpl implements FileDownloadInvDao{
 
     @Override
-    public void put(String metricId, String entityId, DateTime timestamp,
-            Interval interval, String userData) {
+    public void put(String metricId, String entityId, DateTime timestamp, String userData) {
         String userDataId = nameIdDao.getId(userData);
-        put(metricId, entityId, userDataId, interval, timestamp);
+        put(metricId, entityId, userDataId, day, timestamp);
+        put(metricId, entityId, userDataId, week, timestamp);
+        put(metricId, entityId, userDataId, month, timestamp);
     }
 
     @Override
