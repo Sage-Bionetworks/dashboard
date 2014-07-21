@@ -2,12 +2,11 @@ package org.sagebionetworks.dashboard.model;
 
 public class UserDataPoint {
 
-    public UserDataPoint(String key, long value) {
+    public UserDataPoint(String key) {
         String[] tokens = key.split(":");
         this.timestamp = tokens[0];
         this.userId = tokens[1];
         this.client = tokens[2];
-        this.nodownload = value;
     }
 
     public String userId() {
@@ -22,17 +21,11 @@ public class UserDataPoint {
         return this.client;
     }
 
-    public String numberOfDownload() {
-        return Long.toString(nodownload);
-    }
-
     public String toString() {
-        return this.timestamp + ":" + this.userId + ":" + 
-                this.client + ":" + Long.toString(nodownload);
+        return this.timestamp + ":" + this.userId + ":" + this.client;
     }
 
     private String userId;
     private String timestamp;
     private String client;
-    private long nodownload;
 }

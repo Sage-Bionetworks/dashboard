@@ -10,6 +10,7 @@ import static org.sagebionetworks.dashboard.model.Statistic.n;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -42,11 +43,21 @@ public class FileDownloadDaoImpl implements FileDownloadDao{
         Collection<String> data = 
                 listOps.range(key, 0, Long.MAX_VALUE);
         List<UserDataPoint> results = new ArrayList<UserDataPoint>();
-        /*for (String tuple : data) {
-            results.add(new UserDataPoint(
-                    nameIdDao.getName(data.toString());
-        }*/
-        return Collections.unmodifiableList(results);
+        for (String value : data) {
+            results.add(new UserDataPoint(nameIdDao.getName(value)));
+        }
+        Collections.sort(results, new Comparator<UserDataPoint>() {
+            @Override
+            public int compare(UserDataPoint udata1, UserDataPoint udata2) {
+                int res = udata1.userId().compareTo(udata2.userId());
+                if (res != 0) {
+                    return res;
+                } else {
+                    return udata1.timestamp().compareTo(udata2.timestamp());
+                }
+            }
+        });
+        return results;
     }
 
     @Resource
