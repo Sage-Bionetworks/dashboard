@@ -25,7 +25,7 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
-@Repository("fileDownloadInvDao")
+@Repository("fileDownloadDao")
 public class FileDownloadDaoImpl implements FileDownloadDao{
 
     @Override

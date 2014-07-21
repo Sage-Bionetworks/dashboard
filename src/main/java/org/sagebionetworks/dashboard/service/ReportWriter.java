@@ -56,11 +56,11 @@ public class ReportWriter implements MetricWriter<String>{
     }
 
     void write(String metricId, DateTime timestamp, String entityId, String userData) {
-        fileDownloadInvDao.put(metricId, entityId, timestamp, userData);
+        fileDownloadDao.put(metricId, entityId, timestamp, userData);
     }
 
     @Resource
-    private FileDownloadDao fileDownloadInvDao;
+    private FileDownloadDao fileDownloadDao;
 
     @Resource
     private NameIdDao nameIdDao;
