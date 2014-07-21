@@ -12,7 +12,6 @@ import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
-import org.sagebionetworks.dashboard.util.UriUtil;
 
 public class ReportWriter implements MetricWriter<String>{
 
@@ -44,7 +43,7 @@ public class ReportWriter implements MetricWriter<String>{
         final DateTime timestamp = new DateTime(t.longValue());
         final RecordReader<String> reader = metric.getRecordReader();
         final String value = reader.read(record);
-        final String entityId = UriUtil.getEntityId(record.getUri());
+        final String entityId = getEntityId(record.getUri());
 
         // Write the metric
         if (value != null) {
@@ -61,4 +60,9 @@ public class ReportWriter implements MetricWriter<String>{
 
     @Resource
     private NameIdDao nameIdDao;
+
+    private String getEntityId(String uri) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

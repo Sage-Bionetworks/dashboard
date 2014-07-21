@@ -25,7 +25,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository("fileDownloadInvDao")
-public class FileDownloadInvDaoImpl implements FileDownloadDao{
+public class FileDownloadDaoImpl implements FileDownloadDao{
 
     @Override
     public void put(String metricId, String entityId, DateTime timestamp, String userData) {
