@@ -2,6 +2,8 @@ package org.sagebionetworks.dashboard.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -23,7 +25,7 @@ public class ReportWriter implements MetricWriter<String>{
     @Override
     public void writeMetric(Record record, Metric<String> metric,
             List<RecordFilter> additionalFilters) {
-     // Apply the filters first
+        // Apply the filters first
         List<RecordFilter> filters = metric.getFilters();
         for (RecordFilter filter : filters) {
             if (!filter.matches(record)) {
@@ -61,8 +63,17 @@ public class ReportWriter implements MetricWriter<String>{
     @Resource
     private NameIdDao nameIdDao;
 
+    // returns the entityId from a download Uri
     private String getEntityId(String uri) {
-        // TODO Auto-generated method stub
-        return null;
+        Pattern pattern = Pattern.compile("/entity/(.*?)/");
+        Matcher matcher = pattern.matcher(uri);
+        String res = "";
+        if (matcher.find()) {
+            res = matcher.group(1);
+        }
+        if (res.startsWith("syn")) {
+            res = res.substring(3);
+        }
+        return res;
     }
 }
