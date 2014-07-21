@@ -14,7 +14,9 @@ import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
+import org.springframework.stereotype.Service;
 
+@Service("reportWriter")
 public class ReportWriter implements MetricWriter<String>{
 
     @Override
