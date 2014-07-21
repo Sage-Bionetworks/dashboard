@@ -6,7 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
-import org.sagebionetworks.dashboard.dao.FileDownloadInvDao;
+import org.sagebionetworks.dashboard.dao.FileDownloadDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.parse.Record;
@@ -57,7 +57,7 @@ public class ReportWriter implements MetricWriter<String>{
     }
 
     @Resource
-    private FileDownloadInvDao fileDownloadInvDao;
+    private FileDownloadDao fileDownloadInvDao;
 
     @Resource
     private NameIdDao nameIdDao;

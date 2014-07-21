@@ -16,17 +16,16 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
-import org.sagebionetworks.dashboard.dao.FileDownloadInvDao;
+import org.sagebionetworks.dashboard.dao.FileDownloadDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.UserDataPoint;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
 
 @Repository("fileDownloadInvDao")
-public class FileDownloadInvDaoImpl implements FileDownloadInvDao{
+public class FileDownloadInvDaoImpl implements FileDownloadDao{
 
     @Override
     public void put(String metricId, String entityId, DateTime timestamp, String userData) {
@@ -37,16 +36,16 @@ public class FileDownloadInvDaoImpl implements FileDownloadInvDao{
     }
 
     @Override
-    public List<UserDataPoint> getTop(String metricId, String entityId,
-            DateTime timestamp, Interval interval, long offset, long size) {
+    public List<UserDataPoint> get(String metricId, String entityId,
+            DateTime timestamp, Interval interval) {
         final String key = getKey(metricId, entityId, interval, timestamp);
-        Collection<TypedTuple<String>> data = 
-                zsetOps.reverseRangeWithScores(key, offset, offset + size - 1);
+        Collection<String> data = 
+                listOps.range(key, 0, Long.MAX_VALUE);
         List<UserDataPoint> results = new ArrayList<UserDataPoint>();
-        for (TypedTuple<String> tuple : data) {
+        /*for (String tuple : data) {
             results.add(new UserDataPoint(
-                    nameIdDao.getName(tuple.getValue()), tuple.getScore().longValue()));
-        }
+                    nameIdDao.getName(data.toString());
+        }*/
         return Collections.unmodifiableList(results);
     }
 
@@ -57,12 +56,12 @@ public class FileDownloadInvDaoImpl implements FileDownloadInvDao{
     private StringRedisTemplate redisTemplate;
 
     @Resource(name="redisTemplate")
-    private ZSetOperations<String, String> zsetOps;
+    private ListOperations<String, String> listOps;
 
     private void put(String metricId, String entityId, String userDataId, 
             Interval interval, DateTime timestamp) {
         String key = getKey(metricId, entityId, interval, timestamp);
-        zsetOps.incrementScore(key, userDataId, 1.0d);
+        listOps.leftPush(key, userDataId);
         Date expireAt = DateTime.now().plusDays(EXPIRE_DAYS).toDate();
         redisTemplate.expireAt(key, expireAt);
     }

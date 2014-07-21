@@ -3,9 +3,9 @@ package org.sagebionetworks.dashboard.dao.redis;
 /**
  * Keys and parts of keys.
  */
-public class Key {
+class Key {
 
-    public static final String SEPARATOR = ":";
+    static final String SEPARATOR = ":";
 
     /** Name --> ID mappings */
     static final String NAME_ID = NameSpace.name + SEPARATOR + NameSpace.id;
