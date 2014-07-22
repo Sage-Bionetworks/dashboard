@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
+import org.sagebionetworks.dashboard.dao.FileDownloadDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
@@ -13,6 +14,7 @@ import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
+import org.sagebionetworks.dashboard.model.UserDataPoint;
 import org.springframework.stereotype.Service;
 
 @Service("metricReader")
@@ -29,6 +31,9 @@ public class MetricReader {
 
     @Resource
     private SimpleCountDao simpleCountDao;
+
+    @Resource
+    private FileDownloadDao fileDownloadDao;
 
     public List<TimeDataPoint> getTimeSeries(String metricName, DateTime from, DateTime to, Statistic s, Interval a) {
         if (metricName == null || metricName.isEmpty()) {
@@ -76,6 +81,15 @@ public class MetricReader {
         }
         String metricId = getMetricId(metricName);
         return simpleCountDao.get(metricId, from, to);
+    }
+
+    public List<UserDataPoint> getFileDownloadReport(String metricName, 
+            String entityId, DateTime timestamp, Interval interval) {
+        if (metricName == null || metricName.isEmpty()) {
+            throw new IllegalArgumentException("Metric name cannot be null or empty.");
+        }
+        String metricId = getMetricId(metricName);
+        return fileDownloadDao.get(metricId, entityId, timestamp, interval);
     }
 
     private String getMetricId(String metricName) {
