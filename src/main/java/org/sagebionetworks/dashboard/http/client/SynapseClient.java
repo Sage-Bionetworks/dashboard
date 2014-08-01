@@ -20,6 +20,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.parse.CuPassingRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -156,6 +157,22 @@ public class SynapseClient {
             users.add(user);
         }
         return users;
+    }
+
+    public CuPassingRecord getCuPassingRecord(final String userId, final String session) {
+        if (userId == null) {
+            return null;
+        }
+        String uri = REPO + "/user/" + userId + "/certifiedUserPassingRecord";
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+        return getCuPassingRecord(root);
+    }
+
+    private CuPassingRecord getCuPassingRecord(JsonNode root) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private JsonNode executeRequest(HttpUriRequest request) {

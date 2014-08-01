@@ -14,7 +14,7 @@ public class CuPassingRecord {
         this.userId = userId;
         this.timestamp = timestamp;
         this.score = score;
-        this.responseCorrectness = responseCorrectness;
+        this.responses = responseCorrectness;
     }
 
     public boolean isPassed() {
@@ -30,7 +30,7 @@ public class CuPassingRecord {
         return score;
     }
     public ArrayList<Responses> reponseCorrectness() {
-        return responseCorrectness;
+        return responses;
     }
 
     public class Responses {
@@ -55,5 +55,5 @@ public class CuPassingRecord {
     private String userId;
     private String timestamp;
     private int score;
-    private ArrayList<Responses> responseCorrectness;
+    private ArrayList<Responses> responses;
 }
