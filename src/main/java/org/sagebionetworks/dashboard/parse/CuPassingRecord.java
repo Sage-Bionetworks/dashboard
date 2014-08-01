@@ -9,11 +9,11 @@ import java.util.ArrayList;
  */
 public class CuPassingRecord {
 
-    public CuPassingRecord(int responseId, boolean status, String userId,
+    public CuPassingRecord(int responseId, boolean isPassed, String userId,
             String timestamp, int score, 
             ArrayList<ResponseCorrectness>responseCorrectness, int quizId) {
         this.responseId = responseId;
-        this.status = status;
+        this.isPassed = isPassed;
         this.userId = userId;
         this.timestamp = timestamp;
         this.score = score;
@@ -21,30 +21,30 @@ public class CuPassingRecord {
         this.quizId = quizId;
     }
 
-    public int getResponseId() {
+    public int responseId() {
         return responseId;
     }
-    public boolean getStatus() {
-        return status;
+    public boolean isPassed() {
+        return isPassed;
     }
-    public String getUserId() {
+    public String userId() {
         return userId;
     }
-    public String getTimestamp() {
+    public String timestamp() {
         return timestamp;
     }
-    public int getScore() {
+    public int score() {
         return score;
     }
-    public ArrayList<ResponseCorrectness> getReponseCorrectness() {
+    public ArrayList<ResponseCorrectness> reponseCorrectness() {
         return responseCorrectness;
     }
-    public int getQuizId() {
+    public int quizId() {
         return quizId;
     }
 
     private int responseId;
-    private boolean status;
+    private boolean isPassed;
     private String userId;
     private String timestamp;
     private int score;

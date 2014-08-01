@@ -1,7 +1,7 @@
 package org.sagebionetworks.dashboard.parse;
 
 /**
- * This class represents a user's response.
+ * This class represents a user's response to a question in the Certified User Quiz
  */
 public class ResponseCorrectness {
 

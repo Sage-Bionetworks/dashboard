@@ -1,7 +1,7 @@
 package org.sagebionetworks.dashboard.parse;
 
 /**
- * The response to a question
+ * The response to a question in the Certified User Quiz
  */
 public class QuestionResponse {
 
