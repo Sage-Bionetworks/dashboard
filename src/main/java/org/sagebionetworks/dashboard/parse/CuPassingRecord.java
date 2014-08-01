@@ -3,7 +3,7 @@ package org.sagebionetworks.dashboard.parse;
 import java.util.ArrayList;
 
 /**
- * This class represent a Certified User Quiz passing record.
+ * This class represent a Certified User Quiz Passing Record.
  * The fields in this class coresponse to the resulting fields in the REST API:
  * GET /user/{id}/certifiedUserPassingRecord
  */
