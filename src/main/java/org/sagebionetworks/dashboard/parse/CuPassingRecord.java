@@ -2,12 +2,14 @@ package org.sagebionetworks.dashboard.parse;
 
 import java.util.ArrayList;
 
+import org.joda.time.DateTime;
+
 /**
  * This class represent a Certified User Quiz Passing Record.
  */
 public class CuPassingRecord {
 
-    public CuPassingRecord(boolean isPassed, String userId, String timestamp, 
+    public CuPassingRecord(boolean isPassed, String userId, DateTime timestamp, 
             int score, ArrayList<Response>responseCorrectness) {
 
         this.isPassed = isPassed;
@@ -23,7 +25,7 @@ public class CuPassingRecord {
     public String userId() {
         return userId;
     }
-    public String timestamp() {
+    public DateTime timestamp() {
         return timestamp;
     }
     public int score() {
@@ -35,7 +37,7 @@ public class CuPassingRecord {
 
     private boolean isPassed;
     private String userId;
-    private String timestamp;
+    private DateTime timestamp;
     private int score;
     private ArrayList<Response> responses;
 }

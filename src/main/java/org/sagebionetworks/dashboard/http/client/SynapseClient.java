@@ -19,6 +19,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHeader;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
 import org.sagebionetworks.dashboard.parse.Response;
@@ -173,7 +175,7 @@ public class SynapseClient {
             return null;
         }
         boolean isPassed = readBoolean(root, "passed");
-        String timestamp = readText(root, "passedOn");
+        DateTime timestamp = ISODateTimeFormat.dateTime().parseDateTime(readText(root, "passedOn"));
         int score = readInt(root, "score");
         ArrayList<Response> responses = new ArrayList<Response>();
         for (JsonNode node: root.get("corrections")) {
