@@ -21,6 +21,7 @@ import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
+import org.sagebionetworks.dashboard.parse.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -167,12 +168,22 @@ public class SynapseClient {
         HttpGet get = new HttpGet(uri);
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
-        return getCuPassingRecord(root);
-    }
 
-    private CuPassingRecord getCuPassingRecord(JsonNode root) {
-        // TODO Auto-generated method stub
-        return null;
+        if (root == null) {
+            return null;
+        }
+        boolean isPassed = readBoolean(root, "passed");
+        String timestamp = readText(root, "passedOn");
+        int score = readInt(root, "score");
+        ArrayList<Response> responses = new ArrayList<Response>();
+        for (JsonNode node: root.get("corrections")) {
+            int questionIndex = readInt(node.get("question"), "questionIndex");
+            boolean isCorrect = readBoolean(node, "isCorrect");
+            Response res = new Response(questionIndex, isCorrect);
+            responses.add(res);
+        }
+
+        return new CuPassingRecord(isPassed, userId, timestamp, score, responses);
     }
 
     private JsonNode executeRequest(HttpUriRequest request) {
@@ -216,6 +227,16 @@ public class SynapseClient {
     private String readText(JsonNode jsonNode, String fieldName) {
         JsonNode value = jsonNode.get(fieldName);
         return (value == null ? null : value.asText());
+    }
+
+    private boolean readBoolean(JsonNode jsonNode, String fieldName) {
+        JsonNode value = jsonNode.get(fieldName);
+        return (value == null ? null : value.booleanValue());
+    }
+
+    private int readInt(JsonNode jsonNode, String fieldName) {
+        JsonNode value = jsonNode.get(fieldName);
+        return (value == null ? null : value.intValue());
     }
 
     private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";
