@@ -6,6 +6,7 @@ import static org.sagebionetworks.dashboard.model.Interval.month;
 import static org.sagebionetworks.dashboard.model.Interval.week;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -25,6 +26,11 @@ public class UniqueCountDaoImpl extends AbstractUniqueCountDao {
         put(metricId, shortId, day, timestamp);
         put(metricId, shortId, week, timestamp);
         put(metricId, shortId, month, timestamp);
+    }
+
+    public Set<String> getAllKeys(String metricId) {
+        String pattern = "*" + metricId + "*";
+        return redisTemplate.keys(pattern);
     }
 
     private void put(String metricId, String shortId, Interval interval, DateTime timestamp) {
