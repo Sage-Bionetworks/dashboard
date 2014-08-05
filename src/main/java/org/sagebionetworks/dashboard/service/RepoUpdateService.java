@@ -128,7 +128,7 @@ public class RepoUpdateService {
             timeSeriesWriter.writeMetric(record, metric);
         }
         for (UniqueCountMetric metric: uniqueCountMetrics) {
-            if (ignoreMetrics.contains(metric)) {
+            if (ignoreMetrics.contains(metric.getName())) {
                 uniqueCountWriter.writeMetric(record, metric);
             }
         }

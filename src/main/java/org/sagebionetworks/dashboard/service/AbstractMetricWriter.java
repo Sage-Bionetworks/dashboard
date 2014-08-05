@@ -53,5 +53,5 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
     abstract void write(String metricId, DateTime timestamp, T value);
 
     @Resource
-    private NameIdDao nameIdDao;
+    protected NameIdDao nameIdDao;
 }
