@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -27,6 +28,9 @@ import org.springframework.stereotype.Service;
 
 @Service("repoUpdateService")
 public class RepoUpdateService {
+
+    private final List<String> ignoreMetrics = 
+            Arrays.asList("certifiedUsersMetric", "questionPassMetric", "questionFailMetric");
 
     private final Logger logger = LoggerFactory.getLogger(RepoUpdateService.class);
 
@@ -124,7 +128,9 @@ public class RepoUpdateService {
             timeSeriesWriter.writeMetric(record, metric);
         }
         for (UniqueCountMetric metric: uniqueCountMetrics) {
-            uniqueCountWriter.writeMetric(record, metric);
+            if (ignoreMetrics.contains(metric)) {
+                uniqueCountWriter.writeMetric(record, metric);
+            }
         }
         for (DayCountMetric metric : dayCountMetrics) {
             dayCountWriter.writeMetric(record, metric);
