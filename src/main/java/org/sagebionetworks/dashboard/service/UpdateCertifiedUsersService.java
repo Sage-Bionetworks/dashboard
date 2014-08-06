@@ -34,7 +34,7 @@ public class UpdateCertifiedUsersService {
         if (record != null && record.isPassed()) {
             uniqueCountWriter.writeCertifiedUsersMetric(record, certifiedUsersMetric);
         }
-        if (record != null) {
+        if (record != null && record.responses() != null) {
             for (Response res : record.responses()) {
                 if (res.isCorrect()) {
                     uniqueCountWriter.writeResponse(res, questionPassMetric, record.timestamp());

@@ -26,9 +26,6 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
         uniqueCountDao.put(metricId, id, timestamp);
     }
 
-    @Resource
-    private UniqueCountDao uniqueCountDao;
-
     public void writeCertifiedUsersMetric(CuPassingRecord record, CertifiedUsersMetric metric) {
         // Apply the filters first
         List<RecordFilter> filters = metric.getFilters();
@@ -83,4 +80,7 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
             write(metricId, timestamp, value);
         }
     }
+
+    @Resource
+    private UniqueCountDao uniqueCountDao;
 }
