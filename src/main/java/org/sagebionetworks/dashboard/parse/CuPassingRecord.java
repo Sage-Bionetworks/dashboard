@@ -31,7 +31,7 @@ public class CuPassingRecord {
     public int score() {
         return score;
     }
-    public ArrayList<Response> reponseCorrectness() {
+    public ArrayList<Response> responses() {
         return responses;
     }
 

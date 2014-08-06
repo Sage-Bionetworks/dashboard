@@ -11,7 +11,7 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
 @Component("questionPassMetric")
-public class QuestionPassMetric implements UniqueCountMetric {
+public class QuestionPassMetric extends QuestionMetric {
 
     private List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             (RecordFilter) new QuestionPassFilter()));;
