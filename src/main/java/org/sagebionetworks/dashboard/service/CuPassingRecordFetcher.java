@@ -15,7 +15,7 @@ import org.sagebionetworks.dashboard.metric.Metric;
 import org.springframework.stereotype.Service;
 
 @Service("certifiedUserIdsFetcher")
-public class CertifiedUserIdFetcher {
+public class CuPassingRecordFetcher {
 
     @Resource
     private UniqueCountDao uniqueCountDao;

@@ -10,7 +10,7 @@ import org.sagebionetworks.dashboard.parse.Response;
 import org.springframework.stereotype.Service;
 
 @Service("updateCertifiedUsersService")
-public class UpdateCertifiedUserService {
+public class UpdateCuPassingRecordService {
 
     @Resource
     private CertifiedUserMetric certifiedUsersMetric;

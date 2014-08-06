@@ -7,13 +7,13 @@ import javax.annotation.Resource;
 import org.sagebionetworks.dashboard.dao.SynapseDao;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
 
-public class CertifiedUserWorker {
+public class CuPassingRecordWorker {
 
     @Resource
-    private UpdateCertifiedUserService updateCertifiedUserService;
+    private UpdateCuPassingRecordService updateCertifiedUserService;
 
     @Resource
-    private CertifiedUserIdFetcher certifiedUserIdFetcher;
+    private CuPassingRecordFetcher certifiedUserIdFetcher;
 
     @Resource
     private SynapseDao synapseDao;
