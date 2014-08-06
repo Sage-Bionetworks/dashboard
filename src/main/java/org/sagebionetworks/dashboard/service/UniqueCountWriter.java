@@ -5,8 +5,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
+import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
-import org.sagebionetworks.dashboard.metric.CertifiedUsersMetric;
+import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
 import org.sagebionetworks.dashboard.metric.QuestionMetric;
 import org.sagebionetworks.dashboard.parse.CertifiedUserFilter;
 import org.sagebionetworks.dashboard.parse.CertifiedUserIdReader;
@@ -26,7 +27,7 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
         uniqueCountDao.put(metricId, id, timestamp);
     }
 
-    public void writeCertifiedUsersMetric(CuPassingRecord record, CertifiedUsersMetric metric) {
+    public void writeCertifiedUsersMetric(CuPassingRecord record, CertifiedUserMetric metric) {
         // Apply the filters first
         List<RecordFilter> filters = metric.getFilters();
         for (RecordFilter filter : filters) {
@@ -83,4 +84,7 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
 
     @Resource
     private UniqueCountDao uniqueCountDao;
+
+    @Resource
+    private NameIdDao nameIdDao;
 }

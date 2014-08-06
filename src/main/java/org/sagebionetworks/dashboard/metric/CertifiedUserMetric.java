@@ -11,7 +11,7 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
 @Component("certifiedUsersMetric")
-public class CertifiedUsersMetric implements UniqueCountMetric {
+public class CertifiedUserMetric implements UniqueCountMetric {
 
     private RecordReader<String> reader = new CertifiedUserIdReader();
 

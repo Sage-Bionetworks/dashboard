@@ -2,7 +2,7 @@ package org.sagebionetworks.dashboard.service;
 
 import javax.annotation.Resource;
 
-import org.sagebionetworks.dashboard.metric.CertifiedUsersMetric;
+import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
 import org.sagebionetworks.dashboard.metric.QuestionFailMetric;
 import org.sagebionetworks.dashboard.metric.QuestionPassMetric;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
@@ -10,10 +10,10 @@ import org.sagebionetworks.dashboard.parse.Response;
 import org.springframework.stereotype.Service;
 
 @Service("updateCertifiedUsersService")
-public class UpdateCertifiedUsersService {
+public class UpdateCertifiedUserService {
 
     @Resource
-    private CertifiedUsersMetric certifiedUsersMetric;
+    private CertifiedUserMetric certifiedUsersMetric;
 
     @Resource
     private UniqueCountWriter uniqueCountWriter;
