@@ -196,7 +196,6 @@ public class SynapseClient {
     }
 
     private JsonNode executeRequest(final HttpUriRequest request, final long delayInMillis, final int retryCount) {
-        request.addHeader("Accept-Charset", "utf-8");
         if (retryCount > 5) {
             throw new RuntimeException("Failed after 5 retries.");
         }

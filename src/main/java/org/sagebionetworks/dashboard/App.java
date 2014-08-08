@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.sagebionetworks.dashboard.service.CuPassingRecordWorker;
 import org.sagebionetworks.dashboard.service.RepoUpdateService;
 import org.sagebionetworks.dashboard.service.RepoUserWorker;
 import org.sagebionetworks.dashboard.service.UpdateCallback;
@@ -42,6 +43,7 @@ public class App {
 
         context.registerShutdownHook();
         final RepoUpdateService updateService = context.getBean(RepoUpdateService.class);
+        final CuPassingRecordWorker passingRecordWorker = context.getBean(CuPassingRecordWorker.class);
 
         // Clear Redis
         StringRedisTemplate redisTemplate = context.getBean(StringRedisTemplate.class);
@@ -65,6 +67,7 @@ public class App {
                     is.close();
                 }
             }
+            passingRecordWorker.doWork();
         }
 
         // Close the context when done
