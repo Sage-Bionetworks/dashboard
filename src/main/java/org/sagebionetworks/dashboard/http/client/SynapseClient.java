@@ -2,8 +2,11 @@ package org.sagebionetworks.dashboard.http.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -193,6 +196,7 @@ public class SynapseClient {
     }
 
     private JsonNode executeRequest(final HttpUriRequest request, final long delayInMillis, final int retryCount) {
+        request.addHeader("Accept-Charset", "utf-8");
         if (retryCount > 5) {
             throw new RuntimeException("Failed after 5 retries.");
         }
@@ -207,9 +211,18 @@ public class SynapseClient {
                 throw new ForbiddenException();
             }
             HttpEntity entity = response.getEntity();
-            inputStream = entity.getContent();
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readValue(inputStream, JsonNode.class);
+
+            // get the encodingType
+            String contentType = entity.getContentType().getValue();
+            String encodingType = "";
+            Matcher m = Pattern.compile("charset=").matcher(contentType);
+            if (m.find()) {
+                encodingType = contentType.substring(m.end()).trim();
+            }
+
+            inputStream = entity.getContent();
+            JsonNode root = mapper.readValue(new InputStreamReader(inputStream, encodingType), JsonNode.class);
             return root;
         } catch (Exception e) {
             int numRetries = retryCount + 1;
