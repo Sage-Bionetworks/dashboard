@@ -10,7 +10,7 @@ import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
-@Component("questionPassMetric")
+@Component("questionFailMetric")
 public class QuestionFailMetric extends QuestionMetric {
 
     private List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
@@ -19,7 +19,7 @@ public class QuestionFailMetric extends QuestionMetric {
 
     @Override
     public String getName() {
-        return "questionPassMetric";
+        return "questionFailMetric";
     }
 
     @Override

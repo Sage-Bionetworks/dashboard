@@ -174,13 +174,13 @@ public class SynapseClient {
         if (root == null || readText(root,"reason") != null) {
             return null;
         }
-        boolean isPassed = readBoolean(root, "passed");
+        boolean isPassed = root.get("passed").booleanValue();
         DateTime timestamp = ISODateTimeFormat.dateTime().parseDateTime(readText(root, "passedOn"));
-        int score = readInt(root, "score");
+        int score = root.get("score").intValue();
         ArrayList<Response> responses = new ArrayList<Response>();
         for (JsonNode node: root.get("corrections")) {
-            int questionIndex = readInt(node.get("question"), "questionIndex");
-            boolean isCorrect = readBoolean(node, "isCorrect");
+            int questionIndex = node.get("question").get("questionIndex").intValue();
+            boolean isCorrect = node.get("isCorrect").booleanValue();
             Response res = new Response(questionIndex, isCorrect);
             responses.add(res);
         }
@@ -229,16 +229,6 @@ public class SynapseClient {
     private String readText(JsonNode jsonNode, String fieldName) {
         JsonNode value = jsonNode.get(fieldName);
         return (value == null ? null : value.asText());
-    }
-
-    private boolean readBoolean(JsonNode jsonNode, String fieldName) {
-        JsonNode value = jsonNode.get(fieldName);
-        return (value == null ? null : value.booleanValue());
-    }
-
-    private int readInt(JsonNode jsonNode, String fieldName) {
-        JsonNode value = jsonNode.get(fieldName);
-        return (value == null ? null : value.intValue());
     }
 
     private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";

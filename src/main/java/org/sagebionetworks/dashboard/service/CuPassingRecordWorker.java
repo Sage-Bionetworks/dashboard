@@ -6,7 +6,9 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SynapseDao;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
+import org.springframework.stereotype.Service;
 
+@Service("cuPassingRecordWorker")
 public class CuPassingRecordWorker {
 
     @Resource

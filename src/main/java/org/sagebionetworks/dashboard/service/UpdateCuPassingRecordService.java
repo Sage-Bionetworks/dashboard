@@ -9,7 +9,7 @@ import org.sagebionetworks.dashboard.parse.CuPassingRecord;
 import org.sagebionetworks.dashboard.parse.Response;
 import org.springframework.stereotype.Service;
 
-@Service("updateCertifiedUsersService")
+@Service("updateCuPassingRecordService")
 public class UpdateCuPassingRecordService {
 
     @Resource

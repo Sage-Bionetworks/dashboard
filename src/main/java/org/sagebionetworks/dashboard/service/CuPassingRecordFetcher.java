@@ -14,7 +14,7 @@ import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
 import org.sagebionetworks.dashboard.metric.Metric;
 import org.springframework.stereotype.Service;
 
-@Service("certifiedUserIdsFetcher")
+@Service("cuPassingRecordFetcher")
 public class CuPassingRecordFetcher {
 
     @Resource
