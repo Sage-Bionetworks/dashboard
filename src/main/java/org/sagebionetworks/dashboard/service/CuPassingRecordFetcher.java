@@ -1,16 +1,14 @@
 package org.sagebionetworks.dashboard.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
-import org.sagebionetworks.dashboard.metric.CertifiedUserQuizSubmitMetric;
 import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
+import org.sagebionetworks.dashboard.metric.CertifiedUserQuizSubmitMetric;
 import org.sagebionetworks.dashboard.metric.Metric;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +30,9 @@ public class CuPassingRecordFetcher {
     /**
      * @return a list of users who submited a quiz and is not in Certified Users data
      */
-    public List<String> getUserIds() {
-        List<String> submitUserIds = getUserIds(submissionMetric);
-        List<String> certifiedUserIds = getUserIds(cuMetric);
+    public Set<String> getUserIds() {
+        Set<String> submitUserIds = getUserIds(submissionMetric);
+        Set<String> certifiedUserIds = getUserIds(cuMetric);
         submitUserIds.removeAll(certifiedUserIds);
         return submitUserIds;
     }
@@ -42,13 +40,13 @@ public class CuPassingRecordFetcher {
     /*
      * gets a list all userIds from one metric
      */
-    private List<String> getUserIds(Metric<String> metric) {
+    private Set<String> getUserIds(Metric<String> metric) {
         String metricId = nameIdDao.getId(metric.getName());
-        List<String> keys = new ArrayList<String>(uniqueCountDao.getAllKeys(metricId));
+        Set<String> keys = uniqueCountDao.getAllKeys(metricId);
         Set<String> userIds = new HashSet<String>();
-        for (String key: keys) {
+        for (String key : keys) {
             userIds.addAll(uniqueCountDao.getAllValues(key));
         }
-        return new ArrayList<String>(userIds);
+        return userIds;
     }
 }

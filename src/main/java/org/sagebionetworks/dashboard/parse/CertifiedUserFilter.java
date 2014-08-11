@@ -8,7 +8,6 @@ public class CertifiedUserFilter implements RecordFilter{
 
     @Override
     public boolean matches(Record record) {
-        // TODO Auto-generated method stub
-        return false;
+        throw new RuntimeException("Method is not supported.");
     }
 }

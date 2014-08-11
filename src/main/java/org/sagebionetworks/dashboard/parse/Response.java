@@ -14,6 +14,6 @@ public class Response {
         return isCorrect;
     }
 
-    int questionIndex;
-    boolean isCorrect;
+    private final int questionIndex;
+    private final boolean isCorrect;
 }

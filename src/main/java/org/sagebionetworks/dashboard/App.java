@@ -67,8 +67,8 @@ public class App {
                     is.close();
                 }
             }
-            passingRecordWorker.doWork();
         }
+        passingRecordWorker.doWork();
 
         // Close the context when done
         context.close();

@@ -4,8 +4,7 @@ public class QuestionIndexReader implements RecordReader<String> {
 
     @Override
     public String read(Record record) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("Method is not supported.");
     }
 
     public String read(Response record) {

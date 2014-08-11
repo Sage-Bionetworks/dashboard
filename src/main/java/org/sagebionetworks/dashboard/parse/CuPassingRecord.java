@@ -35,9 +35,9 @@ public class CuPassingRecord {
         return responses;
     }
 
-    private boolean isPassed;
-    private String userId;
-    private DateTime timestamp;
-    private int score;
-    private ArrayList<Response> responses;
+    private final boolean isPassed;
+    private final String userId;
+    private final DateTime timestamp;
+    private final int score;
+    private final ArrayList<Response> responses;
 }

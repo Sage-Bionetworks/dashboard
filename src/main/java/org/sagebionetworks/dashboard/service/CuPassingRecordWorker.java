@@ -1,7 +1,5 @@
 package org.sagebionetworks.dashboard.service;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SynapseDao;
@@ -21,7 +19,7 @@ public class CuPassingRecordWorker {
     private SynapseDao synapseDao;
 
     public void doWork() {
-        final List<String> userIds = certifiedUserIdFetcher.getUserIds();
+        final Iterable<String> userIds = certifiedUserIdFetcher.getUserIds();
         for (String userId: userIds) {
             CuPassingRecord passingRecord = synapseDao.getCuPassingRecord(userId);
             updateCertifiedUserService.updateCertifiedUsers(passingRecord);

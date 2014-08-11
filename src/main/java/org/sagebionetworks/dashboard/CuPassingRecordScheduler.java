@@ -12,7 +12,7 @@ public class CuPassingRecordScheduler {
     @Resource
     private CuPassingRecordWorker worker;
 
-    @Scheduled(initialDelay=(7L * 60L * 1000L), fixedRate=(23L * 60L * 1000L))
+    @Scheduled(initialDelay=(13L * 60L * 1000L), fixedRate=(23L * 60L * 1000L))
     public void run() {
         worker.doWork();
     }

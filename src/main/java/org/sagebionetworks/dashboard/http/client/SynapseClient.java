@@ -174,7 +174,7 @@ public class SynapseClient {
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
 
-        if (root == null || readText(root,"reason") != null) {
+        if (root == null || readText(root, "reason") != null) {
             return null;
         }
         boolean isPassed = root.get("passed").booleanValue();

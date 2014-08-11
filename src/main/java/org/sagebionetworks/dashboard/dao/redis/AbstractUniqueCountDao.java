@@ -124,7 +124,7 @@ abstract class AbstractUniqueCountDao implements UniqueCountDao {
 
     @Override
     public Set<String> getAllKeys(String metricId) {
-        String pattern = "*" + metricId + "*";
+        String pattern = n + Key.SEPARATOR + month + Key.SEPARATOR + uniquecount + Key.SEPARATOR + metricId + "*";
         return redisTemplate.keys(pattern);
     }
 

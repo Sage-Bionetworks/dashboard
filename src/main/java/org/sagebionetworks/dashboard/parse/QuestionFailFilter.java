@@ -4,8 +4,7 @@ public class QuestionFailFilter implements RecordFilter{
 
     @Override
     public boolean matches(Record record) {
-        // TODO Auto-generated method stub
-        return false;
+        throw new RuntimeException("Method is not supported.");
     }
 
     public boolean matches(Response record) {
