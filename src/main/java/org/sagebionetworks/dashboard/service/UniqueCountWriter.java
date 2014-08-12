@@ -31,11 +31,9 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
         // Apply the filters first
         List<RecordFilter> filters = metric.getFilters();
         for (RecordFilter filter : filters) {
-            if (filter.getClass().isInstance(CertifiedUserFilter.class)) {
-                CertifiedUserFilter cuFilter = (CertifiedUserFilter) filter;
-                if (!cuFilter.matches(record)) {
-                    return;
-                }
+            CertifiedUserFilter cuFilter = (CertifiedUserFilter) filter;
+            if (!cuFilter.matches(record)) {
+                return;
             }
         }
 
@@ -52,17 +50,17 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
         }
     }
 
-    public void writeResponse(Response record,
-            QuestionMetric metric, DateTime timestamp) {
-     // Apply the filters first
+    public void writeResponse(Response record, QuestionMetric metric, 
+            DateTime timestamp, boolean passed) {
+        // Apply the filters first
         List<RecordFilter> filters = metric.getFilters();
         for (RecordFilter filter : filters) {
-            if (filter.getClass().isInstance(QuestionPassFilter.class)) {
+            if (passed) {
                 QuestionPassFilter qpFilter = (QuestionPassFilter) filter;
                 if (!qpFilter.matches(record)) {
                     return;
                 }
-            } else if (filter.getClass().isInstance(QuestionFailFilter.class)) {
+            } else {
                 QuestionFailFilter qfFilter = (QuestionFailFilter) filter;
                 if (!qfFilter.matches(record)) {
                     return;
