@@ -42,4 +42,5 @@ public class UniqueCountDaoImpl extends AbstractUniqueCountDao {
 
     @Resource
     private NameIdDao nameIdDao;
+
 }

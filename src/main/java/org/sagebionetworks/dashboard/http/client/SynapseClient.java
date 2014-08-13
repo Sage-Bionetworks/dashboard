@@ -2,8 +2,11 @@ package org.sagebionetworks.dashboard.http.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -19,7 +22,11 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHeader;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.parse.CuPassingRecord;
+import org.sagebionetworks.dashboard.parse.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -158,6 +165,32 @@ public class SynapseClient {
         return users;
     }
 
+    public CuPassingRecord getCuPassingRecord(final String userId, final String session) {
+        if (userId == null) {
+            return null;
+        }
+        String uri = REPO + "/user/" + userId + "/certifiedUserPassingRecord";
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+
+        if (root == null || readText(root, "reason") != null) {
+            return null;
+        }
+        boolean isPassed = root.get("passed").booleanValue();
+        DateTime timestamp = ISODateTimeFormat.dateTime().parseDateTime(readText(root, "passedOn"));
+        int score = root.get("score").intValue();
+        ArrayList<Response> responses = new ArrayList<Response>();
+        for (JsonNode node: root.get("corrections")) {
+            int questionIndex = node.get("question").get("questionIndex").intValue();
+            boolean isCorrect = node.get("isCorrect").booleanValue();
+            Response res = new Response(questionIndex, isCorrect);
+            responses.add(res);
+        }
+
+        return new CuPassingRecord(isPassed, userId, timestamp, score, responses);
+    }
+
     private JsonNode executeRequest(HttpUriRequest request) {
         return executeRequest(request, 1L, 0);
     }
@@ -177,9 +210,18 @@ public class SynapseClient {
                 throw new ForbiddenException();
             }
             HttpEntity entity = response.getEntity();
-            inputStream = entity.getContent();
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readValue(inputStream, JsonNode.class);
+
+            // get the encodingType
+            String contentType = entity.getContentType().getValue();
+            String encodingType = "";
+            Matcher m = Pattern.compile("charset=").matcher(contentType);
+            if (m.find()) {
+                encodingType = contentType.substring(m.end()).trim();
+            }
+
+            inputStream = entity.getContent();
+            JsonNode root = mapper.readValue(new InputStreamReader(inputStream, encodingType), JsonNode.class);
             return root;
         } catch (Exception e) {
             int numRetries = retryCount + 1;

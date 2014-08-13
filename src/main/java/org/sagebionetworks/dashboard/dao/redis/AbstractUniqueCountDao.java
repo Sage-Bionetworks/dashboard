@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -119,6 +120,17 @@ abstract class AbstractUniqueCountDao implements UniqueCountDao {
             default:
                 throw new IllegalArgumentException("Interval " + interval + " is not supported.");
         }
+    }
+
+    @Override
+    public Set<String> getAllKeys(String metricId) {
+        String pattern = n + Key.SEPARATOR + month + Key.SEPARATOR + uniquecount + Key.SEPARATOR + metricId + "*";
+        return redisTemplate.keys(pattern);
+    }
+
+    @Override
+    public Set<String> getAllValues(String key) {
+        return zsetOps.rangeByScore(key, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     private List<KeyPiece> getExistingKeys(final List<KeyPiece> keys) {
