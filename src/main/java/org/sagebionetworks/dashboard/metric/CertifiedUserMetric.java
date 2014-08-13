@@ -10,7 +10,7 @@ import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
-@Component("certifiedUsersMetric")
+@Component("certifiedUserMetric")
 public class CertifiedUserMetric implements UniqueCountMetric {
 
     private RecordReader<String> reader = new CertifiedUserIdReader();
@@ -20,7 +20,7 @@ public class CertifiedUserMetric implements UniqueCountMetric {
 
     @Override
     public String getName() {
-        return "certifiedUsersMetric";
+        return "certifiedUserMetric";
     }
 
     @Override

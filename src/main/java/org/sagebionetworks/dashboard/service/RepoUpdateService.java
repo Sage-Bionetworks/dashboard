@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 public class RepoUpdateService {
 
     private final List<String> ignoreMetrics = 
-            Arrays.asList("certifiedUsersMetric", "questionPassMetric", "questionFailMetric");
+            Arrays.asList("certifiedUserMetric", "questionPassMetric", "questionFailMetric");
 
     private final Logger logger = LoggerFactory.getLogger(RepoUpdateService.class);
 
@@ -128,7 +128,7 @@ public class RepoUpdateService {
             timeSeriesWriter.writeMetric(record, metric);
         }
         for (UniqueCountMetric metric: uniqueCountMetrics) {
-            if (ignoreMetrics.contains(metric.getName())) {
+            if (!ignoreMetrics.contains(metric.getName())) {
                 uniqueCountWriter.writeMetric(record, metric);
             }
         }
