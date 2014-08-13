@@ -10,10 +10,14 @@ import org.sagebionetworks.dashboard.dao.UniqueCountDao;
 import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
 import org.sagebionetworks.dashboard.metric.CertifiedUserQuizSubmitMetric;
 import org.sagebionetworks.dashboard.metric.Metric;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service("cuPassingRecordFetcher")
 public class CuPassingRecordFetcher {
+
+    private final Logger logger = LoggerFactory.getLogger(CuPassingRecordFetcher.class);
 
     @Resource
     private UniqueCountDao uniqueCountDao;
@@ -34,6 +38,7 @@ public class CuPassingRecordFetcher {
         Set<String> submitUserIds = getUserIds(submissionMetric);
         Set<String> certifiedUserIds = getUserIds(cuMetric);
         submitUserIds.removeAll(certifiedUserIds);
+        logger.info(submitUserIds.size() + " userIds are found");
         return submitUserIds;
     }
 
