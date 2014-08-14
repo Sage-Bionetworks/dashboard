@@ -9,7 +9,7 @@ import static org.sagebionetworks.dashboard.model.Statistic.n;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -132,14 +132,11 @@ abstract class AbstractUniqueCountDao implements UniqueCountDao {
     @Override
     public Set<String> getAllValues(String key) {
         Set<String> values = zsetOps.rangeByScore(key, Integer.MIN_VALUE, Integer.MAX_VALUE);
-        Iterator<String> i = values.iterator();
-        while (i.hasNext()) {
-            String id = i.next();
-            String value = nameIdDao.getName(id);
-            values.remove(id);
-            values.add(value);
+        Set<String> res = new HashSet<String>();
+        for (String value : values) {
+            res.add(nameIdDao.getName(value));
         }
-        return values;
+        return res;
     }
 
     private List<KeyPiece> getExistingKeys(final List<KeyPiece> keys) {
