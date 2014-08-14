@@ -51,7 +51,7 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
     }
 
     public void writeResponse(Response record, QuestionMetric metric, 
-            DateTime timestamp, boolean passed) {
+            DateTime timestamp, String userId, boolean passed) {
         // Apply the filters first
         List<RecordFilter> filters = metric.getFilters();
         for (RecordFilter filter : filters) {
@@ -72,11 +72,11 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
         final String metricName = metric.getName();
         final String metricId = nameIdDao.getId(metricName);
         final QuestionIndexReader reader = (QuestionIndexReader) metric.getRecordReader();
-        final String value = reader.read(record);
+        final String questionIndex = reader.read(record);
 
         // Write the metric
-        if (value != null) {
-            write(metricId, timestamp, value);
+        if (questionIndex != null) {
+            write(metricId + ":" + questionIndex, timestamp, userId);
         }
     }
 

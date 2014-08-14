@@ -37,9 +37,9 @@ public class UpdateCuPassingRecordService {
         if (record != null && record.responses() != null) {
             for (Response res : record.responses()) {
                 if (res.isCorrect()) {
-                    uniqueCountWriter.writeResponse(res, questionPassMetric, record.timestamp(), true);
+                    uniqueCountWriter.writeResponse(res, questionPassMetric, record.timestamp(), record.userId(), true);
                 } else {
-                    uniqueCountWriter.writeResponse(res, questionFailMetric, record.timestamp(), false);
+                    uniqueCountWriter.writeResponse(res, questionFailMetric, record.timestamp(), record.userId(), false);
                 }
             }
         }
