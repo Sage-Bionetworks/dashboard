@@ -26,7 +26,6 @@ public class CuPassingRecordWorker {
         logger.info("Fetching a list of UserIds from Redis");
         final Iterable<String> userIds = certifiedUserIdFetcher.getUserIds();
         for (String userId: userIds) {
-            logger.info("Calling Synapse to get PassingRecord for userId: " + userIds);
             CuPassingRecord passingRecord = synapseDao.getCuPassingRecord(userId);
             updateCertifiedUserService.updateCertifiedUsers(passingRecord);
         }
