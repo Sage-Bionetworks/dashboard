@@ -51,11 +51,11 @@ public class QuestionFailMetricTest {
     @Test
     public void testIncorrectRecord() {
 
-        Response record = new Response(1, false);
+        Response record = new Response(1, 1, false);
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionFailMetric();
-        uniqueCountWriter.writeResponse(record, metric, new DateTime(2014, 5, 20, 12, 0, 0, 0), "12345", false);
+        uniqueCountWriter.writeResponse(record, metric, new DateTime(2014, 5, 20, 12, 0, 0, 0), false);
 
         DateTime dtFrom = new DateTime(2014, 01, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 07, 30, 0, 0);
@@ -69,11 +69,11 @@ public class QuestionFailMetricTest {
     @Test(expected=IllegalArgumentException.class)
     public void testCorrectRecord() {
 
-        Response record = new Response(1, true);
+        Response record = new Response(1, 1, true);
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionFailMetric();
-        uniqueCountWriter.writeResponse(record, metric, new DateTime(2014, 5, 20, 12, 0, 0, 0), "12345", false);
+        uniqueCountWriter.writeResponse(record, metric, new DateTime(2014, 5, 20, 12, 0, 0, 0), false);
 
         DateTime dtFrom = new DateTime(2014, 01, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 07, 30, 0, 0);

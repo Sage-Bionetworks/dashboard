@@ -15,7 +15,7 @@ public class QuestionIndexReaderTest {
 
     @Test
     public void test(){
-        Response res = new Response(12, true);
+        Response res = new Response(1, 12, true);
         QuestionIndexReader reader = new QuestionIndexReader();
         assertEquals(reader.read(res), "12");
     }

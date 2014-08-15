@@ -15,14 +15,14 @@ public class QuestionFailFilterTest {
 
     @Test
     public void correctResponse(){
-        Response res = new Response(1, true);
+        Response res = new Response(1, 1, true);
         QuestionFailFilter filter = new QuestionFailFilter();
         assertTrue(!filter.matches(res));
     }
 
     @Test
     public void incorrectResponse(){
-        Response res = new Response(1, false);
+        Response res = new Response(1, 1, false);
         QuestionFailFilter filter = new QuestionFailFilter();
         assertTrue(filter.matches(res));
     }
