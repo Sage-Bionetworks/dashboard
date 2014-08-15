@@ -6,7 +6,6 @@ import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
 import org.sagebionetworks.dashboard.metric.QuestionFailMetric;
 import org.sagebionetworks.dashboard.metric.QuestionPassMetric;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
-import org.sagebionetworks.dashboard.parse.Response;
 import org.springframework.stereotype.Service;
 
 @Service("updateCuPassingRecordService")
@@ -27,21 +26,10 @@ public class UpdateCuPassingRecordService {
     /**
      * process a given passing record and update 3 metrics:
      *  certified users
-     *  pass questions
-     *  fail questions
      */
     public void updateCertifiedUsers(CuPassingRecord record) {
         if (record != null && record.isPassed()) {
             uniqueCountWriter.writeCertifiedUsersMetric(record, certifiedUsersMetric);
-        }
-        if (record != null && record.responses() != null) {
-            for (Response res : record.responses()) {
-                if (res.isCorrect()) {
-                    uniqueCountWriter.writeResponse(res, questionPassMetric, record.timestamp(), record.userId(), true);
-                } else {
-                    uniqueCountWriter.writeResponse(res, questionFailMetric, record.timestamp(), record.userId(), false);
-                }
-            }
         }
     }
 }
