@@ -3,7 +3,6 @@ package org.sagebionetworks.dashboard.metric;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -17,7 +16,6 @@ import org.sagebionetworks.dashboard.RedisTestUtil;
 import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
-import org.sagebionetworks.dashboard.parse.Response;
 import org.sagebionetworks.dashboard.service.MetricReader;
 import org.sagebionetworks.dashboard.service.UniqueCountWriter;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -52,7 +50,7 @@ public class CertifiedUserMetricTest {
     @Test
     public void testPassedRecord() {
 
-        CuPassingRecord record = new CuPassingRecord(true, null, new DateTime(2014, 5, 20, 12, 0, 0, 0), 10, new ArrayList<Response>());
+        CuPassingRecord record = new CuPassingRecord(true, null, new DateTime(2014, 5, 20, 12, 0, 0, 0), 10);
 
         assertNotNull(record);
         CertifiedUserMetric metric = new CertifiedUserMetric();
@@ -70,7 +68,7 @@ public class CertifiedUserMetricTest {
     @Test(expected=IllegalArgumentException.class)
     public void testFailedRecord() {
 
-        CuPassingRecord record = new CuPassingRecord(false, null, new DateTime(2014, 5, 20, 12, 0, 0, 0), 10, new ArrayList<Response>());
+        CuPassingRecord record = new CuPassingRecord(false, null, new DateTime(2014, 5, 20, 12, 0, 0, 0), 10);
 
         assertNotNull(record);
         CertifiedUserMetric metric = new CertifiedUserMetric();

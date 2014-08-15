@@ -180,15 +180,8 @@ public class SynapseClient {
         boolean isPassed = root.get("passed").booleanValue();
         DateTime timestamp = ISODateTimeFormat.dateTime().parseDateTime(readText(root, "passedOn"));
         int score = root.get("score").intValue();
-        ArrayList<Response> responses = new ArrayList<Response>();
-        for (JsonNode node: root.get("corrections")) {
-            int questionIndex = node.get("question").get("questionIndex").intValue();
-            boolean isCorrect = node.get("isCorrect").booleanValue();
-            Response res = new Response(questionIndex, isCorrect);
-            responses.add(res);
-        }
 
-        return new CuPassingRecord(isPassed, userId, timestamp, score, responses);
+        return new CuPassingRecord(isPassed, userId, timestamp, score);
     }
 
     private JsonNode executeRequest(HttpUriRequest request) {

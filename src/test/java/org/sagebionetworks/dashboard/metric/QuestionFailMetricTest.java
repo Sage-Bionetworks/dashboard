@@ -55,11 +55,11 @@ public class QuestionFailMetricTest {
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionFailMetric();
-        uniqueCountWriter.writeResponse(record, metric, new DateTime(2014, 5, 20, 12, 0, 0, 0), false);
+        uniqueCountWriter.writeResponse(record, metric, new DateTime(2014, 5, 20, 12, 0, 0, 0), "12345", false);
 
         DateTime dtFrom = new DateTime(2014, 01, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 07, 30, 0, 0);
-        List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
+        List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), "1", Interval.day, dtFrom, dtTo);
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals(1400544000000L, results.get(0).timestamp());
@@ -73,10 +73,10 @@ public class QuestionFailMetricTest {
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionFailMetric();
-        uniqueCountWriter.writeResponse(record, metric, new DateTime(2014, 5, 20, 12, 0, 0, 0), false);
+        uniqueCountWriter.writeResponse(record, metric, new DateTime(2014, 5, 20, 12, 0, 0, 0), "12345", false);
 
         DateTime dtFrom = new DateTime(2014, 01, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 07, 30, 0, 0);
-        metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
+        metricReader.getUniqueCount(metric.getName(), "1", Interval.day, dtFrom, dtTo);
     }
 }

@@ -1,7 +1,5 @@
 package org.sagebionetworks.dashboard.parse;
 
-import java.util.ArrayList;
-
 import org.joda.time.DateTime;
 
 /**
@@ -9,14 +7,12 @@ import org.joda.time.DateTime;
  */
 public class CuPassingRecord {
 
-    public CuPassingRecord(boolean isPassed, String userId, DateTime timestamp, 
-            int score, ArrayList<Response>responseCorrectness) {
+    public CuPassingRecord(boolean isPassed, String userId, DateTime timestamp, int score) {
 
         this.isPassed = isPassed;
         this.userId = userId;
         this.timestamp = timestamp;
         this.score = score;
-        this.responses = responseCorrectness;
     }
 
     public boolean isPassed() {
@@ -31,13 +27,9 @@ public class CuPassingRecord {
     public int score() {
         return score;
     }
-    public ArrayList<Response> responses() {
-        return responses;
-    }
 
     private final boolean isPassed;
     private final String userId;
     private final DateTime timestamp;
     private final int score;
-    private final ArrayList<Response> responses;
 }
