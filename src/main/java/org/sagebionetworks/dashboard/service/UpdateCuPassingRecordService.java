@@ -24,8 +24,7 @@ public class UpdateCuPassingRecordService {
     private QuestionFailMetric questionFailMetric;
 
     /**
-     * process a given passing record and update 3 metrics:
-     *  certified users
+     * process a given passing record and update certified users metric
      */
     public void updateCertifiedUsers(CuPassingRecord record) {
         if (record != null && record.isPassed()) {
