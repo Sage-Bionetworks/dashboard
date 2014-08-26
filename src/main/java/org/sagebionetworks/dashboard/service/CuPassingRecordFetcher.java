@@ -32,7 +32,7 @@ public class CuPassingRecordFetcher {
     private CertifiedUserMetric cuMetric;
 
     /**
-     * @return a list of users who submited a quiz and is not in Certified Users data
+     * @return a list of users who submitted a quiz and is not in Certified Users data
      */
     public Set<String> getUserIds() {
         Set<String> submitUserIds = getUserIds(submissionMetric);

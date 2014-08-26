@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -182,6 +183,37 @@ public class SynapseClient {
         int score = root.get("score").intValue();
 
         return new CuPassingRecord(isPassed, userId, timestamp, score);
+    }
+
+    public List<Response> getResponses(String userId, String session) {
+    	if (userId == null) {
+            return null;
+        }
+        String uri = REPO + "/user/" + userId + "/certifiedUserPassingRecords";
+        uri += "?limit=" + Integer.toString(Integer.MAX_VALUE) + "&offset=0";
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+
+        if (root == null || root.get("totalNumberOfResults").intValue() == 0) {
+            return null;
+        }
+        List<Response> res = new ArrayList<Response>();
+        Iterator<JsonNode> it = root.get("results").iterator();
+        while (it.hasNext()) {
+            JsonNode passingRecord = it.next();
+            int respId = passingRecord.get("responseId").intValue();
+            Iterator<JsonNode> responses = passingRecord.get("corrections").iterator();
+            while (responses.hasNext()) {
+                JsonNode response = responses.next();
+                boolean isCorrect = response.get("isCorrect").booleanValue();
+                int questionIndex = response.get("question").get("questionIndex").intValue();
+                Response resp = new Response(respId, questionIndex, isCorrect);
+                res.add(resp);
+            }
+        }
+
+        return res;
     }
 
     private JsonNode executeRequest(HttpUriRequest request) {
