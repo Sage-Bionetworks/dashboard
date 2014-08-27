@@ -26,11 +26,11 @@ Add the following lines:
 
 1. Download and install [VirtualBox](https://www.virtualbox.org/).
 2. Download and install [Vagrant](http://www.vagrantup.com/).
-3. At the project root, run `vagrant up`. Due to a Vagrant bug, after the Redis server has successfully restarted at the end, you may need to ctrl+c twice to exit the command.
+3. At the project root, run `vagrant up`.
 4. Once the box is up, ssh to it `vagrant ssh`.
 5. Go to the shared folder `cd /vagrant`.
 6. Run `./gradlew --info clean build`.
-7. Run `./gradlew eclipse` to generate the files for importing the project into Eclipse.
+7. Outside the guest, at the host's project folder, run `./gradlew eclipse` to generate the files for importing the project into Eclipse.
 
 If this works, we are done and the steps below can be skipped.
 
