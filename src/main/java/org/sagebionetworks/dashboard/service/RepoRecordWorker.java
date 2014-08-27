@@ -43,6 +43,13 @@ public class RepoRecordWorker {
         for (final String key : batch) {
             updateFile(bucket, key, 0);
         }
+        try {
+            logger.info("Pausing for 30 seconds...");
+            Thread.sleep(30000);
+            logger.info("Done pausing.");
+        } catch (InterruptedException e) {
+            logger.error(e.toString());
+        }
     }
 
     public void updateFile(final String bucket, final String key, final int startingLine) {
