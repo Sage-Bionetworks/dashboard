@@ -2,6 +2,7 @@ package org.sagebionetworks.dashboard.parse;
 
 import static org.junit.Assert.*;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 public class QuestionIndexReaderTest {
@@ -15,7 +16,7 @@ public class QuestionIndexReaderTest {
 
     @Test
     public void test(){
-        Response res = new Response(1, 12, true);
+        Response res = new Response(1, 12, new DateTime(2014, 5, 20, 12, 0, 0, 0), true);
         QuestionIndexReader reader = new QuestionIndexReader();
         assertEquals(reader.read(res), "12");
     }

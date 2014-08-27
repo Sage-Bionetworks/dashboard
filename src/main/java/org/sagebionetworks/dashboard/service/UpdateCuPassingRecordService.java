@@ -2,7 +2,6 @@ package org.sagebionetworks.dashboard.service;
 
 import javax.annotation.Resource;
 
-import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
 import org.sagebionetworks.dashboard.metric.QuestionFailMetric;
 import org.sagebionetworks.dashboard.metric.QuestionPassMetric;
@@ -37,11 +36,14 @@ public class UpdateCuPassingRecordService {
     /**
      * process a given passing record and update certified users metric
      */
-    public void updateResponses(Response record, DateTime timestamp) {
-        if (record != null && record.isCorrect()) {
-            uniqueCountWriter.writeResponse(record, questionPassMetric, timestamp, true);
-        } else if (record != null) {
-            uniqueCountWriter.writeResponse(record, questionFailMetric, timestamp, false);
+    public void updateResponses(Response record) {
+        if (record == null) {
+            return;
+        }
+        if (record.isCorrect()) {
+            uniqueCountWriter.writeResponse(record, questionPassMetric, record.timestamp(), true);
+        } else {
+            uniqueCountWriter.writeResponse(record, questionFailMetric, record.timestamp(), false);
         }
     }
 }

@@ -51,7 +51,7 @@ public class QuestionPassMetricTest {
     @Test
     public void testCorrectRecord() {
 
-        Response record = new Response(1, 1, true);
+        Response record = new Response(1, 1, new DateTime(2014, 5, 20, 12, 0, 0, 0), true);
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionPassMetric();
@@ -69,7 +69,7 @@ public class QuestionPassMetricTest {
     @Test(expected=IllegalArgumentException.class)
     public void testIncorrectRecord() {
 
-        Response record = new Response(1, 1, false);
+        Response record = new Response(1, 1, new DateTime(2014, 5, 20, 12, 0, 0, 0), false);
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionPassMetric();

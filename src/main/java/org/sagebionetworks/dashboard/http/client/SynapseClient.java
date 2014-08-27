@@ -186,7 +186,7 @@ public class SynapseClient {
     }
 
     public List<Response> getResponses(String userId, String session) {
-    	if (userId == null) {
+        if (userId == null) {
             return null;
         }
         String uri = REPO + "/user/" + userId + "/certifiedUserPassingRecords";
@@ -204,12 +204,13 @@ public class SynapseClient {
         while (it.hasNext()) {
             JsonNode passingRecord = it.next();
             int respId = passingRecord.get("responseId").intValue();
+            DateTime timestamp = ISODateTimeFormat.dateTime().parseDateTime(readText(passingRecord, "passedOn"));
             Iterator<JsonNode> responses = passingRecord.get("corrections").iterator();
             while (responses.hasNext()) {
                 JsonNode response = responses.next();
                 boolean isCorrect = response.get("isCorrect").booleanValue();
                 int questionIndex = response.get("question").get("questionIndex").intValue();
-                Response resp = new Response(respId, questionIndex, isCorrect);
+                Response resp = new Response(respId, questionIndex, timestamp, isCorrect);
                 res.add(resp);
             }
         }

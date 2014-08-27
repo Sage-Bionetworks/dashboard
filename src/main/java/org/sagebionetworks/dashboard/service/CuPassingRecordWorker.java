@@ -32,7 +32,7 @@ public class CuPassingRecordWorker {
             updateCertifiedUserService.updateCertifiedUsers(passingRecord);
             Iterable<Response> responses = synapseDao.getResponses(userId);
             for (Response response : responses) {
-                updateCertifiedUserService.updateResponses(response, passingRecord.timestamp());
+                updateCertifiedUserService.updateResponses(response);
             }
         }
     }

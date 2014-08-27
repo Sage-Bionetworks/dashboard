@@ -149,7 +149,7 @@ public class SynapseDaoImpl implements SynapseDao {
 
     @Override
     public List<Response> getResponses(String userId) {
-    	String session = getSession();
+        String session = getSession();
         return synapseClient.getResponses(userId, session);
     }
 
