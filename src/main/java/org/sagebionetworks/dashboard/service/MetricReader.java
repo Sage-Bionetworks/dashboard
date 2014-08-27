@@ -1,6 +1,10 @@
 package org.sagebionetworks.dashboard.service;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -98,6 +102,28 @@ public class MetricReader {
         }
         String metricId = getMetricId(metricName);
         return fileDownloadDao.get(metricId, entityId, timestamp, interval);
+    }
+
+    /*
+     * @param metricName (questionPassMetric or questionFailMetric)
+     * @param ids (questionIndex: 0 - 29)
+     * @return a map of id maps to the total unique responses found
+     */
+    public Map<String, String> getTotalCount(String metricName, int[] ids) {
+        if (metricName == null || metricName.isEmpty()) {
+            throw new IllegalArgumentException("Metric name cannot be null or empty.");
+        }
+        String metricId = getMetricId(metricName);
+        Map<String, String> res = new HashMap<String, String>();
+        for (int id : ids) {
+            Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + id);
+            Set<String> values = new HashSet<String>();
+            for (String key : keys) {
+                values.addAll(uniqueCountDao.getAllValues(key));
+            }
+            res.put(Integer.toString(id), Integer.toString(values.size()));
+        }
+        return res;
     }
 
     private String getMetricId(String metricName) {
