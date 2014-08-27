@@ -195,10 +195,11 @@ public class SynapseClient {
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
 
-        if (root == null || root.get("totalNumberOfResults").intValue() == 0) {
-            return null;
-        }
         List<Response> res = new ArrayList<Response>();
+        if (root == null || root.get("totalNumberOfResults").intValue() == 0) {
+            return res;
+        }
+
         Iterator<JsonNode> it = root.get("results").iterator();
         while (it.hasNext()) {
             JsonNode passingRecord = it.next();
@@ -268,9 +269,11 @@ public class SynapseClient {
         return (value == null ? null : value.asText());
     }
 
-    private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";
+    //private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";
+    private static final String AUTH = "https://repo-staging.prod.sagebase.org/auth/v1";
     private static final String AUTH_LOGIN = AUTH + "/session";
-    private static final String REPO = "https://repo-prod.prod.sagebase.org/repo/v1";
+    //private static final String REPO = "https://repo-prod.prod.sagebase.org/repo/v1";
+    private static final String REPO = "https://repo-staging.prod.sagebase.org/repo/v1";
 
     private final HttpClient client;
 }
