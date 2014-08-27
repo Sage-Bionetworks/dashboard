@@ -50,8 +50,7 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
         }
     }
 
-    public void writeResponse(Response record, QuestionMetric metric, 
-            DateTime timestamp, boolean passed) {
+    public void writeResponse(Response record, QuestionMetric metric, boolean passed) {
         // Apply the filters first
         List<RecordFilter> filters = metric.getFilters();
         for (RecordFilter filter : filters) {
@@ -77,7 +76,7 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
 
         // Write the metric
         if (questionIndex != null) {
-            write(metricId + ":" + questionIndex, timestamp, responseId);
+            write(metricId + ":" + questionIndex, record.timestamp(), responseId);
         }
     }
 

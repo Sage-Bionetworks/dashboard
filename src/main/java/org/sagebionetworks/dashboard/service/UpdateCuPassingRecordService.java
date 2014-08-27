@@ -41,9 +41,9 @@ public class UpdateCuPassingRecordService {
             return;
         }
         if (record.isCorrect()) {
-            uniqueCountWriter.writeResponse(record, questionPassMetric, record.timestamp(), true);
+            uniqueCountWriter.writeResponse(record, questionPassMetric, true);
         } else {
-            uniqueCountWriter.writeResponse(record, questionFailMetric, record.timestamp(), false);
+            uniqueCountWriter.writeResponse(record, questionFailMetric, false);
         }
     }
 }

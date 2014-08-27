@@ -55,7 +55,7 @@ public class QuestionPassMetricTest {
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionPassMetric();
-        uniqueCountWriter.writeResponse(record, metric, new DateTime(2014, 5, 20, 12, 0, 0, 0), true);
+        uniqueCountWriter.writeResponse(record, metric, true);
 
         DateTime dtFrom = new DateTime(2014, 01, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 07, 30, 0, 0);
@@ -73,7 +73,7 @@ public class QuestionPassMetricTest {
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionPassMetric();
-        uniqueCountWriter.writeResponse(record, metric, new DateTime(2014, 5, 20, 12, 0, 0, 0), true);
+        uniqueCountWriter.writeResponse(record, metric, true);
 
         DateTime dtFrom = new DateTime(2014, 01, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 07, 30, 0, 0);
