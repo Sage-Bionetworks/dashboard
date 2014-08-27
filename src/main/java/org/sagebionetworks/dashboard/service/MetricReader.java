@@ -116,7 +116,7 @@ public class MetricReader {
         String metricId = getMetricId(metricName);
         Map<String, String> res = new HashMap<String, String>();
         for (int id : ids) {
-            Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + id);
+            Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + Integer.toString(id));
             Set<String> values = new HashSet<String>();
             for (String key : keys) {
                 values.addAll(uniqueCountDao.getAllValues(key));
