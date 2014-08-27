@@ -15,13 +15,15 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -44,10 +46,15 @@ public class SynapseClient {
     private DashboardContext dashboardContext;
 
     public SynapseClient() {
-        PoolingClientConnectionManager cm = new PoolingClientConnectionManager();
-        cm.setMaxTotal(200);
-        cm.setDefaultMaxPerRoute(20);
-        client = new DefaultHttpClient(cm);
+        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
+        connManager.setMaxTotal(200);
+        connManager.setDefaultMaxPerRoute(20);
+        HttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler();
+        client = HttpClientBuilder
+                .create()
+                .setConnectionManager(connManager)
+                .setRetryHandler(retryHandler)
+                .build();
     }
 
     /**
