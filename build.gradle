@@ -1,6 +1,6 @@
 group = 'org.sagebionetworks'
 project.ext.baseName = 'dashboard'
-version = '0.5.25-' + (new Date()).format(
+version = '0.5.26-' + (new Date()).format(
         'yyyyMMddHHmmss', TimeZone.getTimeZone("UTC"))
 
 /*** Java ***/
@@ -23,11 +23,11 @@ dependencies {
     compile 'org.apache.commons:commons-dbcp2:2.0.1'
     compile 'org.springframework.data:spring-data-redis:' + springDataRedisVersion
     compile 'redis.clients:jedis:' + jedisVersion
-    compile 'joda-time:joda-time:2.3'
+    compile 'joda-time:joda-time:2.4'
     compile 'net.sf.opencsv:opencsv:2.3'
-    compile 'com.amazonaws:aws-java-sdk:1.8.3'
-    compile 'org.apache.httpcomponents:httpclient:4.3.4'
-    compile 'org.postgresql:postgresql:9.3-1101-jdbc41'
+    compile 'com.amazonaws:aws-java-sdk:1.8.8'
+    compile 'org.apache.httpcomponents:httpclient:4.3.5'
+    compile 'org.postgresql:postgresql:9.3-1102-jdbc41'
     compile 'org.jasypt:jasypt:1.9.2'
     compile 'org.slf4j:slf4j-api:' + slf4jVersion
     runtime 'ch.qos.logback:logback-classic:1.1.2'
