@@ -109,19 +109,19 @@ public class MetricReader {
      * @param ids (questionIndex: 0 - 29)
      * @return a map of id maps to the total unique responses found
      */
-    public Map<String, String> getTotalCount(String metricName, int[] ids) {
+    public Map<String, String> getTotalCount(String metricName, List<String> ids) {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
         }
         String metricId = getMetricId(metricName);
         Map<String, String> res = new HashMap<String, String>();
-        for (int id : ids) {
-            Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + Integer.toString(id));
+        for (String id : ids) {
+            Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + id);
             Set<String> values = new HashSet<String>();
             for (String key : keys) {
                 values.addAll(uniqueCountDao.getAllValues(key));
             }
-            res.put(Integer.toString(id), Integer.toString(values.size()));
+            res.put(id, Integer.toString(values.size()));
         }
         return res;
     }
