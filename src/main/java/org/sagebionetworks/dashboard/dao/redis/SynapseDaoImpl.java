@@ -17,6 +17,8 @@ import javax.annotation.Resource;
 import org.sagebionetworks.dashboard.dao.SynapseDao;
 import org.sagebionetworks.dashboard.http.client.SynapseClient;
 import org.sagebionetworks.dashboard.http.client.SynapseUser;
+import org.sagebionetworks.dashboard.parse.CuPassingRecord;
+import org.sagebionetworks.dashboard.parse.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -139,6 +141,18 @@ public class SynapseDaoImpl implements SynapseDao {
         return null;
     }
 
+    @Override
+    public CuPassingRecord getCuPassingRecord(String userId) {
+        String session = getSession();
+        return synapseClient.getCuPassingRecord(userId, session);
+    }
+
+    @Override
+    public List<Response> getResponses(String userId) {
+        String session = getSession();
+        return synapseClient.getResponses(userId, session);
+    }
+
     private String getSession() {
         String session = valueOps.get(SYNAPSE_SESSION);
         if (session != null) {
@@ -174,4 +188,5 @@ public class SynapseDaoImpl implements SynapseDao {
     private final SynapseClient synapseClient;
 
     private final Long dashboardTeamId;
+
 }

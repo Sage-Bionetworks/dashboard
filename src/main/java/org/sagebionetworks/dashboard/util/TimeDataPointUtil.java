@@ -74,11 +74,9 @@ public class TimeDataPointUtil {
     private static ArrayList<String> getMergeTimeStampList (List<List<TimeDataPoint>> list) {
         Set<String> res = new HashSet<String>();
         for (List<TimeDataPoint> listdata : list) {
-            ArrayList<String> tmp = new ArrayList<String>();
             for (TimeDataPoint data : listdata) {
-                tmp.add(data.x());
+                res.add(data.x());
             }
-            res.addAll(tmp);
         }
         return new ArrayList<String>(res);
     }

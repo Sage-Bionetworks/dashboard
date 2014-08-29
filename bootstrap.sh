@@ -9,6 +9,9 @@ echo 'deb http://mirrors.kernel.org/debian wheezy-backports main' >> /etc/apt/so
 apt-get --quiet --yes update
 apt-get --quiet --yes --target-release wheezy-backports upgrade
 
+# NFS Client
+apt-get --quiet --yes --target-release wheezy-backports install nfs-common
+
 # Java
 apt-get --quiet --yes --target-release wheezy-backports install openjdk-7-jdk
 

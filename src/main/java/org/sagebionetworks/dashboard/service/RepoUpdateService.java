@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -12,6 +13,7 @@ import java.util.zip.GZIPInputStream;
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.metric.DayCountMetric;
+import org.sagebionetworks.dashboard.metric.ReportMetric;
 import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
 import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
 import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
@@ -26,6 +28,9 @@ import org.springframework.stereotype.Service;
 
 @Service("repoUpdateService")
 public class RepoUpdateService {
+
+    private final List<String> ignoreMetrics = 
+            Arrays.asList("certifiedUserMetric", "questionPassMetric", "questionFailMetric");
 
     private final Logger logger = LoggerFactory.getLogger(RepoUpdateService.class);
 
@@ -52,6 +57,12 @@ public class RepoUpdateService {
 
     @Resource
     private DayCountWriter dayCountWriter;
+
+    @Resource
+    private Collection<ReportMetric> reportMetrics;
+
+    @Resource
+    private ReportWriter reportWriter;
 
     private final RecordParser parser = new RepoRecordParser();
 
@@ -117,10 +128,15 @@ public class RepoUpdateService {
             timeSeriesWriter.writeMetric(record, metric);
         }
         for (UniqueCountMetric metric: uniqueCountMetrics) {
-            uniqueCountWriter.writeMetric(record, metric);
+            if (!ignoreMetrics.contains(metric.getName())) {
+                uniqueCountWriter.writeMetric(record, metric);
+            }
         }
         for (DayCountMetric metric : dayCountMetrics) {
             dayCountWriter.writeMetric(record, metric);
+        }
+        for (ReportMetric metric : reportMetrics) {
+            reportWriter.writeMetric(record, metric);
         }
     }
 }

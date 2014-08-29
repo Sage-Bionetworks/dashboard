@@ -2,8 +2,12 @@ package org.sagebionetworks.dashboard.http.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -11,15 +15,21 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.parse.CuPassingRecord;
+import org.sagebionetworks.dashboard.parse.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -36,10 +46,15 @@ public class SynapseClient {
     private DashboardContext dashboardContext;
 
     public SynapseClient() {
-        PoolingClientConnectionManager cm = new PoolingClientConnectionManager();
-        cm.setMaxTotal(200);
-        cm.setDefaultMaxPerRoute(20);
-        client = new DefaultHttpClient(cm);
+        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
+        connManager.setMaxTotal(200);
+        connManager.setDefaultMaxPerRoute(20);
+        HttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler();
+        client = HttpClientBuilder
+                .create()
+                .setConnectionManager(connManager)
+                .setRetryHandler(retryHandler)
+                .build();
     }
 
     /**
@@ -158,6 +173,58 @@ public class SynapseClient {
         return users;
     }
 
+    public CuPassingRecord getCuPassingRecord(final String userId, final String session) {
+        if (userId == null) {
+            return null;
+        }
+        String uri = REPO + "/user/" + userId + "/certifiedUserPassingRecord";
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+
+        if (root == null || readText(root, "reason") != null) {
+            return null;
+        }
+        boolean isPassed = root.get("passed").booleanValue();
+        DateTime timestamp = ISODateTimeFormat.dateTime().parseDateTime(readText(root, "passedOn"));
+        int score = root.get("score").intValue();
+
+        return new CuPassingRecord(isPassed, userId, timestamp, score);
+    }
+
+    public List<Response> getResponses(String userId, String session) {
+        if (userId == null) {
+            return null;
+        }
+        String uri = REPO + "/user/" + userId + "/certifiedUserPassingRecords";
+        uri += "?limit=" + Integer.toString(Integer.MAX_VALUE) + "&offset=0";
+        HttpGet get = new HttpGet(uri);
+        get.addHeader(new BasicHeader("sessionToken", session));
+        JsonNode root = executeRequest(get);
+
+        List<Response> res = new ArrayList<Response>();
+        if (root == null || root.get("totalNumberOfResults").intValue() == 0) {
+            return res;
+        }
+
+        Iterator<JsonNode> it = root.get("results").iterator();
+        while (it.hasNext()) {
+            JsonNode passingRecord = it.next();
+            int respId = passingRecord.get("responseId").intValue();
+            DateTime timestamp = ISODateTimeFormat.dateTime().parseDateTime(readText(passingRecord, "passedOn"));
+            Iterator<JsonNode> responses = passingRecord.get("corrections").iterator();
+            while (responses.hasNext()) {
+                JsonNode response = responses.next();
+                boolean isCorrect = response.get("isCorrect").booleanValue();
+                int questionIndex = response.get("question").get("questionIndex").intValue();
+                Response resp = new Response(respId, questionIndex, timestamp, isCorrect);
+                res.add(resp);
+            }
+        }
+
+        return res;
+    }
+
     private JsonNode executeRequest(HttpUriRequest request) {
         return executeRequest(request, 1L, 0);
     }
@@ -177,9 +244,18 @@ public class SynapseClient {
                 throw new ForbiddenException();
             }
             HttpEntity entity = response.getEntity();
-            inputStream = entity.getContent();
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readValue(inputStream, JsonNode.class);
+
+            // get the encodingType
+            String contentType = entity.getContentType().getValue();
+            String encodingType = "";
+            Matcher m = Pattern.compile("charset=").matcher(contentType);
+            if (m.find()) {
+                encodingType = contentType.substring(m.end()).trim();
+            }
+
+            inputStream = entity.getContent();
+            JsonNode root = mapper.readValue(new InputStreamReader(inputStream, encodingType), JsonNode.class);
             return root;
         } catch (Exception e) {
             int numRetries = retryCount + 1;
@@ -201,9 +277,11 @@ public class SynapseClient {
         return (value == null ? null : value.asText());
     }
 
-    private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";
+    //private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";
+    private static final String AUTH = "https://repo-staging.prod.sagebase.org/auth/v1";
     private static final String AUTH_LOGIN = AUTH + "/session";
-    private static final String REPO = "https://repo-prod.prod.sagebase.org/repo/v1";
+    //private static final String REPO = "https://repo-prod.prod.sagebase.org/repo/v1";
+    private static final String REPO = "https://repo-staging.prod.sagebase.org/repo/v1";
 
     private final HttpClient client;
 }

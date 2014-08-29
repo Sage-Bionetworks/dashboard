@@ -113,4 +113,5 @@ public class DayCountDaoImpl extends AbstractUniqueCountDao {
 
     @Resource
     private NameIdDao nameIdDao;
+
 }

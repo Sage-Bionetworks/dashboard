@@ -1,6 +1,7 @@
 package org.sagebionetworks.dashboard.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
@@ -66,4 +67,14 @@ public interface UniqueCountDao {
      * @param max        The maximum count of an ID to be included in the results.
      */
     List<TimeDataPoint> getUnique(String metricId, Interval interval, DateTime from, DateTime to, long min, long max);
+
+    /**
+     * @return the set of all keys that contains metricId
+     */
+    Set<String> getAllKeys(String metricId);
+
+    /**
+     * @return the set of all values that key contains
+     */
+    Set<String> getAllValues(String key);
 }

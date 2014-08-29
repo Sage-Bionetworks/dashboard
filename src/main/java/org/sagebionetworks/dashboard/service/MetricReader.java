@@ -1,10 +1,15 @@
 package org.sagebionetworks.dashboard.service;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
+import org.sagebionetworks.dashboard.dao.FileDownloadDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
@@ -13,6 +18,7 @@ import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
+import org.sagebionetworks.dashboard.model.UserDataPoint;
 import org.springframework.stereotype.Service;
 
 @Service("metricReader")
@@ -30,6 +36,9 @@ public class MetricReader {
     @Resource
     private SimpleCountDao simpleCountDao;
 
+    @Resource
+    private FileDownloadDao fileDownloadDao;
+
     public List<TimeDataPoint> getTimeSeries(String metricName, DateTime from, DateTime to, Statistic s, Interval a) {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
@@ -44,6 +53,14 @@ public class MetricReader {
         }
         String metricId = getMetricId(metricName);
         return uniqueCountDao.getTop(metricId, interval, timestamp, offset, size);
+    }
+
+    public List<TimeDataPoint> getUniqueCount(String metricName, String id, Interval interval, DateTime from, DateTime to) {
+        if (metricName == null || metricName.isEmpty()) {
+            throw new IllegalArgumentException("Metric name cannot be null or empty.");
+        }
+        String metricId = getMetricId(metricName);
+        return uniqueCountDao.getUnique(metricId + ":" + id, interval, from, to, 0L, Long.MAX_VALUE);
     }
 
     public List<TimeDataPoint> getUniqueCount(String metricName, Interval interval, DateTime from, DateTime to) {
@@ -76,6 +93,37 @@ public class MetricReader {
         }
         String metricId = getMetricId(metricName);
         return simpleCountDao.get(metricId, from, to);
+    }
+
+    public List<UserDataPoint> getFileDownloadReport(String metricName, 
+            String entityId, DateTime timestamp, Interval interval) {
+        if (metricName == null || metricName.isEmpty()) {
+            throw new IllegalArgumentException("Metric name cannot be null or empty.");
+        }
+        String metricId = getMetricId(metricName);
+        return fileDownloadDao.get(metricId, entityId, timestamp, interval);
+    }
+
+    /*
+     * @param metricName (questionPassMetric or questionFailMetric)
+     * @param ids (questionIndex: 0 - 29)
+     * @return a map of id maps to the total unique responses found
+     */
+    public Map<String, String> getTotalCount(String metricName, List<String> ids) {
+        if (metricName == null || metricName.isEmpty()) {
+            throw new IllegalArgumentException("Metric name cannot be null or empty.");
+        }
+        String metricId = getMetricId(metricName);
+        Map<String, String> res = new HashMap<String, String>();
+        for (String id : ids) {
+            Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + id);
+            Set<String> values = new HashSet<String>();
+            for (String key : keys) {
+                values.addAll(uniqueCountDao.getAllValues(key));
+            }
+            res.put(id, Integer.toString(values.size()));
+        }
+        return res;
     }
 
     private String getMetricId(String metricName) {

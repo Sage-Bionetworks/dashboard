@@ -9,7 +9,9 @@ import static org.sagebionetworks.dashboard.model.Statistic.n;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -119,6 +121,22 @@ abstract class AbstractUniqueCountDao implements UniqueCountDao {
             default:
                 throw new IllegalArgumentException("Interval " + interval + " is not supported.");
         }
+    }
+
+    @Override
+    public Set<String> getAllKeys(String metricId) {
+        String pattern = n + Key.SEPARATOR + month + Key.SEPARATOR + uniquecount + Key.SEPARATOR + metricId + "*";
+        return redisTemplate.keys(pattern);
+    }
+
+    @Override
+    public Set<String> getAllValues(String key) {
+        Set<String> values = zsetOps.rangeByScore(key, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        Set<String> res = new HashSet<String>();
+        for (String value : values) {
+            res.add(nameIdDao.getName(value));
+        }
+        return res;
     }
 
     private List<KeyPiece> getExistingKeys(final List<KeyPiece> keys) {
