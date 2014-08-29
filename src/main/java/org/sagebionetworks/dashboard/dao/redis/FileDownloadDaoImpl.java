@@ -39,7 +39,11 @@ public class FileDownloadDaoImpl implements FileDownloadDao{
     @Override
     public List<UserDataPoint> get(String metricId, String entityId,
             DateTime timestamp, Interval interval) {
-        final String key = getKey(metricId, entityId, interval, timestamp);
+        return get(getKey(metricId, entityId, interval, timestamp));
+    }
+
+    @Override
+    public List<UserDataPoint> get(String key) {
         Collection<String> data = 
                 listOps.range(key, 0, Long.MAX_VALUE);
         List<UserDataPoint> results = new ArrayList<UserDataPoint>();

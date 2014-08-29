@@ -1,5 +1,6 @@
 package org.sagebionetworks.dashboard.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -95,7 +96,7 @@ public class MetricReader {
         return simpleCountDao.get(metricId, from, to);
     }
 
-    public List<UserDataPoint> getFileDownloadReport(String metricName, 
+    public List<UserDataPoint> getFileDownloadReport(String metricName,
             String entityId, DateTime timestamp, Interval interval) {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
@@ -105,6 +106,22 @@ public class MetricReader {
             entityId = entityId.substring(3);
         }
         return fileDownloadDao.get(metricId, entityId, timestamp, interval);
+    }
+
+    public List<UserDataPoint> getAllReport(String metricName, String entityId) {
+        if (metricName == null || metricName.isEmpty()) {
+            throw new IllegalArgumentException("Metric name cannot be null or empty.");
+        }
+        String metricId = getMetricId(metricName);
+        if (entityId.startsWith("syn")) {
+            entityId = entityId.substring(3);
+        }
+        Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + entityId);
+        Set<UserDataPoint> res = new HashSet<UserDataPoint>();
+        for (String key : keys) {
+            res.addAll(fileDownloadDao.get(key));
+        }
+        return new ArrayList<UserDataPoint>(res);
     }
 
     /*

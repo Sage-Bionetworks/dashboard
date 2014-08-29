@@ -12,4 +12,6 @@ public interface FileDownloadDao {
 
     List<UserDataPoint> get(String metricId, String entityId, 
             DateTime timestamp, Interval interval);
+
+    List<UserDataPoint> get(String key);
 }
