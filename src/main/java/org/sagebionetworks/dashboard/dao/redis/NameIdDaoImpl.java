@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
+import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR_1;
+import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR_2;
 import static org.sagebionetworks.dashboard.dao.redis.Key.ID_NAME;
 import static org.sagebionetworks.dashboard.dao.redis.Key.NAME_ID;
 
@@ -10,7 +12,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.sagebionetworks.dashboard.dao.NameIdDao;
+import org.sagebionetworks.dashboard.perf.PerfConstants;
 import org.sagebionetworks.dashboard.util.RandomIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +39,8 @@ public class NameIdDaoImpl implements NameIdDao {
             return generateId(name);
         }
 
-        logger.info("getId: " + (System.nanoTime() - start));
+        logger.info(FIELD_SEPARATOR_1 + " getId: "
+                + FIELD_SEPARATOR_2 + (System.nanoTime() - start));
 
         return id;
     }
