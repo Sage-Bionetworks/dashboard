@@ -2,7 +2,8 @@ package org.sagebionetworks.dashboard.dao.redis;
 
 import static org.sagebionetworks.dashboard.dao.redis.Key.ID_NAME;
 import static org.sagebionetworks.dashboard.dao.redis.Key.NAME_ID;
-import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR;
+import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR_1;
+import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR_2;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,8 +39,8 @@ public class NameIdDaoImpl implements NameIdDao {
             return generateId(name);
         }
 
-        logger.info(FIELD_SEPARATOR + "getId"
-                + FIELD_SEPARATOR + (System.nanoTime() - start));
+        logger.info(FIELD_SEPARATOR_1 + "getId"
+                + FIELD_SEPARATOR_2 + (System.nanoTime() - start));
 
         return id;
     }
@@ -63,8 +64,8 @@ public class NameIdDaoImpl implements NameIdDao {
 
         BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
 
-        logger.info(FIELD_SEPARATOR + "hasName: "
-                + FIELD_SEPARATOR + (System.nanoTime() - start));
+        logger.info(FIELD_SEPARATOR_1 + "hasName"
+                + FIELD_SEPARATOR_2 + (System.nanoTime() - start));
 
         return nameIdHash.hasKey(name);
     }

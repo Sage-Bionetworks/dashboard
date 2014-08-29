@@ -1,6 +1,7 @@
 package org.sagebionetworks.dashboard.service;
 
-import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR;
+import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR_1;
+import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR_2;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +46,8 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
         }
 
         final long readStart = System.nanoTime();
-        logger.info(FIELD_SEPARATOR + "filtering: "
-                + FIELD_SEPARATOR + (readStart - start));
+        logger.info(FIELD_SEPARATOR_1 + "filtering"
+                + FIELD_SEPARATOR_2 + (readStart - start));
 
         // Read the record
         final String metricName = metric.getName();
@@ -57,16 +58,16 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
         final T value = reader.read(record);
 
         final long writeStart = System.nanoTime();
-        logger.info(FIELD_SEPARATOR + "reading: "
-                + FIELD_SEPARATOR + (writeStart - readStart));
+        logger.info(FIELD_SEPARATOR_1 + "reading"
+                + FIELD_SEPARATOR_2 + (writeStart - readStart));
 
         // Write the metric
         if (value != null) {
 
             write(metricId, timestamp, value);
 
-            logger.info(FIELD_SEPARATOR + "writing: "
-                    + FIELD_SEPARATOR + (System.nanoTime() - writeStart));
+            logger.info(FIELD_SEPARATOR_1 + "writing"
+                    + FIELD_SEPARATOR_2 + (System.nanoTime() - writeStart));
         }
     }
 
