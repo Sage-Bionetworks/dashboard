@@ -101,6 +101,9 @@ public class MetricReader {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
         }
         String metricId = getMetricId(metricName);
+        if (entityId.startsWith("syn")) {
+            entityId = entityId.substring(3);
+        }
         return fileDownloadDao.get(metricId, entityId, timestamp, interval);
     }
 
