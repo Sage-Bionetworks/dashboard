@@ -63,8 +63,7 @@ public class FileDownloadReportMetricTest {
         reportWriter.writeMetric(records.get(0), metric);
         
         List<UserDataPoint> results = 
-                metricReader.getFileDownloadReport(metric.getName(), "1960975", 
-                        new DateTime(1404855949372L), Interval.day);
+                metricReader.getAllReport(metric.getName(), "1960975");
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals("1404855949372", results.get(0).timestamp());
@@ -82,7 +81,6 @@ public class FileDownloadReportMetricTest {
         Metric<String> metric = new FileDownloadReportMetric();
         reportWriter.writeMetric(records.get(0), metric);
         
-        metricReader.getFileDownloadReport(metric.getName(), "1960975", 
-                        new DateTime(1404855949372L), Interval.day);
+        metricReader.getAllReport(metric.getName(), "1960975");
     }
 }

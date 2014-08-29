@@ -116,7 +116,7 @@ public class MetricReader {
         if (entityId.startsWith("syn")) {
             entityId = entityId.substring(3);
         }
-        Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + entityId);
+        Set<String> keys = fileDownloadDao.getAllKeys(metricId + ":" + entityId);
         Set<UserDataPoint> res = new HashSet<UserDataPoint>();
         for (String key : keys) {
             res.addAll(fileDownloadDao.get(key));

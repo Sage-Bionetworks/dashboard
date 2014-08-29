@@ -1,6 +1,7 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
 import static org.sagebionetworks.dashboard.dao.redis.NameSpace.fdownload;
+import static org.sagebionetworks.dashboard.dao.redis.NameSpace.uniquecount;
 import static org.sagebionetworks.dashboard.dao.redis.RedisConstants.EXPIRE_DAYS;
 import static org.sagebionetworks.dashboard.model.Interval.day;
 import static org.sagebionetworks.dashboard.model.Interval.month;
@@ -13,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -34,6 +36,12 @@ public class FileDownloadDaoImpl implements FileDownloadDao{
         put(metricId, entityId, userDataId, day, timestamp);
         put(metricId, entityId, userDataId, week, timestamp);
         put(metricId, entityId, userDataId, month, timestamp);
+    }
+
+    @Override
+    public Set<String> getAllKeys(String metricId) {
+        String pattern = n + Key.SEPARATOR + month + Key.SEPARATOR + fdownload + Key.SEPARATOR + metricId + "*";
+        return redisTemplate.keys(pattern);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.sagebionetworks.dashboard.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.model.Interval;
@@ -14,4 +15,6 @@ public interface FileDownloadDao {
             DateTime timestamp, Interval interval);
 
     List<UserDataPoint> get(String key);
+
+    Set<String> getAllKeys(String metricId);
 }
