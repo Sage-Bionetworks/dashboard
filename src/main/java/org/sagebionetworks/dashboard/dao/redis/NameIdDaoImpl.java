@@ -1,9 +1,8 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
-import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR_1;
-import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR_2;
 import static org.sagebionetworks.dashboard.dao.redis.Key.ID_NAME;
 import static org.sagebionetworks.dashboard.dao.redis.Key.NAME_ID;
+import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +11,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.sagebionetworks.dashboard.perf.PerfConstants;
+import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.util.RandomIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +38,8 @@ public class NameIdDaoImpl implements NameIdDao {
             return generateId(name);
         }
 
-        logger.info(FIELD_SEPARATOR_1 + " getId: "
-                + FIELD_SEPARATOR_2 + (System.nanoTime() - start));
+        logger.info(FIELD_SEPARATOR + "getId"
+                + FIELD_SEPARATOR + (System.nanoTime() - start));
 
         return id;
     }
@@ -64,7 +63,8 @@ public class NameIdDaoImpl implements NameIdDao {
 
         BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
 
-        logger.info("hasName: " + (System.nanoTime() - start));
+        logger.info(FIELD_SEPARATOR + "hasName: "
+                + FIELD_SEPARATOR + (System.nanoTime() - start));
 
         return nameIdHash.hasKey(name);
     }

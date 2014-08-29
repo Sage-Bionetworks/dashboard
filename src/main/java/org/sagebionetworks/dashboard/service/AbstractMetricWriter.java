@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.service;
 
+import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +45,8 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
         }
 
         final long readStart = System.nanoTime();
-        logger.info("Filtering: " + (readStart - start));
+        logger.info(FIELD_SEPARATOR + "filtering: "
+                + FIELD_SEPARATOR + (readStart - start));
 
         // Read the record
         final String metricName = metric.getName();
@@ -54,14 +57,16 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
         final T value = reader.read(record);
 
         final long writeStart = System.nanoTime();
-        logger.info("Reading: " + (writeStart - readStart));
+        logger.info(FIELD_SEPARATOR + "reading: "
+                + FIELD_SEPARATOR + (writeStart - readStart));
 
         // Write the metric
         if (value != null) {
 
             write(metricId, timestamp, value);
 
-            logger.info("Writing: " + (System.nanoTime() - writeStart));
+            logger.info(FIELD_SEPARATOR + "writing: "
+                    + FIELD_SEPARATOR + (System.nanoTime() - writeStart));
         }
     }
 
