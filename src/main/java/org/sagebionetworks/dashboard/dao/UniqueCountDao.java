@@ -77,4 +77,9 @@ public interface UniqueCountDao {
      * @return the set of all values that key contains
      */
     Set<String> getAllValues(String key);
+
+    /**
+     * remove value from metric
+     */
+    void removeValue(String value, String metricId);
 }

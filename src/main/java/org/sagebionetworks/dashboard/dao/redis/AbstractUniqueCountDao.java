@@ -139,6 +139,14 @@ abstract class AbstractUniqueCountDao implements UniqueCountDao {
         return res;
     }
 
+    @Override
+    public void removeValue(String value, String metricId) {
+        Set<String> keys = getAllKeys(metricId);
+        for (String key : keys) {
+            zsetOps.remove(key, nameIdDao.getId(value));
+        }
+    }
+
     private List<KeyPiece> getExistingKeys(final List<KeyPiece> keys) {
         List<Object> flags = redisTemplate.executePipelined(new RedisCallback<Object>() {
             @Override
