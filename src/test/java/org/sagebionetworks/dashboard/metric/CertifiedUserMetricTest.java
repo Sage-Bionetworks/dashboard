@@ -50,7 +50,7 @@ public class CertifiedUserMetricTest {
     @Test
     public void testPassedRecord() {
 
-        CuPassingRecord record = new CuPassingRecord(true, null, new DateTime(2014, 5, 20, 12, 0, 0, 0), 10);
+        CuPassingRecord record = new CuPassingRecord(true, null, new DateTime(2014, 6, 27, 12, 0, 0, 0), 10);
 
         assertNotNull(record);
         CertifiedUserMetric metric = new CertifiedUserMetric();
@@ -61,7 +61,7 @@ public class CertifiedUserMetricTest {
         List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
         assertNotNull(results);
         assertEquals(1, results.size());
-        assertEquals(1400544000000L, results.get(0).timestamp());
+        assertEquals(1403827200000L, results.get(0).timestamp());
         assertEquals("1", results.get(0).value());
     }
 

@@ -18,7 +18,7 @@ public class CertifiedUserQuizSubmitMetric implements UniqueCountMetric {
     private RecordReader<String> reader = new UserIdReader();
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            new MethodFilter("post"), new UriCuqSubmitFilter(), new TimeFilter(0)));
+            new MethodFilter("post"), new UriCuqSubmitFilter(), new TimeFilter(1403827200000L)));
 
     @Override
     public String getName() {
