@@ -11,5 +11,5 @@ public class TimeFilter implements RecordFilter{
         return record.getTimestamp() >= timestamp;
     }
 
-    private long timestamp;
+    private final long timestamp;
 }
