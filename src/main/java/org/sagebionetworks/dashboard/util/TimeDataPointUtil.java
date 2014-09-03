@@ -20,7 +20,7 @@ public class TimeDataPointUtil {
      */
     public static Map<String, ArrayList<String>> createMergeMap (
             List<List<TimeDataPoint>> list, int length) {
-        ArrayList<String> mergeTimeStampList = getMergeTimeStampList(list);
+        List<String> mergeTimeStampList = getMergeTimeStampList(list);
         Collections.sort(mergeTimeStampList);
         Map<String, ArrayList<String>> res = new HashMap<String, ArrayList<String>>();
 
@@ -62,7 +62,7 @@ public class TimeDataPointUtil {
     public static List<String> getMergeValueList (List<String> mergeTimeStampList, 
             Map<String, ArrayList<String>> map, int nth) {
         ArrayList<String> res = new ArrayList<String>();
-        for (String timestamp: mergeTimeStampList) {
+        for (String timestamp : mergeTimeStampList) {
             res.add(map.get(timestamp).get(nth));
         }
         return res;
