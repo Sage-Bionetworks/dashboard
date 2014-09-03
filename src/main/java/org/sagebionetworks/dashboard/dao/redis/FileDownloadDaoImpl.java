@@ -1,7 +1,6 @@
 package org.sagebionetworks.dashboard.dao.redis;
 
 import static org.sagebionetworks.dashboard.dao.redis.NameSpace.fdownload;
-import static org.sagebionetworks.dashboard.dao.redis.NameSpace.uniquecount;
 import static org.sagebionetworks.dashboard.dao.redis.RedisConstants.EXPIRE_DAYS;
 import static org.sagebionetworks.dashboard.model.Interval.day;
 import static org.sagebionetworks.dashboard.model.Interval.month;

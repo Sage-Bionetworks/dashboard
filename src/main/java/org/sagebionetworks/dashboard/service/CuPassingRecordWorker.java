@@ -28,12 +28,18 @@ public class CuPassingRecordWorker {
         final Iterable<String> userIds = certifiedUserIdFetcher.getUserIds();
         logger.info("Calling Synapse to get PassingRecords for userId: " + userIds);
         for (String userId: userIds) {
-            CuPassingRecord passingRecord = synapseDao.getCuPassingRecord(userId);
-            updateCertifiedUserService.updateCertifiedUsers(passingRecord);
             Iterable<Response> responses = synapseDao.getResponses(userId);
+            // check to see if the userId really took the test on prod
+            if (responses.iterator() == null || !responses.iterator().hasNext()) {
+                updateCertifiedUserService.removeSubmission(userId);
+                return;
+            }
             for (Response response : responses) {
                 updateCertifiedUserService.updateResponses(response);
             }
+            CuPassingRecord passingRecord = synapseDao.getCuPassingRecord(userId);
+            updateCertifiedUserService.updateCertifiedUsers(passingRecord);
+            
         }
     }
 }

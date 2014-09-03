@@ -277,11 +277,9 @@ public class SynapseClient {
         return (value == null ? null : value.asText());
     }
 
-    //private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";
-    private static final String AUTH = "https://repo-staging.prod.sagebase.org/auth/v1";
+    private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";
     private static final String AUTH_LOGIN = AUTH + "/session";
-    //private static final String REPO = "https://repo-prod.prod.sagebase.org/repo/v1";
-    private static final String REPO = "https://repo-staging.prod.sagebase.org/repo/v1";
-
+    private static final String REPO = "https://repo-prod.prod.sagebase.org/repo/v1";
+    
     private final HttpClient client;
 }
