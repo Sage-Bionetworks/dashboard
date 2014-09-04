@@ -8,7 +8,9 @@ import static org.sagebionetworks.dashboard.perf.PerfConstants.FIELD_SEPARATOR_2
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -28,15 +30,17 @@ public class NameIdDaoImpl implements NameIdDao {
 
     private final Logger logger = LoggerFactory.getLogger(NameIdDaoImpl.class);
 
+    private final Map<String, String> nameIdCache = new HashMap<String, String>();
+
     @Override
     public String getId(final String name) {
 
         final long start = System.nanoTime();
 
-        BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
-        String id = nameIdHash.get(name);
+        String id = nameIdCache.get(name);
         if (id == null) {
-            return generateId(name);
+            id = getIdFromRedis(name);
+            nameIdCache.put(name, id);
         }
 
         logger.info(FIELD_SEPARATOR_1 + "getId"
@@ -76,6 +80,15 @@ public class NameIdDaoImpl implements NameIdDao {
 
     private BoundHashOperations<String, String, String> getIdNameHash() {
         return redisTemplate.boundHashOps(ID_NAME);
+    }
+
+    private String getIdFromRedis(final String name) {
+        BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
+        String id = nameIdHash.get(name);
+        if (id == null) {
+            return generateId(name);
+        }
+        return id;
     }
 
     /**
