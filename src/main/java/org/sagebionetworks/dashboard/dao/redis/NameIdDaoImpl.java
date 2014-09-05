@@ -6,7 +6,9 @@ import static org.sagebionetworks.dashboard.dao.redis.Key.NAME_ID;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -24,10 +26,10 @@ public class NameIdDaoImpl implements NameIdDao {
 
     @Override
     public String getId(final String name) {
-        BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
-        String id = nameIdHash.get(name);
+        String id = nameIdCache.get(name);
         if (id == null) {
-            return generateId(name);
+            id = getIdFromRedis(name);
+            nameIdCache.put(name, id);
         }
         return id;
     }
@@ -140,8 +142,20 @@ public class NameIdDaoImpl implements NameIdDao {
         return redisTemplate.execute(callback);
     }
 
+
+    private String getIdFromRedis(final String name) {
+        BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
+        String id = nameIdHash.get(name);
+        if (id == null) {
+            return generateId(name);
+        }
+        return id;
+    }
+
     // 6-char ID has a space of 56,800,235,584 keys
     private final RandomIdGenerator idGenerator = new RandomIdGenerator(6);
+
+    private final Map<String, String> nameIdCache = new HashMap<String, String>();
 
     @Resource
     private StringRedisTemplate redisTemplate;
