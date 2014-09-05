@@ -112,9 +112,6 @@ public class MetricReader {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
         }
-        if (entityId == null || entityId == "") {
-            return new ArrayList<UserDataPoint>();
-        }
         String metricId = getMetricId(metricName);
         if (entityId.startsWith("syn")) {
             entityId = entityId.substring(3);
