@@ -14,7 +14,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.dashboard.RedisTestUtil;
+import org.sagebionetworks.dashboard.dao.CachedDao;
+import org.sagebionetworks.dashboard.dao.redis.RedisTestUtil;
 import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.parse.Record;
@@ -39,16 +40,19 @@ public class CertifiedUserQuizRequestMetricTest {
     @Resource
     private MetricReader metricReader;
 
+    @Resource
+    private CachedDao nameIdDao;
+
     @Before
     public void before() {
         assertNotNull(redisTemplate);
         assertNotNull(uniqueCountWriter);
-        RedisTestUtil.clearRedis(redisTemplate);
+        RedisTestUtil.clearRedis(redisTemplate, nameIdDao);
     }
 
     @After
     public void after() {
-        RedisTestUtil.clearRedis(redisTemplate);
+        RedisTestUtil.clearRedis(redisTemplate, nameIdDao);
     }
 
     @Test

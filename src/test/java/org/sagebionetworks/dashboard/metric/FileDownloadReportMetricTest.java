@@ -9,13 +9,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.dashboard.RedisTestUtil;
-import org.sagebionetworks.dashboard.model.Interval;
+import org.sagebionetworks.dashboard.dao.redis.RedisTestUtil;
 import org.sagebionetworks.dashboard.model.UserDataPoint;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordParser;
