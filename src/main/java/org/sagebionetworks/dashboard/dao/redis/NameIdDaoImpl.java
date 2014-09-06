@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.sagebionetworks.dashboard.dao.CachedDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.util.RandomIdGenerator;
 import org.springframework.dao.DataAccessException;
@@ -22,7 +23,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository("nameIdDao")
-public class NameIdDaoImpl implements NameIdDao {
+public class NameIdDaoImpl implements NameIdDao, CachedDao {
 
     @Override
     public String getId(final String name) {
@@ -48,8 +49,17 @@ public class NameIdDaoImpl implements NameIdDao {
 
     @Override
     public boolean hasName(String name) {
+        boolean hasNameInCache = nameIdCache.containsKey(name);
+        if (hasNameInCache) {
+            return true;
+        }
         BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
         return nameIdHash.hasKey(name);
+    }
+
+    @Override
+    public void clearCache() {
+        nameIdCache.clear();
     }
 
     private BoundHashOperations<String, String, String> getNameIdHash() {
@@ -141,7 +151,6 @@ public class NameIdDaoImpl implements NameIdDao {
 
         return redisTemplate.execute(callback);
     }
-
 
     private String getIdFromRedis(final String name) {
         BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
