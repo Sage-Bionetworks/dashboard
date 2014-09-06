@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.sagebionetworks.dashboard.service.CuPassingRecordWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ public class CuPassingRecordScheduler {
     @Resource
     private CuPassingRecordWorker worker;
 
+    @Async
     @Scheduled(initialDelay=(13L * 60L * 1000L), fixedRate=(23L * 60L * 1000L))
     public void run() {
         logger.info("CuPassingRecordScheduler.run() thread ID: " + Thread.currentThread().getId());
