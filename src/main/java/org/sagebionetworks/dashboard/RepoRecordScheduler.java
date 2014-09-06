@@ -23,7 +23,6 @@ public class RepoRecordScheduler {
     /**
      * Initial delay of 7 minutes. Updates every 23 minutes.
      */
-    @Async
     @Scheduled(initialDelay=(7L * 60L * 1000L), fixedRate=(23L * 60L * 1000L))
     public void runRecordWorker() {
         repoRecordWorker.doWork();
