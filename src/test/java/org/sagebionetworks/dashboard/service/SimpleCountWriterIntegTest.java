@@ -14,7 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.dashboard.RedisTestUtil;
+import org.sagebionetworks.dashboard.dao.redis.RedisTestUtil;
 import org.sagebionetworks.dashboard.metric.ErrorCountMetric;
 import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;

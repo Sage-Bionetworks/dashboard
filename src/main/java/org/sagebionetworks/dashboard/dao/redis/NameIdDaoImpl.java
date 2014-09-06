@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.sagebionetworks.dashboard.dao.CachedDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.util.RandomIdGenerator;
 import org.slf4j.Logger;
@@ -26,11 +27,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository("nameIdDao")
-public class NameIdDaoImpl implements NameIdDao {
+public class NameIdDaoImpl implements NameIdDao, CachedDao {
 
     private final Logger logger = LoggerFactory.getLogger(NameIdDaoImpl.class);
-
-    private final Map<String, String> nameIdCache = new HashMap<String, String>();
 
     @Override
     public String getId(final String name) {
@@ -63,15 +62,17 @@ public class NameIdDaoImpl implements NameIdDao {
 
     @Override
     public boolean hasName(String name) {
-
-        final long start = System.nanoTime();
-
+        boolean hasNameInCache = nameIdCache.containsKey(name);
+        if (hasNameInCache) {
+            return true;
+        }
         BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
-
-        logger.info(FIELD_SEPARATOR_1 + "hasName"
-                + FIELD_SEPARATOR_2 + (System.nanoTime() - start));
-
         return nameIdHash.hasKey(name);
+    }
+
+    @Override
+    public void clearCache() {
+        nameIdCache.clear();
     }
 
     private BoundHashOperations<String, String, String> getNameIdHash() {
@@ -80,15 +81,6 @@ public class NameIdDaoImpl implements NameIdDao {
 
     private BoundHashOperations<String, String, String> getIdNameHash() {
         return redisTemplate.boundHashOps(ID_NAME);
-    }
-
-    private String getIdFromRedis(final String name) {
-        BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
-        String id = nameIdHash.get(name);
-        if (id == null) {
-            return generateId(name);
-        }
-        return id;
     }
 
     /**
@@ -173,8 +165,19 @@ public class NameIdDaoImpl implements NameIdDao {
         return redisTemplate.execute(callback);
     }
 
+    private String getIdFromRedis(final String name) {
+        BoundHashOperations<String, String, String> nameIdHash = getNameIdHash();
+        String id = nameIdHash.get(name);
+        if (id == null) {
+            return generateId(name);
+        }
+        return id;
+    }
+
     // 6-char ID has a space of 56,800,235,584 keys
     private final RandomIdGenerator idGenerator = new RandomIdGenerator(6);
+
+    private final Map<String, String> nameIdCache = new HashMap<String, String>();
 
     @Resource
     private StringRedisTemplate redisTemplate;

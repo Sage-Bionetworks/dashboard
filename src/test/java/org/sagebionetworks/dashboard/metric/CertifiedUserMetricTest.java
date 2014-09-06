@@ -12,7 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.dashboard.RedisTestUtil;
+import org.sagebionetworks.dashboard.dao.CachedDao;
+import org.sagebionetworks.dashboard.dao.redis.RedisTestUtil;
 import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
@@ -35,22 +36,25 @@ public class CertifiedUserMetricTest {
     @Resource
     private MetricReader metricReader;
 
+    @Resource
+    private CachedDao nameIdDao;
+
     @Before
     public void before() {
         assertNotNull(redisTemplate);
         assertNotNull(uniqueCountWriter);
-        RedisTestUtil.clearRedis(redisTemplate);
+        RedisTestUtil.clearRedis(redisTemplate, nameIdDao);
     }
 
     @After
     public void after() {
-        RedisTestUtil.clearRedis(redisTemplate);
+        RedisTestUtil.clearRedis(redisTemplate, nameIdDao);
     }
 
     @Test
     public void testPassedRecord() {
 
-        CuPassingRecord record = new CuPassingRecord(true, null, new DateTime(2014, 5, 20, 12, 0, 0, 0), 10);
+        CuPassingRecord record = new CuPassingRecord(true, null, new DateTime(2014, 6, 27, 12, 0, 0, 0), 10);
 
         assertNotNull(record);
         CertifiedUserMetric metric = new CertifiedUserMetric();
@@ -61,7 +65,7 @@ public class CertifiedUserMetricTest {
         List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
         assertNotNull(results);
         assertEquals(1, results.size());
-        assertEquals(1400544000000L, results.get(0).timestamp());
+        assertEquals(1403827200000L, results.get(0).timestamp());
         assertEquals("1", results.get(0).value());
     }
 

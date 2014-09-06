@@ -80,6 +80,10 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
         }
     }
 
+    public void removeValue(String userId, String metricName) {
+        uniqueCountDao.removeValue(userId, nameIdDao.getId(metricName));
+    }
+
     @Resource
     private UniqueCountDao uniqueCountDao;
 
