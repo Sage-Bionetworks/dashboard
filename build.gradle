@@ -1,6 +1,6 @@
 group = 'org.sagebionetworks'
 project.ext.baseName = 'dashboard'
-version = '0.5.26-' + (new Date()).format(
+version = '0.5.27-' + (new Date()).format(
         'yyyyMMddHHmmss', TimeZone.getTimeZone("UTC"))
 
 /*** Java ***/
@@ -25,7 +25,7 @@ dependencies {
     compile 'redis.clients:jedis:' + jedisVersion
     compile 'joda-time:joda-time:2.4'
     compile 'net.sf.opencsv:opencsv:2.3'
-    compile 'com.amazonaws:aws-java-sdk:1.8.8'
+    compile 'com.amazonaws:aws-java-sdk:1.8.9.1'
     compile 'org.apache.httpcomponents:httpclient:4.3.5'
     compile 'org.postgresql:postgresql:9.3-1102-jdbc41'
     compile 'org.jasypt:jasypt:1.9.2'
