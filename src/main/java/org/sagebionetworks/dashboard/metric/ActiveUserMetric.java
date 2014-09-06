@@ -11,17 +11,12 @@ import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
 @Component("activeUserMetric")
-public class ActiveUserMetric implements DayCountMetric {
+public class ActiveUserMetric extends DayCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             (RecordFilter)new ProdFilter()));
 
     private final RecordReader<String> reader = new UserIdReader();
-
-    @Override
-    public String getName() {
-        return "activeUserMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

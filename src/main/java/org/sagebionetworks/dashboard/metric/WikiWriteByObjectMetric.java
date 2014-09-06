@@ -13,17 +13,12 @@ import org.sagebionetworks.dashboard.parse.WikiObjectIdReader;
 import org.springframework.stereotype.Component;
 
 @Component("wikiWriteByObjectMetric")
-public class WikiWriteByObjectMetric implements DayCountMetric {
+public class WikiWriteByObjectMetric extends DayCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new UriWiki2Filter(), new MethodFilter("POST", "PUT")));
 
     private final RecordReader<String> reader = new WikiObjectIdReader();
-
-    @Override
-    public String getName() {
-        return "wikiWriteByObjectMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

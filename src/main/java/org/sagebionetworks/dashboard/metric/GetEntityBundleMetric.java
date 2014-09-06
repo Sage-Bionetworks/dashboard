@@ -14,17 +14,12 @@ import org.springframework.stereotype.Component;
 
 /** Latencies of the get-entity-bundle REST API. */
 @Component("getEntityBundleMetric")
-public class GetEntityBundleMetric implements TimeSeriesMetric {
+public class GetEntityBundleMetric extends TimeSeriesMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new MethodFilter("get"), new UriEntityBundleFilter()));
 
     private final RecordReader<Long> reader = new LatencyReader();
-
-    @Override
-    public String getName() {
-        return "getEntityBundleMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

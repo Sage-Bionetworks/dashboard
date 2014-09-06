@@ -14,17 +14,12 @@ import org.springframework.stereotype.Component;
 
 /** Latencies of the get-descendants REST API. */
 @Component("getDescendantsMetric")
-public class GetDescendantsMetric implements TimeSeriesMetric {
+public class GetDescendantsMetric extends TimeSeriesMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new MethodFilter("get"), new UriGetDescendantsFilter()));
 
     private final RecordReader<Long> reader = new LatencyReader();
-
-    @Override
-    public String getName() {
-        return "getDescendantsMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

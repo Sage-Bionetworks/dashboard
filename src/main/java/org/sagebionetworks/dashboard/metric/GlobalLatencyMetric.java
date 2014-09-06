@@ -12,17 +12,12 @@ import org.springframework.stereotype.Component;
 
 /** Latencies of all the REST API calls. */
 @Component("globalLatencyMetric")
-public class GlobalLatencyMetric implements TimeSeriesMetric {
+public class GlobalLatencyMetric extends TimeSeriesMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             (RecordFilter)new ProdFilter()));
 
     private final RecordReader<Long> reader = new LatencyReader();
-
-    @Override
-    public String getName() {
-        return "globalLatencyMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

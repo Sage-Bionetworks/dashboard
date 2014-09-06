@@ -14,7 +14,7 @@ import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
 @Component("changePasswordMetric")
-public class ChangePasswordMetric implements UniqueCountMetric {
+public class ChangePasswordMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(),
@@ -25,11 +25,6 @@ public class ChangePasswordMetric implements UniqueCountMetric {
     // TODO: DASH-77. UserIdReader is not useful here.
     // Object ID and user ID always null during 'POST password'
     private final RecordReader<String> reader = new UserIdReader();
-
-    @Override
-    public String getName() {
-        return "changePasswordMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

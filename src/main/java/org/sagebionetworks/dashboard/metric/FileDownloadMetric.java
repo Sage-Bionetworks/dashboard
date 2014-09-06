@@ -12,17 +12,12 @@ import org.sagebionetworks.dashboard.parse.UriFileDownloadFilter;
 import org.springframework.stereotype.Component;
 
 @Component("fileDownloadMetric")
-public class FileDownloadMetric implements UniqueCountMetric {
+public class FileDownloadMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new UriFileDownloadFilter()));
 
     private final RecordReader<String> reader = new EntityIdReader();
-
-    @Override
-    public String getName() {
-        return "fileDownloadMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

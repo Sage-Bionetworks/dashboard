@@ -18,11 +18,6 @@ public class QuestionFailMetric extends QuestionMetric {
     private RecordReader<String> reader = new QuestionIndexReader();
 
     @Override
-    public String getName() {
-        return "questionFailMetric";
-    }
-
-    @Override
     public List<RecordFilter> getFilters() {
         return filters;
     }

@@ -13,17 +13,12 @@ import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
 @Component("certifiedUserQuizSubmitMetric")
-public class CertifiedUserQuizSubmitMetric implements UniqueCountMetric {   
+public class CertifiedUserQuizSubmitMetric extends UniqueCountMetric {   
 
     private RecordReader<String> reader = new UserIdReader();
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new MethodFilter("post"), new UriCuqSubmitFilter(), new TimeFilter(1403827200000L)));
-
-    @Override
-    public String getName() {
-        return "certifiedUserQuizSubmitMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

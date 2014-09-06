@@ -18,11 +18,6 @@ public class QuestionPassMetric extends QuestionMetric {
     private RecordReader<String> reader = new QuestionIndexReader();
 
     @Override
-    public String getName() {
-        return "questionPassMetric";
-    }
-
-    @Override
     public List<RecordFilter> getFilters() {
         return filters;
     }

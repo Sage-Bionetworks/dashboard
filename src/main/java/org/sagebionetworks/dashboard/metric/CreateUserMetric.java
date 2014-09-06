@@ -14,7 +14,7 @@ import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
 @Component("createUserMetric")
-public class CreateUserMetric implements UniqueCountMetric {
+public class CreateUserMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(),
@@ -25,11 +25,6 @@ public class CreateUserMetric implements UniqueCountMetric {
     // TODO: DASH-77. UserIdReader is not useful here.
     // Object ID and user ID always null during 'POST user'
     private final RecordReader<String> reader = new UserIdReader();
-
-    @Override
-    public String getName() {
-        return "createUserMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

@@ -13,17 +13,12 @@ import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
 @Component("wikiWriteByUserMetric")
-public class WikiWriteByUserMetric implements DayCountMetric {
+public class WikiWriteByUserMetric extends DayCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new UriWiki2Filter(), new MethodFilter("POST", "PUT")));
 
     private final RecordReader<String> reader = new UserIdReader();
-
-    @Override
-    public String getName() {
-        return "wikiWriteByUserMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

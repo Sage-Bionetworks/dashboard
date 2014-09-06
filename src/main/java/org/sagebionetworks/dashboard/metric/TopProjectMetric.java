@@ -12,18 +12,13 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
 @Component("topProjectMetric")
-public class TopProjectMetric implements UniqueCountMetric {
+public class TopProjectMetric extends UniqueCountMetric {
 
     @Resource
     private RecordReader<String> projectIdReader;
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             (RecordFilter)new ProdFilter()));
-
-    @Override
-    public String getName() {
-        return "topProjectMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

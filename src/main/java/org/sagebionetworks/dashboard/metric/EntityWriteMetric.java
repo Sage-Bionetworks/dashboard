@@ -13,17 +13,12 @@ import org.sagebionetworks.dashboard.parse.UriEntityFilter;
 import org.springframework.stereotype.Component;
 
 @Component("entityWriteMetric")
-public class EntityWriteMetric implements UniqueCountMetric {
+public class EntityWriteMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new MethodFilter("POST", "PUT"), new UriEntityFilter()));
 
     private final RecordReader<String> reader = new EntityIdReader();
-
-    @Override
-    public String getName() {
-        return "entityWriteMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

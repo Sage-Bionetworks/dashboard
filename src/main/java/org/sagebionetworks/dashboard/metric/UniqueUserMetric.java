@@ -11,17 +11,12 @@ import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
 @Component("uniqueUserMetric")
-public class UniqueUserMetric implements UniqueCountMetric {
+public class UniqueUserMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             (RecordFilter)new ProdFilter()));
 
     private final RecordReader<String> reader = new UserIdReader();
-
-    @Override
-    public String getName() {
-        return "uniqueUserMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {
