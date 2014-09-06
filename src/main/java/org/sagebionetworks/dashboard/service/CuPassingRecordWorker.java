@@ -39,7 +39,6 @@ public class CuPassingRecordWorker {
             }
             CuPassingRecord passingRecord = synapseDao.getCuPassingRecord(userId);
             updateCertifiedUserService.updateCertifiedUsers(passingRecord);
-            
         }
     }
 }
