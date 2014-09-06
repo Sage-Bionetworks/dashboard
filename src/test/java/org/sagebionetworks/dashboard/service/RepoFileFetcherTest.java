@@ -86,18 +86,18 @@ public class RepoFileFetcherTest {
         ReflectionTestUtils.setField(fetcher, "dashboardContext", context, DashboardContext.class);
 
         List<String> files = fetcher.nextBatch();
-        // Should get back a full batch of 60 files as each file is 100 KB and the max total size per batch is 6 MB
-        assertEquals(60, files.size());
+        // Should get back a full batch of 90 files as each file is 100 KB and the max total size per batch is 6 MB
+        assertEquals(90, files.size());
         @SuppressWarnings("unchecked")
         Map<String, String> markerMap = (Map<String, String>)ReflectionTestUtils.getField(fetcher, "folderMarkerMap");
-        // Each folder gets 2 files (file 1 and 3) into the batch and there are 60 files in the batch
-        // We should cut off at folder 30
-        assertTrue(markerMap.containsKey("029"));
-        assertFalse(markerMap.containsKey("030"));
+        // Each folder gets 2 files (file 1 and 3) into the batch and there are 90 files in the batch
+        // We should cut off at folder 45
+        assertTrue(markerMap.containsKey("044"));
+        assertFalse(markerMap.containsKey("045"));
         // Each folder should have the correct marker
-        for (int i = 0; i < 29; i++) {
+        for (int i = 0; i < 44; i++) {
             assertEquals(key4, markerMap.get(String.format("%03d", i)));
         }
-        assertEquals(key, markerMap.get(String.format("%03d", 29)));
+        assertEquals(key, markerMap.get(String.format("%03d", 44)));
     }
 }
