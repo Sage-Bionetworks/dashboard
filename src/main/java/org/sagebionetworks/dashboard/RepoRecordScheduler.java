@@ -4,6 +4,8 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.service.RepoRecordWorker;
 import org.sagebionetworks.dashboard.service.RepoRepairWorker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Component;
  */
 @Component("repoRecordScheduler")
 public class RepoRecordScheduler {
+
+    private final Logger logger = LoggerFactory.getLogger(RepoRecordScheduler.class);
 
     @Resource
     private RepoRecordWorker repoRecordWorker;
@@ -24,6 +28,7 @@ public class RepoRecordScheduler {
      */
     @Scheduled(initialDelay=(7L * 60L * 1000L), fixedRate=(23L * 60L * 1000L))
     public void runRecordWorker() {
+        logger.info("RepoRecordScheduler.runRecordWorker() thread ID: " + Thread.currentThread().getId());
         repoRecordWorker.doWork();
     }
 
@@ -32,6 +37,7 @@ public class RepoRecordScheduler {
      */
     @Scheduled(initialDelay=(33L * 60L * 1000L), fixedRate=(17L * 60L * 60L * 1000L))
     public void runRepairWorker() {
+        logger.info("RepoRecordScheduler.runRepairWorker() thread ID: " + Thread.currentThread().getId());
         repoRepairWorker.doWork();
     }
 }
