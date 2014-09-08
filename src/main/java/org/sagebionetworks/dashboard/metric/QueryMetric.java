@@ -14,17 +14,12 @@ import org.springframework.stereotype.Component;
 
 /** Latencies of the query REST API. */
 @Component("queryMetric")
-public class QueryMetric implements TimeSeriesMetric {
+public class QueryMetric extends TimeSeriesMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new MethodFilter("get"), new UriQueryFilter()));
 
     private final RecordReader<Long> reader = new LatencyReader();
-
-    @Override
-    public String getName() {
-        return "queryMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

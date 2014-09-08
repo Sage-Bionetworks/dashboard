@@ -12,17 +12,12 @@ import org.sagebionetworks.dashboard.parse.StatusCodeReader;
 import org.springframework.stereotype.Component;
 
 @Component("errorStatusCodeMetric")
-public class ErrorStatusCodeMetric implements UniqueCountMetric {
+public class ErrorStatusCodeMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new ErrorFilter()));
 
     private final RecordReader<String> reader = new StatusCodeReader();
-
-    @Override
-    public String getName() {
-        return "errorStatusCodeMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

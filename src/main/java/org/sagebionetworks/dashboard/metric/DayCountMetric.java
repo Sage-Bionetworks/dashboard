@@ -1,3 +1,3 @@
 package org.sagebionetworks.dashboard.metric;
 
-public interface DayCountMetric extends Metric<String> {}
+public abstract class DayCountMetric extends AnnotatedMetric<String> {}

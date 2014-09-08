@@ -1,3 +1,3 @@
 package org.sagebionetworks.dashboard.metric;
 
-public interface TimeSeriesMetric extends Metric<Long> {}
+public abstract class TimeSeriesMetric extends AnnotatedMetric<Long> {}

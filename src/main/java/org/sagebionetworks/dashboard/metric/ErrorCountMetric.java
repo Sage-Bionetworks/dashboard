@@ -12,7 +12,7 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
 @Component("errorCountMetric")
-public class ErrorCountMetric implements SimpleCountMetric {
+public class ErrorCountMetric extends SimpleCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new ErrorFilter()));
@@ -23,11 +23,6 @@ public class ErrorCountMetric implements SimpleCountMetric {
             return "";
         }
     };
-
-    @Override
-    public String getName() {
-        return "errorCountMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

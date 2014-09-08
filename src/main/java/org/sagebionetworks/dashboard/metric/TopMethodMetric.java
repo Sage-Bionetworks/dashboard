@@ -11,17 +11,12 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
 @Component("topMethodMetric")
-public class TopMethodMetric implements UniqueCountMetric {
+public class TopMethodMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             (RecordFilter)new ProdFilter()));
 
     private final RecordReader<String> reader = new MethodUriReader();
-
-    @Override
-    public String getName() {
-        return "topMethodMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

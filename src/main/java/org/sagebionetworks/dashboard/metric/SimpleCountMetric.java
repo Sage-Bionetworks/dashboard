@@ -1,3 +1,3 @@
 package org.sagebionetworks.dashboard.metric;
 
-public interface SimpleCountMetric extends Metric<String> {}
+public abstract class SimpleCountMetric extends AnnotatedMetric<String> {}

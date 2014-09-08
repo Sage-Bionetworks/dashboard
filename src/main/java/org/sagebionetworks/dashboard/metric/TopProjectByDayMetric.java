@@ -12,18 +12,13 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
 @Component("topProjectByDayMetric")
-public class TopProjectByDayMetric implements DayCountMetric {
+public class TopProjectByDayMetric extends DayCountMetric {
 
     @Resource
     private RecordReader<String> projectIdReader;
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             (RecordFilter)new ProdFilter()));
-
-    @Override
-    public String getName() {
-        return "topProjectByDayMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {

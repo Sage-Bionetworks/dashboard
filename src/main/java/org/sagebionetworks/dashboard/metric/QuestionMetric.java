@@ -1,5 +1,3 @@
 package org.sagebionetworks.dashboard.metric;
 
-public abstract class QuestionMetric implements UniqueCountMetric {
-
-}
+public abstract class QuestionMetric extends UniqueCountMetric {}

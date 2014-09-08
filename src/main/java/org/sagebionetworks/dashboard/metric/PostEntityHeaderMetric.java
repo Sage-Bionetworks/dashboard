@@ -14,17 +14,12 @@ import org.springframework.stereotype.Component;
 
 /** Latencies of the post-entity-header REST API. */
 @Component("postEntityHeaderMetric")
-public class PostEntityHeaderMetric implements TimeSeriesMetric {
+public class PostEntityHeaderMetric extends TimeSeriesMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new MethodFilter("post"), new UriEntityHeaderFilter()));
 
     private final RecordReader<Long> reader = new LatencyReader();
-
-    @Override
-    public String getName() {
-        return "postEntityHeaderMetric";
-    }
 
     @Override
     public List<RecordFilter> getFilters() {
