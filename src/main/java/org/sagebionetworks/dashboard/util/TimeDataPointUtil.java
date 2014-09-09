@@ -63,7 +63,31 @@ public class TimeDataPointUtil {
             Map<String, ArrayList<String>> map, int nth) {
         ArrayList<String> res = new ArrayList<String>();
         for (String timestamp : mergeTimeStampList) {
-            res.add(map.get(timestamp).get(nth));
+            res.add((map.get(timestamp)).get(nth));
+        }
+        return res;
+    }
+
+    /*
+     * return the sum of all element in arrayList
+     */
+    private static int sum(ArrayList<String> arrayList) {
+        int sum = 0;
+        for (String elm : arrayList) {
+            sum += Integer.parseInt(elm);
+        }
+        return sum;
+    }
+
+    /**
+     * @return the nth list of percentage in the map
+     */
+    public static List<String> getSumList (List<String> mergeTimeStampList, 
+            Map<String, ArrayList<String>> map, int nth) {
+        ArrayList<String> res = new ArrayList<String>();
+        for (String timestamp : mergeTimeStampList) {
+            int sum = sum(map.get(timestamp));
+            res.add(Double.toString(Double.parseDouble(map.get(timestamp).get(nth))/sum));
         }
         return res;
     }
