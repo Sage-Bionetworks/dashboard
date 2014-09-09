@@ -63,7 +63,7 @@ public class TimeDataPointUtil {
             Map<String, ArrayList<String>> map, int nth) {
         ArrayList<String> res = new ArrayList<String>();
         for (String timestamp : mergeTimeStampList) {
-            res.add((map.get(timestamp)).get(nth));
+            res.add(map.get(timestamp).get(nth));
         }
         return res;
     }
