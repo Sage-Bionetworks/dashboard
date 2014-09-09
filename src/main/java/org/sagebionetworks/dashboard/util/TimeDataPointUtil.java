@@ -87,9 +87,7 @@ public class TimeDataPointUtil {
         ArrayList<String> res = new ArrayList<String>();
         for (String timestamp : mergeTimeStampList) {
             int sum = sum(map.get(timestamp));
-            System.out.println(sum);
             res.add(Double.toString(Double.parseDouble(map.get(timestamp).get(nth))/sum*100));
-            System.out.println(res);
         }
         return res;
     }
