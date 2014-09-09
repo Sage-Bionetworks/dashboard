@@ -82,12 +82,14 @@ public class TimeDataPointUtil {
     /**
      * @return the nth list of percentage in the map
      */
-    public static List<String> getSumList (List<String> mergeTimeStampList, 
+    public static List<String> getPercentageList (List<String> mergeTimeStampList, 
             Map<String, ArrayList<String>> map, int nth) {
         ArrayList<String> res = new ArrayList<String>();
         for (String timestamp : mergeTimeStampList) {
             int sum = sum(map.get(timestamp));
-            res.add(Double.toString(Double.parseDouble(map.get(timestamp).get(nth))/sum));
+            System.out.println(sum);
+            res.add(Double.toString(Double.parseDouble(map.get(timestamp).get(nth))/sum*100));
+            System.out.println(res);
         }
         return res;
     }

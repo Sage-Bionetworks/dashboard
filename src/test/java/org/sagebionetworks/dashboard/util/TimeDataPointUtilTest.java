@@ -143,5 +143,32 @@ public class TimeDataPointUtilTest {
         list3.add("7");
         assertArrayEquals(TimeDataPointUtil.getMergeValueList(tslist, map, 2).toArray(),
                 list3.toArray());
+
+        ArrayList<String> plist1 = new ArrayList<String>();
+        plist1.add("100.0");
+        plist1.add("25.0");
+        plist1.add("100.0");
+        plist1.add("0.0");
+        plist1.add("0.0");
+        assertArrayEquals(TimeDataPointUtil.getPercentageList(tslist, map, 0).toArray(),
+                plist1.toArray());
+
+        ArrayList<String> plist2 = new ArrayList<String>();
+        plist2.add("0.0");
+        plist2.add("75.0");
+        plist2.add("0.0");
+        plist2.add("100.0");
+        plist2.add(Double.toString(6.0/13*100));
+        assertArrayEquals(TimeDataPointUtil.getPercentageList(tslist, map, 1).toArray(),
+                plist2.toArray());
+
+        ArrayList<String> plist3 = new ArrayList<String>();
+        plist3.add("0.0");
+        plist3.add("0.0");
+        plist3.add("0.0");
+        plist3.add("0.0");
+        plist3.add(Double.toString(7.0/13*100));
+        assertArrayEquals(TimeDataPointUtil.getPercentageList(tslist, map, 2).toArray(),
+                plist3.toArray());
     }
 }
