@@ -1,6 +1,6 @@
 package org.sagebionetworks.dashboard.service;
 
-public interface UpdateCallback {
+public interface UpdateFileCallback {
 
     void call(UpdateResult result);
 
@@ -46,4 +46,5 @@ public interface UpdateCallback {
         private final int lineCount;
         private final UpdateStatus status;
     }
+
 }

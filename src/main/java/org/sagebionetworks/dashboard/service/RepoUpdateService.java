@@ -24,11 +24,12 @@ import org.sagebionetworks.dashboard.metric.ReportMetric;
 import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
 import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
 import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
+import org.sagebionetworks.dashboard.model.WriteRecordResult;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
-import org.sagebionetworks.dashboard.service.UpdateCallback.UpdateResult;
-import org.sagebionetworks.dashboard.service.UpdateCallback.UpdateStatus;
+import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateResult;
+import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -76,8 +77,9 @@ public class RepoUpdateService {
 
     private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
 
-    public void update(InputStream in, String filePath, UpdateCallback callback) {
-        update(in, filePath, 0, callback);
+    public void update(InputStream in, String filePath, 
+            UpdateFileCallback fileCallback, UpdateRecordCallback recordCallback) {
+        update(in, filePath, 0, fileCallback, recordCallback);
     }
 
     /**
@@ -88,7 +90,7 @@ public class RepoUpdateService {
      * @param callback       Callback to receive the update results.
      */
     public void update(final InputStream in, final String filePath, final int startLineIncl,
-            final UpdateCallback callback) {
+            final UpdateFileCallback fileCallback, final UpdateRecordCallback recordCallback) {
         GZIPInputStream gzis = null;
         InputStreamReader ir = null;
         BufferedReader br = null;
@@ -101,13 +103,13 @@ public class RepoUpdateService {
             for (Record record : records) {
                 lineCount++;
                 if (lineCount >= startLineIncl) {
-                    updateRecord(record);
+                    updateRecord(record, filePath, startLineIncl, recordCallback);
                 }
             }
         } catch (Throwable e) {
             // TODO: This is broken. To use this approach, we need to track metric + record id.
             UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.FAILED);
-            callback.call(result);
+            fileCallback.call(result);
             logger.error(result.toString(), e);
         } finally {
             try {
@@ -134,7 +136,7 @@ public class RepoUpdateService {
             throw new RuntimeException(e);
         }
         UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.SUCCEEDED);
-        callback.call(result);
+        fileCallback.call(result);
         logger.info(result.toString());
     }
 
@@ -145,21 +147,30 @@ public class RepoUpdateService {
     /**
      * Updates a single record.
      */
-    private void updateRecord(final Record record) {
+    private void updateRecord(final Record record, final String file, 
+            final int line, final UpdateRecordCallback callback) {
         List<Runnable> tasks = new ArrayList<Runnable>();
         for (final SimpleCountMetric metric : simpleCountMetrics) {
             tasks.add(new Runnable() {
                 @Override
                 public void run() {
-                    simpleCountWriter.writeMetric(record, metric);
-                } 
+                    try {
+                        simpleCountWriter.writeMetric(record, metric);
+                    } catch (Throwable e){
+                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
+                    }
+                }
             });
         }
         for (final TimeSeriesMetric metric : timeSeriesMetrics) {
             tasks.add(new Runnable() {
                 @Override
                 public void run() {
-                    timeSeriesWriter.writeMetric(record, metric);
+                    try {
+                        timeSeriesWriter.writeMetric(record, metric);
+                    } catch (Throwable e){
+                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
+                    }
                 }
             });
         }
@@ -168,7 +179,11 @@ public class RepoUpdateService {
                 tasks.add(new Runnable() {
                     @Override
                     public void run() {
-                        uniqueCountWriter.writeMetric(record, metric);
+                        try {
+                            uniqueCountWriter.writeMetric(record, metric);
+                        } catch (Throwable e){
+                            callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
+                        }
                     }
                 });
             }
@@ -177,7 +192,11 @@ public class RepoUpdateService {
             tasks.add(new Runnable() {
                 @Override
                 public void run() {
-                    dayCountWriter.writeMetric(record, metric);
+                    try {
+                        dayCountWriter.writeMetric(record, metric);
+                    } catch (Throwable e){
+                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
+                    }
                 }
             });
         }
@@ -185,7 +204,11 @@ public class RepoUpdateService {
             tasks.add(new Runnable() {
                 @Override
                 public void run() {
-                    reportWriter.writeMetric(record, metric);
+                    try {
+                        reportWriter.writeMetric(record, metric);
+                    } catch (Throwable e){
+                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
+                    }
                 }
             });
         }
