@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.sagebionetworks.dashboard.dao.LockDao;
+import org.sagebionetworks.dashboard.model.WriteRecordResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -77,6 +78,12 @@ public class RepoRecordWorker {
                     } else {
                         fileStatusDao.setFailed(key, result.getLineCount());
                     }
+                }
+
+                @Override
+                public void handle(WriteRecordResult writeRecordResult) {
+                    // TODO Auto-generated method stub
+                    
                 }
             });
         } finally {

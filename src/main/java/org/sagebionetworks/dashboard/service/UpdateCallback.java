@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.service;
 
+import org.sagebionetworks.dashboard.model.WriteRecordResult;
+
 public interface UpdateCallback {
 
     void call(UpdateResult result);
@@ -46,4 +48,6 @@ public interface UpdateCallback {
         private final int lineCount;
         private final UpdateStatus status;
     }
+
+    void handle(WriteRecordResult writeRecordResult);
 }
