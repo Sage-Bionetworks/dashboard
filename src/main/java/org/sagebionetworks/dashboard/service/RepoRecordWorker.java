@@ -80,8 +80,6 @@ public class RepoRecordWorker {
                         public void call(UpdateResult result) {
                             if (UpdateStatus.SUCCEEDED.equals(result.getStatus())) {
                                 fileStatusDao.setCompleted(key);
-                            } else {
-                                fileStatusDao.setFailed(key, result.getLineCount());
                             }
                         }
                     },
