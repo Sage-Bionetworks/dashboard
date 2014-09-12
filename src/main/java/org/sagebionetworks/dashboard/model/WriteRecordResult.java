@@ -25,6 +25,10 @@ public class WriteRecordResult {
         return line;
     }
 
+    public String toString() {
+        return metric + ":" + file + ":" + line + ":" + status;
+    }
+
     private final boolean status;
     private final String file;
     private final String metric;
