@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -25,7 +24,6 @@ import org.sagebionetworks.dashboard.metric.ReportMetric;
 import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
 import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
 import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
-import org.sagebionetworks.dashboard.model.WriteRecordResult;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
@@ -103,7 +101,7 @@ public class RepoUpdateService {
             for (Record record : records) {
                 lineCount++;
                 if (lineCount >= startLineIncl) {
-                    updateRecord(record, filePath, lineCount, callback);
+                    updateRecord(record);
                 }
             }
         } catch (Throwable e) {
@@ -147,77 +145,51 @@ public class RepoUpdateService {
     /**
      * Updates a single record.
      */
-    private void updateRecord(final Record record, final String filePath, 
-            final int line, final UpdateCallback callback) {
-        List<Callable<WriteRecordResult>> tasks = new ArrayList<Callable<WriteRecordResult>>();
+    private void updateRecord(final Record record) {
+        List<Runnable> tasks = new ArrayList<Runnable>();
         for (final SimpleCountMetric metric : simpleCountMetrics) {
-            tasks.add(new Callable<WriteRecordResult>() {
+            tasks.add(new Runnable() {
                 @Override
-                public WriteRecordResult call() throws Exception {
-                    try {
-                        simpleCountWriter.writeMetric(record, metric);
-                    } catch (Throwable t) {
-                        callback.handle(new WriteRecordResult(false, metric.getName(), filePath, line));
-                    }
-                    return new WriteRecordResult(true, metric.getName(), filePath, line);
+                public void run() {
+                    simpleCountWriter.writeMetric(record, metric);
                 } 
             });
         }
         for (final TimeSeriesMetric metric : timeSeriesMetrics) {
-            tasks.add(new Callable<WriteRecordResult>() {
+            tasks.add(new Runnable() {
                 @Override
-                public WriteRecordResult call() throws Exception {
-                    try {
-                        timeSeriesWriter.writeMetric(record, metric);
-                    } catch (Throwable t) {
-                        callback.handle(new WriteRecordResult(false, metric.getName(), filePath, line));
-                    }
-                    return new WriteRecordResult(true, metric.getName(), filePath, line);
-                } 
+                public void run() {
+                    timeSeriesWriter.writeMetric(record, metric);
+                }
             });
         }
         for (final UniqueCountMetric metric: uniqueCountMetrics) {
             if (!ignoreMetrics.contains(metric.getName())) {
-                tasks.add(new Callable<WriteRecordResult>() {
+                tasks.add(new Runnable() {
                     @Override
-                    public WriteRecordResult call() throws Exception {
-                        try {
-                            uniqueCountWriter.writeMetric(record, metric);
-                        } catch (Throwable t) {
-                            callback.handle(new WriteRecordResult(false, metric.getName(), filePath, line));
-                        }
-                        return new WriteRecordResult(true, metric.getName(), filePath, line);
-                    } 
+                    public void run() {
+                        uniqueCountWriter.writeMetric(record, metric);
+                    }
                 });
             }
         }
         for (final DayCountMetric metric : dayCountMetrics) {
-            tasks.add(new Callable<WriteRecordResult>() {
+            tasks.add(new Runnable() {
                 @Override
-                public WriteRecordResult call() throws Exception {
-                    try {
-                        dayCountWriter.writeMetric(record, metric);
-                    } catch (Throwable t) {
-                        callback.handle(new WriteRecordResult(false, metric.getName(), filePath, line));
-                    }
-                    return new WriteRecordResult(true, metric.getName(), filePath, line);
-                } 
+                public void run() {
+                    dayCountWriter.writeMetric(record, metric);
+                }
             });
         }
         for (final ReportMetric metric : reportMetrics) {
-            tasks.add(new Callable<WriteRecordResult>() {
+            tasks.add(new Runnable() {
                 @Override
-                public WriteRecordResult call() throws Exception {
-                    try {
-                        reportWriter.writeMetric(record, metric);
-                    } catch (Throwable t) {
-                        callback.handle(new WriteRecordResult(false, metric.getName(), filePath, line));
-                    }
-                    return new WriteRecordResult(true, metric.getName(), filePath, line);
-                } 
+                public void run() {
+                    reportWriter.writeMetric(record, metric);
+                }
             });
         }
-        for (Callable<WriteRecordResult> task : tasks) {
+        for (Runnable task : tasks) {
             threadPool.submit(task);
         }
     }

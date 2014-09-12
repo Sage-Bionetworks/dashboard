@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.sagebionetworks.dashboard.model.WriteRecordResult;
 import org.sagebionetworks.dashboard.service.CuPassingRecordWorker;
 import org.sagebionetworks.dashboard.service.RepoUpdateService;
 import org.sagebionetworks.dashboard.service.RepoUserWorker;
@@ -66,13 +65,6 @@ public class App {
                     updateService.update(is, file.getPath(), new UpdateCallback() {
                             @Override
                             public void call(UpdateResult result) {}
-
-                            @Override
-                            public void handle(
-                                    WriteRecordResult writeRecordResult) {
-                                // TODO Auto-generated method stub
-                                
-                            }
                         });
                 } finally {
                     if (is != null) {
