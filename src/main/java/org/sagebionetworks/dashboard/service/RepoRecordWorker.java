@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.dao.FailedRecordDao;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.sagebionetworks.dashboard.dao.LockDao;
 import org.sagebionetworks.dashboard.model.WriteRecordResult;
@@ -28,6 +29,9 @@ public class RepoRecordWorker {
 
     @Resource
     private FileStatusDao fileStatusDao;
+
+    @Resource
+    private FailedRecordDao failedRecordDao;
 
     @Resource
     private LockDao lockDao;
@@ -84,8 +88,7 @@ public class RepoRecordWorker {
                     new UpdateRecordCallback() {
                         @Override
                         public void handle(WriteRecordResult result) {
-                            // TODO Auto-generated method stub
-                            
+                            failedRecordDao.put(result);
                         }
                         
                     });
