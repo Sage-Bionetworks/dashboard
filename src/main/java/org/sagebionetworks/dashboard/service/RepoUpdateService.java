@@ -5,9 +5,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.zip.GZIPInputStream;
 
 import javax.annotation.Resource;
@@ -28,9 +35,6 @@ import org.springframework.stereotype.Service;
 
 @Service("repoUpdateService")
 public class RepoUpdateService {
-
-    private final List<String> ignoreMetrics = 
-            Arrays.asList("certifiedUserMetric", "questionPassMetric", "questionFailMetric");
 
     private final Logger logger = LoggerFactory.getLogger(RepoUpdateService.class);
 
@@ -66,18 +70,25 @@ public class RepoUpdateService {
 
     private final RecordParser parser = new RepoRecordParser();
 
+    // Ignore metrics that are not parsed from records
+    private final Set<String> ignoreMetrics = Collections.unmodifiableSet(new HashSet<String>(
+            Arrays.asList("certifiedUserMetric", "questionPassMetric", "questionFailMetric")));
+
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
+
     public void update(InputStream in, String filePath, UpdateCallback callback) {
         update(in, filePath, 0, callback);
     }
 
     /**
      * @param in             Input stream to read the metrics.
-     * @param filePath       The file path that's behind the input stream. This is used as the key track the progress.
+     * @param filePath       The file path that's behind the input stream.
+     *                       This is used as the key to track the progress.
      * @param startLineIncl  1-based starting line number.
      * @param callback       Callback to receive the update results.
      */
-    public void update(final InputStream in, final String filePath, final int startLineIncl, final UpdateCallback callback) {
-
+    public void update(final InputStream in, final String filePath, final int startLineIncl,
+            final UpdateCallback callback) {
         GZIPInputStream gzis = null;
         InputStreamReader ir = null;
         BufferedReader br = null;
@@ -93,10 +104,8 @@ public class RepoUpdateService {
                     updateRecord(record);
                 }
             }
-            UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.SUCCEEDED);
-            callback.call(result);
-            logger.info(result.toString());
         } catch (Throwable e) {
+            // TODO: This is broken. To use this approach, we need to track metric + record id.
             UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.FAILED);
             callback.call(result);
             logger.error(result.toString(), e);
@@ -115,28 +124,78 @@ public class RepoUpdateService {
                 throw new RuntimeException(e);
             }
         }
+        // Wait for all tasks to finish
+        try {
+            Thread.sleep(lineCount * 5L);
+            while (!isDone()) {
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.SUCCEEDED);
+        callback.call(result);
+        logger.info(result.toString());
+    }
+
+    public void shutdown() {
+        threadPool.shutdown();
     }
 
     /**
      * Updates a single record.
      */
-    public void updateRecord(Record record) {
-        for (SimpleCountMetric metric : simpleCountMetrics) {
-            simpleCountWriter.writeMetric(record, metric);
+    private void updateRecord(final Record record) {
+        List<Runnable> tasks = new ArrayList<Runnable>();
+        for (final SimpleCountMetric metric : simpleCountMetrics) {
+            tasks.add(new Runnable() {
+                @Override
+                public void run() {
+                    simpleCountWriter.writeMetric(record, metric);
+                } 
+            });
         }
-        for (TimeSeriesMetric metric : timeSeriesMetrics) {
-            timeSeriesWriter.writeMetric(record, metric);
+        for (final TimeSeriesMetric metric : timeSeriesMetrics) {
+            tasks.add(new Runnable() {
+                @Override
+                public void run() {
+                    timeSeriesWriter.writeMetric(record, metric);
+                }
+            });
         }
-        for (UniqueCountMetric metric: uniqueCountMetrics) {
+        for (final UniqueCountMetric metric: uniqueCountMetrics) {
             if (!ignoreMetrics.contains(metric.getName())) {
-                uniqueCountWriter.writeMetric(record, metric);
+                tasks.add(new Runnable() {
+                    @Override
+                    public void run() {
+                        uniqueCountWriter.writeMetric(record, metric);
+                    }
+                });
             }
         }
-        for (DayCountMetric metric : dayCountMetrics) {
-            dayCountWriter.writeMetric(record, metric);
+        for (final DayCountMetric metric : dayCountMetrics) {
+            tasks.add(new Runnable() {
+                @Override
+                public void run() {
+                    dayCountWriter.writeMetric(record, metric);
+                }
+            });
         }
-        for (ReportMetric metric : reportMetrics) {
-            reportWriter.writeMetric(record, metric);
+        for (final ReportMetric metric : reportMetrics) {
+            tasks.add(new Runnable() {
+                @Override
+                public void run() {
+                    reportWriter.writeMetric(record, metric);
+                }
+            });
         }
+        for (Runnable task : tasks) {
+            threadPool.submit(task);
+        }
+    }
+
+    private boolean isDone() {
+        ThreadPoolExecutor pool = (ThreadPoolExecutor)threadPool;
+        return (pool.getActiveCount() == 0 && pool.getQueue().size() == 0);
     }
 }

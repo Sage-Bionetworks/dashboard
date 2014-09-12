@@ -30,6 +30,7 @@ public class App {
         }
 
         final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/app-context.xml");
+        context.registerShutdownHook();
         final RepoUserWorker userWorker = context.getBean(RepoUserWorker.class);
         final Logger logger = org.slf4j.LoggerFactory.getLogger(App.class);
         logger.info("Loading Synapse users.");
@@ -40,38 +41,44 @@ public class App {
         getCsvGzFiles(filePath, files);
         final int total = files.size();
         logger.info("Total number of files: " + total);
-
-        context.registerShutdownHook();
-        final RepoUpdateService updateService = context.getBean(RepoUpdateService.class);
-        final CuPassingRecordWorker passingRecordWorker = context.getBean(CuPassingRecordWorker.class);
+        if (total == 0) {
+            context.close();
+            return;
+        }
 
         // Clear Redis
         StringRedisTemplate redisTemplate = context.getBean(StringRedisTemplate.class);
         Set<String> keys = redisTemplate.keys("*");
         redisTemplate.delete(keys);
 
-        // Load metrics
-        for (int i = files.size() - 1; i >= 0; i--) {
-            File file = files.get(i);
-            logger.info("Loading file " + (files.size() - i) + " of " + total);
-            InputStream is = new FileInputStream(file);
-            try {
-                updateService.update(is, file.getPath(), new UpdateCallback() {
-                        @Override
-                        public void call(UpdateResult result) {
-                            logger.info(result.toString());
-                        }
-                    });
-            } finally {
-                if (is != null) {
-                    is.close();
-                }
-            }
-            passingRecordWorker.doWork();
-        }
+        final RepoUpdateService updateService = context.getBean(RepoUpdateService.class);
+        final CuPassingRecordWorker passingRecordWorker = context.getBean(CuPassingRecordWorker.class);
 
-        // Close the context when done
-        context.close();
+        // Load metrics
+        final long start = System.nanoTime();
+        try {
+            for (int i = files.size() - 1; i >= 0; i--) {
+                File file = files.get(i);
+                logger.info("Loading file " + (files.size() - i) + " of " + total);
+                InputStream is = new FileInputStream(file);
+                try {
+                    updateService.update(is, file.getPath(), new UpdateCallback() {
+                            @Override
+                            public void call(UpdateResult result) {}
+                        });
+                } finally {
+                    if (is != null) {
+                        is.close();
+                    }
+                }
+                passingRecordWorker.doWork();
+            }
+        } finally {
+            final long end = System.nanoTime();
+            logger.info("Done loading metrics. Time spent (seconds): " + (end - start) / 1000000000L);
+            updateService.shutdown();
+            context.close();
+        }
     }
 
     /**
