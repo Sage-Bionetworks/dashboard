@@ -107,10 +107,10 @@ public class RepoUpdateService {
                 }
             }
         } catch (Throwable e) {
-            // TODO: This is broken. To use this approach, we need to track metric + record id.
-            UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.FAILED);
-            fileCallback.call(result);
-            logger.error(result.toString(), e);
+            //There will be no file with failed status.
+            //UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.FAILED);
+            //fileCallback.call(result);
+            //logger.error(result.toString(), e);
         } finally {
             try {
                 if (br != null) {
