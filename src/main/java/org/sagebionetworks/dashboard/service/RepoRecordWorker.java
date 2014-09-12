@@ -5,8 +5,10 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.dao.FailedRecordDao;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.sagebionetworks.dashboard.dao.LockDao;
+import org.sagebionetworks.dashboard.model.WriteRecordResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,9 @@ public class RepoRecordWorker {
 
     @Resource
     private FileStatusDao fileStatusDao;
+
+    @Resource
+    private FailedRecordDao failedRecordDao;
 
     @Resource
     private LockDao lockDao;
@@ -69,16 +74,22 @@ public class RepoRecordWorker {
         // Read the file to update the metrics
         S3Object file = s3Client.getObject(bucket, key);
         try {
-            repoUpdateService.update(file.getObjectContent(), key, startingLine, new UpdateCallback() {
-                @Override
-                public void call(UpdateResult result) {
-                    if (UpdateStatus.SUCCEEDED.equals(result.getStatus())) {
-                        fileStatusDao.setCompleted(key);
-                    } else {
-                        fileStatusDao.setFailed(key, result.getLineCount());
-                    }
-                }
-            });
+            repoUpdateService.update(file.getObjectContent(), key, startingLine,
+                    new UpdateFileCallback() {
+                        @Override
+                        public void call(UpdateResult result) {
+                            if (UpdateStatus.SUCCEEDED.equals(result.getStatus())) {
+                                fileStatusDao.setCompleted(key);
+                            }
+                        }
+                    },
+                    new UpdateRecordCallback() {
+                        @Override
+                        public void handle(WriteRecordResult result) {
+                            failedRecordDao.put(result);
+                        }
+                        
+                    });
         } finally {
             try {
                 file.close();

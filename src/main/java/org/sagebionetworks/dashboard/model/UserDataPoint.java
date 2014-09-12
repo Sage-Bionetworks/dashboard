@@ -25,7 +25,7 @@ public class UserDataPoint {
         return this.timestamp + ":" + this.userId + ":" + this.client;
     }
 
-    private String userId;
-    private String timestamp;
-    private String client;
+    private final String userId;
+    private final String timestamp;
+    private final String client;
 }
