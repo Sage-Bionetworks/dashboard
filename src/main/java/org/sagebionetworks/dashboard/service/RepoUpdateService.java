@@ -108,9 +108,9 @@ public class RepoUpdateService {
             }
         } catch (Throwable e) {
             //There will be no file with failed status.
-            //UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.FAILED);
+            UpdateResult result = new UpdateResult(filePath, lineCount, UpdateStatus.FAILED);
             //fileCallback.call(result);
-            //logger.error(result.toString(), e);
+            logger.error(result.toString(), e);
         } finally {
             try {
                 if (br != null) {
