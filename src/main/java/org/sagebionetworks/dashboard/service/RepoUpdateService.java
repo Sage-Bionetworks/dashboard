@@ -103,7 +103,7 @@ public class RepoUpdateService {
             for (Record record : records) {
                 lineCount++;
                 if (lineCount >= startLineIncl) {
-                    updateRecord(record, filePath, startLineIncl, recordCallback);
+                    updateRecord(record, filePath, lineCount, recordCallback);
                 }
             }
         } catch (Throwable e) {
