@@ -8,6 +8,9 @@ enum NameSpace {
     /** The set of IDs. */
     id,
 
+    /** Sessions. */
+    session,
+
     /** The set of files. */
     file,
 

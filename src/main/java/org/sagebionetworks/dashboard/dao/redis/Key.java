@@ -16,6 +16,8 @@ class Key {
     static final String FILE_COMPLETED = NameSpace.file + SEPARATOR + "completed";
     /** The set of failed log files. */
     static final String FILE_FAILED = NameSpace.file + SEPARATOR + "failed";
+    
+    static final String SESSION_DEDUPE = NameSpace.session + SEPARATOR + "dedupe";
 
     static final String USER = "user";
     static final String EMAIL = "email";
