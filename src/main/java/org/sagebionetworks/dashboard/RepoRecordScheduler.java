@@ -30,7 +30,7 @@ public class RepoRecordScheduler {
     /**
      * Initial delay of 37 minutes. Runs every 17 hours.
      */
-    @Scheduled(initialDelay=(33L * 60L * 1000L), fixedRate=(17L * 60L * 60L * 1000L))
+   // @Scheduled(initialDelay=(33L * 60L * 1000L), fixedRate=(17L * 60L * 60L * 1000L))
     public void runRepairWorker() {
         repoRepairWorker.doWork();
     }

@@ -102,8 +102,6 @@ public class RepoRecordWorkerTest {
     public void test() {
         repoRecordWorker.doWork();
         assertTrue(fileStatusDao.isCompleted(keySuccess));
-        assertFalse(fileStatusDao.isCompleted(keyFailure));
-        assertTrue(fileStatusDao.isFailed(keyFailure));
         assertFalse(fileStatusDao.isFailed(keySuccess));
         repoRepairWorker.doWork();
     }
