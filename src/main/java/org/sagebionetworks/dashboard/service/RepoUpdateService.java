@@ -19,6 +19,7 @@ import java.util.zip.GZIPInputStream;
 
 import javax.annotation.Resource;
 
+import org.sagebionetworks.dashboard.dao.SessionDedupeDao;
 import org.sagebionetworks.dashboard.metric.DayCountMetric;
 import org.sagebionetworks.dashboard.metric.ReportMetric;
 import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
@@ -38,6 +39,9 @@ import org.springframework.stereotype.Service;
 public class RepoUpdateService {
 
     private final Logger logger = LoggerFactory.getLogger(RepoUpdateService.class);
+
+    @Resource
+    private SessionDedupeDao sessionDedupeDao;
 
     @Resource
     private Collection<SimpleCountMetric> simpleCountMetrics;
@@ -102,7 +106,8 @@ public class RepoUpdateService {
             List<Record> records = parser.parse(br);
             for (Record record : records) {
                 lineCount++;
-                if (lineCount >= startLineIncl) {
+                if (lineCount >= startLineIncl &&
+                        !sessionDedupeDao.isProcessed(record.getSessionId())) {
                     updateRecord(record, filePath, lineCount, recordCallback);
                 }
             }
