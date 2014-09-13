@@ -106,10 +106,9 @@ public class RepoUpdateService {
             List<Record> records = parser.parse(br);
             for (Record record : records) {
                 lineCount++;
-                if (lineCount >= startLineIncl) {
-                    if (!sessionDedupeDao.isProcessed(record.getSessionId())) {
-                        updateRecord(record, filePath, lineCount, recordCallback);
-                    }
+                if (lineCount >= startLineIncl &&
+                        !sessionDedupeDao.isProcessed(record.getSessionId())) {
+                    updateRecord(record, filePath, lineCount, recordCallback);
                 }
             }
         } catch (Throwable e) {
