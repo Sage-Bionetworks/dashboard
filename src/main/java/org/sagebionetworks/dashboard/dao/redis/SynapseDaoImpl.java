@@ -124,24 +124,6 @@ public class SynapseDaoImpl implements SynapseDao {
     }
 
     @Override
-    public List<String> getUserNames(List<String> userIds) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<String> getEntityNames(List<String> entityIds) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<String> getProjects(List<String> entityIds) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public CuPassingRecord getCuPassingRecord(String userId) {
         String session = getSession();
         return synapseClient.getCuPassingRecord(userId, session);
