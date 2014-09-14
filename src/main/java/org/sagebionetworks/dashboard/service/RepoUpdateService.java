@@ -79,7 +79,7 @@ public class RepoUpdateService {
     private final Set<String> ignoreMetrics = Collections.unmodifiableSet(new HashSet<String>(
             Arrays.asList("certifiedUserMetric", "questionPassMetric", "questionFailMetric")));
 
-    private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(100);
 
     public void update(InputStream in, String filePath, 
             UpdateFileCallback fileCallback, UpdateRecordCallback recordCallback) {
