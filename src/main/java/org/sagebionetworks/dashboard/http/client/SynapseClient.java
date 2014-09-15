@@ -121,6 +121,7 @@ public class SynapseClient {
                 return entityId;
             }
         }
+        logger.warn("Got null project for entity " + entityId + ". " + root.toString());
         return null;
     }
 
