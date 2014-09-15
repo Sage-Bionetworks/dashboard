@@ -1,7 +1,9 @@
 package org.sagebionetworks.dashboard.parse;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.mockito.internal.util.collections.Sets;
 
 /**
  * Filter out records for some specific userId
@@ -13,5 +15,6 @@ public class UserIdFilter implements RecordFilter{
         return !(userIds.contains(record.getUserId()));
     }
 
-    private final List<String> userIds = Arrays.asList("3319059" /*dashboard*/);
+    private final Collection<String> userIds =
+            Collections.unmodifiableSet(Sets.newSet("3319059" /*dashboard*/));
 }
