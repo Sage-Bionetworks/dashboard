@@ -1,11 +1,8 @@
-package org.sagebionetworks.dashboard.metric;
+package org.sagebionetworks.dashboard.parse;
 
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SynapseDao;
-import org.sagebionetworks.dashboard.parse.EntityIdReader;
-import org.sagebionetworks.dashboard.parse.Record;
-import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
 @Component("benefactorIdReader")
