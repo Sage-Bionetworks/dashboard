@@ -14,7 +14,7 @@ public class TopWebClientMetricTest {
         UniqueCountMetric metric = new TopWebClientMetric();
         assertEquals("topWebClientMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof ClientReader);
-        assertEquals(2, metric.getFilters().size());
+        assertEquals(3, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
         assertEquals(metric.getFilters().get(1), ClientFilter.WEB);
     }

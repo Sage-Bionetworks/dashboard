@@ -22,7 +22,7 @@ public class TopProjectMetricTest {
     public void test() {
         assertEquals("topProjectMetric", topProjectMetric.getName());
         assertTrue(topProjectMetric.getRecordReader() instanceof ProjectIdReader);
-        assertEquals(1, topProjectMetric.getFilters().size());
+        assertEquals(2, topProjectMetric.getFilters().size());
         assertTrue(topProjectMetric.getFilters().get(0) instanceof ProdFilter);
     }
 }

@@ -10,6 +10,7 @@ import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.UriGetDescendantsFilter;
+import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.springframework.stereotype.Component;
 
 /** Latencies of the get-descendants REST API. */
@@ -17,7 +18,8 @@ import org.springframework.stereotype.Component;
 public class GetDescendantsMetric extends TimeSeriesMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            new ProdFilter(), new MethodFilter("get"), new UriGetDescendantsFilter()));
+            new ProdFilter(), new MethodFilter("get"), new UriGetDescendantsFilter(),
+            new UserIdFilter()));
 
     private final RecordReader<Long> reader = new LatencyReader();
 

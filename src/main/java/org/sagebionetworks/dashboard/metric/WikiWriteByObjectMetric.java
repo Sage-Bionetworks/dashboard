@@ -9,6 +9,7 @@ import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.UriWiki2Filter;
+import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.sagebionetworks.dashboard.parse.WikiObjectIdReader;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,8 @@ import org.springframework.stereotype.Component;
 public class WikiWriteByObjectMetric extends DayCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            new ProdFilter(), new UriWiki2Filter(), new MethodFilter("POST", "PUT")));
+            new ProdFilter(), new UriWiki2Filter(), new MethodFilter("POST", "PUT"),
+            new UserIdFilter()));
 
     private final RecordReader<String> reader = new WikiObjectIdReader();
 

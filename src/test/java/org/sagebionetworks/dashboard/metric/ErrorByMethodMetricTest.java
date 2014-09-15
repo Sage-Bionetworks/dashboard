@@ -14,7 +14,7 @@ public class ErrorByMethodMetricTest {
         UniqueCountMetric metric = new ErrorByMethodMetric();
         assertEquals("errorByMethodMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof MethodUriReader);
-        assertEquals(2, metric.getFilters().size());
+        assertEquals(3, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
         assertTrue(metric.getFilters().get(1) instanceof ErrorFilter);
     }

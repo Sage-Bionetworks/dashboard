@@ -13,7 +13,7 @@ public class StatusCodeMetricTest {
         UniqueCountMetric metric = new StatusCodeMetric();
         assertEquals("statusCodeMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof StatusCodeReader);
-        assertEquals(1, metric.getFilters().size());
+        assertEquals(2, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
     }
 }

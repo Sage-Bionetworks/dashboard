@@ -13,7 +13,7 @@ public class ActiveUserMetricTest {
         DayCountMetric metric = new ActiveUserMetric();
         assertEquals("activeUserMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof UserIdReader);
-        assertEquals(1, metric.getFilters().size());
+        assertEquals(2, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
     }
 }

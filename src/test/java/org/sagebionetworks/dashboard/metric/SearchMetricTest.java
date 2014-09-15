@@ -15,7 +15,7 @@ public class SearchMetricTest {
         TimeSeriesMetric metric = new SearchMetric();
         assertEquals("searchMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof LatencyReader);
-        assertEquals(3, metric.getFilters().size());
+        assertEquals(4, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
         assertTrue(metric.getFilters().get(1) instanceof MethodFilter);
         assertTrue(metric.getFilters().get(2) instanceof UriSearchFilter);

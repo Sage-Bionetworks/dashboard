@@ -14,7 +14,7 @@ public class ErrorStatusCodeMetricTest {
         UniqueCountMetric metric = new ErrorStatusCodeMetric();
         assertEquals("errorStatusCodeMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof StatusCodeReader);
-        assertEquals(2, metric.getFilters().size());
+        assertEquals(3, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
         assertTrue(metric.getFilters().get(1) instanceof ErrorFilter);
     }
