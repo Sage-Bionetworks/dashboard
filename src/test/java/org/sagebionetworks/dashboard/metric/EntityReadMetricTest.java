@@ -14,7 +14,7 @@ public class EntityReadMetricTest {
         UniqueCountMetric metric = new EntityReadMetric();
         assertEquals("entityReadMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof EntityIdReader);
-        assertEquals(2, metric.getFilters().size());
+        assertEquals(3, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
         assertTrue(metric.getFilters().get(1) instanceof MethodFilter);
     }

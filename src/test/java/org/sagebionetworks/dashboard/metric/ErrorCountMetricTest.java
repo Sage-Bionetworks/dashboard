@@ -18,7 +18,7 @@ public class ErrorCountMetricTest {
         RecordReader<String> reader = metric.getRecordReader();
         Record record = new RepoRecord();
         assertEquals("", reader.read(record));
-        assertEquals(2, metric.getFilters().size());
+        assertEquals(3, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
         assertTrue(metric.getFilters().get(1) instanceof ErrorFilter);
     }

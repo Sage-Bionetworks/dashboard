@@ -13,7 +13,7 @@ public class TopMethodMetricTest {
         UniqueCountMetric metric = new TopMethodMetric();
         assertEquals("topMethodMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof MethodUriReader);
-        assertEquals(1, metric.getFilters().size());
+        assertEquals(2, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
     }
 }

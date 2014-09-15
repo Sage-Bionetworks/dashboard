@@ -13,7 +13,7 @@ public class GlobalLatencyMetricTest {
         TimeSeriesMetric metric = new GlobalLatencyMetric();
         assertEquals("globalLatencyMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof LatencyReader);
-        assertEquals(1, metric.getFilters().size());
+        assertEquals(2, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
     }
 }

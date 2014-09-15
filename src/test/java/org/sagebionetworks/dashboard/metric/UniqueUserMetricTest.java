@@ -13,7 +13,7 @@ public class UniqueUserMetricTest {
         UniqueCountMetric metricToWrite = new UniqueUserMetric();
         assertEquals("uniqueUserMetric", metricToWrite.getName());
         assertTrue(metricToWrite.getRecordReader() instanceof UserIdReader);
-        assertEquals(1, metricToWrite.getFilters().size());
+        assertEquals(2, metricToWrite.getFilters().size());
         assertTrue(metricToWrite.getFilters().get(0) instanceof ProdFilter);
     }
 }

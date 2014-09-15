@@ -13,7 +13,7 @@ public class TopClientMetricTest {
         UniqueCountMetric metric = new TopClientMetric();
         assertEquals("topClientMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof ClientSummaryReader);
-        assertEquals(1, metric.getFilters().size());
+        assertEquals(2, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);
     }
 }
