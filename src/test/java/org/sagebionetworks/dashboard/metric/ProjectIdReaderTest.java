@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.SynapseDao;
-import org.sagebionetworks.dashboard.parse.ProjectIdReader;
 import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.test.util.ReflectionTestUtils;
