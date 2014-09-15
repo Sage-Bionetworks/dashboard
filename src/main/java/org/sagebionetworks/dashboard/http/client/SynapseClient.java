@@ -6,14 +6,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -36,6 +35,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 @Component("synapseClient")
 public class SynapseClient {
@@ -121,6 +121,7 @@ public class SynapseClient {
                 return entityId;
             }
         }
+        logger.warn("Got null project for entity " + entityId + ". " + root.toString());
         return null;
     }
 
@@ -226,45 +227,78 @@ public class SynapseClient {
     }
 
     private JsonNode executeRequest(HttpUriRequest request) {
-        return executeRequest(request, 1L, 0);
+        try {
+            return executeRequestWithRetry(request);
+        } catch (Throwable e) {
+            logger.error("Request failed. Returning null JSON node.", e);
+            return JsonNodeFactory.instance.nullNode();
+        }
     }
 
-    private JsonNode executeRequest(final HttpUriRequest request, final long delayInMillis, final int retryCount) {
-        if (retryCount > 5) {
-            throw new RuntimeException("Failed after 5 retries.");
+    private JsonNode executeRequestWithRetry(final HttpUriRequest request) {
+        final int maxNumRetries = 7;
+        int retryCount = 0;
+        while (retryCount < maxNumRetries) {
+            try {
+                final HttpResponse response = client.execute(request);
+                final int status = response.getStatusLine().getStatusCode();
+                if (status / 100 == 5 || status == 429) {
+                    logger.warn("Error executing request. "
+                            + readResponse(response).toString()
+                            + " Will do retry #" + retryCount + ".");
+                    retryCount++;
+                    Thread.sleep(2 ^ retryCount * 100);
+                    continue;
+                }
+                if (HttpStatus.SC_UNAUTHORIZED == status) {
+                    throw new UnauthorizedException();
+                }
+                if (HttpStatus.SC_FORBIDDEN == status) {
+                    throw new ForbiddenException();
+                }
+                return readResponse(response);
+            } catch (ClientProtocolException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
+        throw new RuntimeException("Failed after " + retryCount +" retries.");
+    }
+
+    private JsonNode readResponse(HttpResponse response) {
         InputStream inputStream = null;
+        InputStreamReader inputStreamReader = null;
         try {
-            Thread.sleep(delayInMillis);
-            HttpResponse response = client.execute(request);
-            if (HttpStatus.SC_UNAUTHORIZED == response.getStatusLine().getStatusCode()) {
-                throw new UnauthorizedException();
-            }
-            if (HttpStatus.SC_FORBIDDEN == response.getStatusLine().getStatusCode()) {
-                throw new ForbiddenException();
-            }
-            HttpEntity entity = response.getEntity();
-            ObjectMapper mapper = new ObjectMapper();
-
-            // get the encodingType
-            String contentType = entity.getContentType().getValue();
-            String encodingType = "";
-            Matcher m = Pattern.compile("charset=").matcher(contentType);
-            if (m.find()) {
-                encodingType = contentType.substring(m.end()).trim();
-            }
-
+            final HttpEntity entity = response.getEntity();
+            // Get char set
+            final String contentType = entity.getContentType().getValue();
+            int begin = contentType.indexOf("charset=") + "charset=".length();
+            int end = contentType.indexOf(";", begin);
+            end = end < 0 ? contentType.length() : end;
+            String encodingType = contentType.substring(begin, end);
+            // Get as JSON node
             inputStream = entity.getContent();
-            JsonNode root = mapper.readValue(new InputStreamReader(inputStream, encodingType), JsonNode.class);
+            inputStreamReader = new InputStreamReader(inputStream, encodingType);
+            JsonNode root = (new ObjectMapper()).readValue(inputStreamReader, JsonNode.class);
             return root;
-        } catch (Exception e) {
-            int numRetries = retryCount + 1;
-            logger.warn("Error executing request. Will do retry #" + numRetries + ".", e);
-            return executeRequest(request, (delayInMillis << 1) + 100L, numRetries);
+        } catch (IllegalStateException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (inputStreamReader != null) {
+                try {
+                    inputStreamReader.close();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
