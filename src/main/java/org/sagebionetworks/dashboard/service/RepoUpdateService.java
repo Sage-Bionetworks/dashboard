@@ -77,7 +77,7 @@ public class RepoUpdateService {
 
     // Ignore metrics that are not parsed from records
     private final Set<String> ignoreMetrics = Collections.unmodifiableSet(new HashSet<String>(
-            Arrays.asList("certifiedUserMetric", "questionPassMetric", "questionFailMetric")));
+            Arrays.asList("certifiedUserMetric", "questionPassMetric", "questionFailMetric", "topProjectMetric", "topProjectByDayMetric")));
 
     private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
 
@@ -194,16 +194,18 @@ public class RepoUpdateService {
             }
         }
         for (final DayCountMetric metric : dayCountMetrics) {
-            tasks.add(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        dayCountWriter.writeMetric(record, metric);
-                    } catch (Throwable e){
-                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
+            if (!ignoreMetrics.contains(metric.getName())) {
+                tasks.add(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            dayCountWriter.writeMetric(record, metric);
+                        } catch (Throwable e){
+                            callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         for (final ReportMetric metric : reportMetrics) {
             tasks.add(new Runnable() {
