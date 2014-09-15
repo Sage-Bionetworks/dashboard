@@ -7,6 +7,7 @@ import java.util.List;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
+import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class ActiveUserMetric extends DayCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            (RecordFilter)new ProdFilter()));
+            new ProdFilter(), new UserIdFilter()));
 
     private final RecordReader<String> reader = new UserIdReader();
 

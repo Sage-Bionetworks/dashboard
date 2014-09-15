@@ -8,13 +8,14 @@ import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.StatusCodeReader;
+import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.springframework.stereotype.Component;
 
 @Component("statusCodeMetric")
 public class StatusCodeMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            (RecordFilter)new ProdFilter()));
+            new ProdFilter(), new UserIdFilter()));
 
     private final RecordReader<String> reader = new StatusCodeReader();
 

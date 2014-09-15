@@ -9,13 +9,14 @@ import org.sagebionetworks.dashboard.parse.MethodUriReader;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
+import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.springframework.stereotype.Component;
 
 @Component("errorByMethodMetric")
 public class ErrorByMethodMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            new ProdFilter(), new ErrorFilter()));
+            new ProdFilter(), new ErrorFilter(), new UserIdFilter()));
 
     private final RecordReader<String> reader = new MethodUriReader();
 

@@ -9,13 +9,14 @@ import org.sagebionetworks.dashboard.parse.ClientReader;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
+import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.springframework.stereotype.Component;
 
 @Component("topRClientMetric")
 public class TopRClientMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            new ProdFilter(), ClientFilter.R));
+            new ProdFilter(), ClientFilter.R, new UserIdFilter()));
 
     private final RecordReader<String> reader = new ClientReader();
 

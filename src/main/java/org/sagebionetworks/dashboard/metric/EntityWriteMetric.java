@@ -10,13 +10,15 @@ import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.UriEntityFilter;
+import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.springframework.stereotype.Component;
 
 @Component("entityWriteMetric")
 public class EntityWriteMetric extends UniqueCountMetric {
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            new ProdFilter(), new MethodFilter("POST", "PUT"), new UriEntityFilter()));
+            new ProdFilter(), new MethodFilter("POST", "PUT"), new UriEntityFilter(),
+            new UserIdFilter()));
 
     private final RecordReader<String> reader = new EntityIdReader();
 

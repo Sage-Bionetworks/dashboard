@@ -9,6 +9,7 @@ import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.TimeFilter;
 import org.sagebionetworks.dashboard.parse.UriCuqRequestFilter;
+import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.sagebionetworks.dashboard.parse.UserIdReader;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,8 @@ public class CertifiedUserQuizRequestMetric extends UniqueCountMetric {
     private RecordReader<String> reader = new UserIdReader();
 
     private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            new MethodFilter("get"), new UriCuqRequestFilter(), new TimeFilter(1403827200000L)));
+            new MethodFilter("get"), new UriCuqRequestFilter(), new TimeFilter(1403827200000L),
+            new UserIdFilter()));
 
     @Override
     public List<RecordFilter> getFilters() {
