@@ -10,7 +10,7 @@ public class UserIdFilter implements RecordFilter{
 
     @Override
     public boolean matches(Record record) {
-        return !userIds.contains(record);
+        return !(userIds.contains(record.getUserId()));
     }
 
     private final List<String> userIds = Arrays.asList("3319059" /*dashboard*/);
