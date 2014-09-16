@@ -12,7 +12,7 @@ public class MethodUriReader implements RecordReader<String> {
     private static final Pattern MD5 = Pattern.compile("(?<=/md5)/[a-f0-9]+");
 
     @Override
-    public String read(Record record) {
+    public String read(AccessRecord record) {
 
         // HTTP method
         String method = record.getMethod();

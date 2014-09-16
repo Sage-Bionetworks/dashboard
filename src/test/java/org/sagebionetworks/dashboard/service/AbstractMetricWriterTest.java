@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.metric.Metric;
-import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -30,7 +30,7 @@ public class AbstractMetricWriterTest {
     public void test() {
 
         // Set up mocks
-        Record record = mock(Record.class);
+        AccessRecord record = mock(AccessRecord.class);
 
         @SuppressWarnings("unchecked")
         Metric<String> metric = mock(Metric.class);

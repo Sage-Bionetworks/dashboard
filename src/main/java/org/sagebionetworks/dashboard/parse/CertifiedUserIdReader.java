@@ -11,7 +11,7 @@ public class CertifiedUserIdReader implements RecordReader<String> {
     }
 
     @Override
-    public String read(Record record) {
+    public String read(AccessRecord record) {
         throw new RuntimeException("Method is not supported.");
     }
 }

@@ -11,7 +11,7 @@ import java.util.HashSet;
 public class UserIdFilter implements RecordFilter{
 
     @Override
-    public boolean matches(Record record) {
+    public boolean matches(AccessRecord record) {
         return !(userIds.contains(record.getUserId()));
     }
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.sagebionetworks.dashboard.parse.ErrorFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
-import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.UserIdFilter;
@@ -20,7 +20,7 @@ public class ErrorCountMetric extends SimpleCountMetric {
 
     private final RecordReader<String> reader = new RecordReader<String>() {
         @Override
-        public String read(Record record) {
+        public String read(AccessRecord record) {
             return "";
         }
     };

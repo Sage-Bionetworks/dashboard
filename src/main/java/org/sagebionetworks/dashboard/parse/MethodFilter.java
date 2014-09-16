@@ -7,7 +7,7 @@ public class MethodFilter implements RecordFilter {
     }
 
     @Override
-    public boolean matches(Record record) {
+    public boolean matches(AccessRecord record) {
         for (String method : methods) {
             if (method.equalsIgnoreCase(record.getMethod())) {
                 return true;

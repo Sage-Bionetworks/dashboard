@@ -18,7 +18,7 @@ import org.sagebionetworks.dashboard.dao.redis.RedisTestUtil;
 import org.sagebionetworks.dashboard.metric.ErrorCountMetric;
 import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -56,7 +56,7 @@ public class SimpleCountWriterIntegTest {
         RecordParser parser = new RepoRecordParser();
         String line = ",\"330\",\"1388278872156\",,\"repo-prod.prod.sagebase.org\",\"50032\",\"python-requests/1.2.3 CPython/2.7.4 Linux/3.8.0-19-generic\",\"limit=20&offset=40\",\"37dbacaa-d508-40bc-95df-027669c1defa\",,\"/repo/v1/evaluation/1917804/submission/all\",\"1976831\",,\"2013-12-29\",\"GET\",\"596b6cd4fe9c6b87:2490c0ea:142eda5a7fd:-7ffd\",\"000000024\",\"prod\",\"false\",\"500\"";
         Reader reader = new StringReader(line);
-        List<Record> records = parser.parse(reader);
+        List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
         Metric<String> metric = new ErrorCountMetric();

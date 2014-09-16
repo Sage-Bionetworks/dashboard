@@ -18,7 +18,7 @@ public abstract class RegexRecordReader implements RecordReader<String> {
     }
 
     @Override
-    public final String read(Record record) {
+    public final String read(AccessRecord record) {
         final String string = readString(record);
         if (string != null && !string.isEmpty()) {
             Matcher matcher = pattern.matcher(string);
@@ -29,5 +29,5 @@ public abstract class RegexRecordReader implements RecordReader<String> {
         return null;
     }
 
-    abstract String readString(Record record);
+    abstract String readString(AccessRecord record);
 }

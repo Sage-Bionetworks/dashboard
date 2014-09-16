@@ -11,7 +11,7 @@ import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.FileDownloadDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.metric.Metric;
-import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Service;
@@ -20,12 +20,12 @@ import org.springframework.stereotype.Service;
 public class ReportWriter implements MetricWriter<String>{
 
     @Override
-    public void writeMetric(final Record record, final Metric<String> metric) {
+    public void writeMetric(final AccessRecord record, final Metric<String> metric) {
         writeMetric(record, metric, Collections.<RecordFilter> emptyList());
     }
 
     @Override
-    public void writeMetric(Record record, Metric<String> metric,
+    public void writeMetric(AccessRecord record, Metric<String> metric,
             List<RecordFilter> additionalFilters) {
         // Apply the filters first
         List<RecordFilter> filters = metric.getFilters();

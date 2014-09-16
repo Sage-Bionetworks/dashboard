@@ -15,7 +15,7 @@ public class ClientFilter implements RecordFilter {
     public static final ClientFilter BRIDGE = new ClientFilter(PATTERN_BRIDGE);
 
     @Override
-    public boolean matches(Record record) {
+    public boolean matches(AccessRecord record) {
         String userAgent = record.getUserAgent();
         if (userAgent == null) {
             return false;

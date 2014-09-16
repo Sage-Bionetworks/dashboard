@@ -1,6 +1,6 @@
 package org.sagebionetworks.dashboard.parse;
 
-public interface Record {
+public interface AccessRecord {
     String getSessionId();
     Long getTimestamp();
     String getUserId();

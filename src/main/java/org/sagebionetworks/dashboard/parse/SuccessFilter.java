@@ -5,7 +5,7 @@ package org.sagebionetworks.dashboard.parse;
  */
 public class SuccessFilter implements RecordFilter {
     @Override
-    public boolean matches(Record record) {
+    public boolean matches(AccessRecord record) {
         String status = record.getStatus();
         if (status == null || status.isEmpty()) {
             return false; // Success or not we don't know

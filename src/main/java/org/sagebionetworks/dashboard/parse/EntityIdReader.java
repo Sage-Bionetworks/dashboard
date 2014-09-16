@@ -19,7 +19,7 @@ public class EntityIdReader implements RecordReader<String> {
      * </ol>
      */
     @Override
-    public String read(Record record) {
+    public String read(AccessRecord record) {
         // Object ID
         String entityId = objIdReader.read(record);
         // Request URI

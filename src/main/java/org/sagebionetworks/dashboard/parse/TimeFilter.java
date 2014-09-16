@@ -7,7 +7,7 @@ public class TimeFilter implements RecordFilter{
     }
 
     @Override
-    public boolean matches(Record record) {
+    public boolean matches(AccessRecord record) {
         return record.getTimestamp() >= timestamp;
     }
 

@@ -3,7 +3,7 @@ package org.sagebionetworks.dashboard.parse;
 public class ClientReader implements RecordReader<String> {
 
     @Override
-    public String read(Record record) {
+    public String read(AccessRecord record) {
         String userAgent = record.getUserAgent();
         if (userAgent != null && !userAgent.isEmpty()) {
             return userAgent.toLowerCase();

@@ -4,5 +4,5 @@ import java.io.Reader;
 import java.util.List;
 
 public interface RecordParser {
-    List<Record> parse(Reader reader);
+    List<AccessRecord> parse(Reader reader);
 }

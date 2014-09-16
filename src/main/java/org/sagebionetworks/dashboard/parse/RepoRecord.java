@@ -1,6 +1,6 @@
 package org.sagebionetworks.dashboard.parse;
 
-public class RepoRecord implements Record {
+public class RepoRecord implements AccessRecord {
     public String getSessionId() {
         return sessionId;
     }

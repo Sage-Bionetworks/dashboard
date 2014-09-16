@@ -3,7 +3,7 @@ package org.sagebionetworks.dashboard.parse;
 public class ClientSummaryReader implements RecordReader<String> {
 
     @Override
-    public String read(Record record) {
+    public String read(AccessRecord record) {
         if (ClientFilter.PYTHON.matches(record)) {
             return "Python Client";
         }

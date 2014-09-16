@@ -12,7 +12,7 @@ public class WikiObjectIdReader implements RecordReader<String> {
      * Note that object ID field in some records has the wiki ID, which is not read here.
      */
     @Override
-    public String read(Record record) {
+    public String read(AccessRecord record) {
         return uriIdReader.read(record);
     }
 }

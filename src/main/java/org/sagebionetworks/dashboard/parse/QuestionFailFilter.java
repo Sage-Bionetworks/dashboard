@@ -3,7 +3,7 @@ package org.sagebionetworks.dashboard.parse;
 public class QuestionFailFilter implements RecordFilter{
 
     @Override
-    public boolean matches(Record record) {
+    public boolean matches(AccessRecord record) {
         throw new RuntimeException("Method is not supported.");
     }
 
