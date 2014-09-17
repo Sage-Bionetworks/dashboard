@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SessionDedupeDao;
 import org.sagebionetworks.dashboard.metric.DayCountMetric;
-import org.sagebionetworks.dashboard.metric.Metric;
+import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
 import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
 import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
 import org.sagebionetworks.dashboard.model.WriteRecordResult;
@@ -43,7 +43,8 @@ public class RepoUpdateService {
     @Resource
     private SessionDedupeDao sessionDedupeDao;
 
-
+    @Resource
+    private Collection<SimpleCountMetric> simpleCountMetrics;
 
     @Resource
     private SimpleCountWriter simpleCountWriter;
@@ -148,7 +149,7 @@ public class RepoUpdateService {
     private void updateRecord(final AccessRecord record, final String file, 
             final int line, final UpdateRecordCallback callback) {
         List<Runnable> tasks = new ArrayList<Runnable>();
-        for (final Metric<AccessRecord, String> metric : simpleCountWriter.getMetrics()) {
+        for (final SimpleCountMetric metric : simpleCountMetrics) {
             tasks.add(new Runnable() {
                 @Override
                 public void run() {

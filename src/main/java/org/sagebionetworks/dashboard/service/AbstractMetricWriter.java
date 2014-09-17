@@ -1,6 +1,5 @@
 package org.sagebionetworks.dashboard.service;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,6 +58,4 @@ abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter
     private NameIdDao nameIdDao;
 
     abstract void write(String metricId, String additionalKey, DateTime timestamp, V value);
-
-    abstract Collection<Metric<R, V>> getMetrics();
 }

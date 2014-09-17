@@ -1,12 +1,9 @@
 package org.sagebionetworks.dashboard.service;
 
-import java.util.Collection;
-
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.SimpleCountDao;
-import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +18,4 @@ public class SimpleCountWriter extends AbstractMetricWriter<AccessRecord, String
             String id) {
         simpleCountDao.put(metricId + additionalKey, timestamp);
     }
-
-    @Override
-    Collection<Metric<AccessRecord, String>> getMetrics() {
-        return simpleCountMetrics;
-    }
-
-    @Resource
-    private Collection<Metric<AccessRecord, String>> simpleCountMetrics;
 }
