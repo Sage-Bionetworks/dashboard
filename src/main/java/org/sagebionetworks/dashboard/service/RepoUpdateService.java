@@ -21,7 +21,6 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SessionDedupeDao;
 import org.sagebionetworks.dashboard.metric.DayCountMetric;
-import org.sagebionetworks.dashboard.metric.ReportMetric;
 import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
 import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
 import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
@@ -67,12 +66,6 @@ public class RepoUpdateService {
 
     @Resource
     private DayCountWriter dayCountWriter;
-
-    //@Resource
-    //private Collection<ReportMetric> reportMetrics;
-
-    //@Resource
-    //private ReportWriter reportWriter;
 
     private final RecordParser parser = new RepoRecordParser();
 
@@ -213,18 +206,6 @@ public class RepoUpdateService {
                 });
             }
         }
-        /*for (final ReportMetric metric : reportMetrics) {
-            tasks.add(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        reportWriter.writeMetric(record, metric);
-                    } catch (Throwable e){
-                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
-                    }
-                }
-            });
-        }*/
         for (Runnable task : tasks) {
             threadPool.submit(task);
         }
