@@ -13,7 +13,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
-import org.sagebionetworks.dashboard.dao.FileDownloadDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
@@ -40,8 +39,8 @@ public class MetricReader {
     @Resource
     private SimpleCountDao simpleCountDao;
 
-    @Resource
-    private FileDownloadDao fileDownloadDao;
+    //@Resource
+    //private FileDownloadDao fileDownloadDao;
 
     public List<TimeDataPoint> getTimeSeries(String metricName, DateTime from, DateTime to, Statistic s, Interval a) {
         if (metricName == null || metricName.isEmpty()) {
@@ -99,7 +98,7 @@ public class MetricReader {
         return simpleCountDao.get(metricId, from, to);
     }
 
-    public List<UserDataPoint> getFileDownloadReport(String metricName,
+    /*public List<UserDataPoint> getFileDownloadReport(String metricName,
             String entityId, DateTime timestamp, Interval interval) {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
@@ -108,8 +107,8 @@ public class MetricReader {
         if (entityId.startsWith("syn")) {
             entityId = entityId.substring(3);
         }
-        return fileDownloadDao.get(metricId, entityId, timestamp, interval);
-    }
+        return uniqueCountDao.getUnique(metricId, entityId, timestamp, interval);
+    }*/
 
     public List<UserDataPoint> getAllReport(String metricName, String entityId) {
         if (metricName == null || metricName.isEmpty()) {
