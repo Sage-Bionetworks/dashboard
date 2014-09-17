@@ -18,13 +18,14 @@ public interface UniqueCountDao {
      * the set yet, it will be added with a count of one.
      *
      * @param metricId   The ID of the metric.
+     * @param additionalKey     optional part of the key
      * @param id         The object ID whose count is to be increased.
      * @param timestamp  The time-stamp when this metric was captured.
      */
-    void put(String metricId, String id, DateTime timestamp);
-
     void put(String metricId, String additionalKey, String id,
             DateTime timestamp);
+
+    void put(String metricId, String id, DateTime timestamp);
 
     /**
      * Gets the list of counts for a particular ID over a period of time. For example,

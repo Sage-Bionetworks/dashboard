@@ -12,7 +12,7 @@ public class DayCountWriter extends AbstractMetricWriter<AccessRecord, String> {
 
     @Override
     void write(String metricId, DateTime timestamp, String id) {
-        dayCountDao.put(metricId, id, timestamp);
+        write(metricId, "", timestamp, id);
     }
 
     @Resource
@@ -21,6 +21,6 @@ public class DayCountWriter extends AbstractMetricWriter<AccessRecord, String> {
     @Override
     void write(String metricId, String additionalKey, DateTime timestamp,
             String id) {
-        dayCountDao.put(metricId + additionalKey, id, timestamp);
+        dayCountDao.put(metricId, additionalKey, id, timestamp);
     }
 }

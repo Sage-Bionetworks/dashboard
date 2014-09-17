@@ -13,7 +13,7 @@ public class UniqueCountWriter<R extends Record> extends AbstractMetricWriter<R,
 
     @Override
     void write(String metricId, DateTime timestamp, String id) {
-        uniqueCountDao.put(metricId, id, timestamp);
+        uniqueCountDao.put(metricId, "", id, timestamp);
     }
 
     public void removeValue(String userId, String metricName) {

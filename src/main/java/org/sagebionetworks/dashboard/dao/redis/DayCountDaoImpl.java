@@ -27,9 +27,7 @@ public class DayCountDaoImpl extends AbstractUniqueCountDao {
 
     @Override
     public void put(String metricId, String id, DateTime timestamp) {
-        String shortId = nameIdDao.getId(id);
-        put(metricId, shortId, week, timestamp);
-        put(metricId, shortId, month, timestamp);
+        put(metricId, "", id, timestamp);
     }
 
     @Override
