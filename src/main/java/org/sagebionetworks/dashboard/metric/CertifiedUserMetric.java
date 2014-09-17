@@ -6,25 +6,26 @@ import java.util.List;
 
 import org.sagebionetworks.dashboard.parse.CertifiedUserFilter;
 import org.sagebionetworks.dashboard.parse.CertifiedUserIdReader;
+import org.sagebionetworks.dashboard.parse.CuPassingRecord;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 
 @Component("certifiedUserMetric")
-public class CertifiedUserMetric extends UniqueCountMetric {
+public class CertifiedUserMetric extends UniqueCountMetric<CuPassingRecord, String> {
 
-    private RecordReader<String> reader = new CertifiedUserIdReader();
+    private RecordReader<CuPassingRecord, String> reader = new CertifiedUserIdReader();
 
-    private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
-            (RecordFilter) new CertifiedUserFilter()));
+    private final List<RecordFilter<CuPassingRecord>> filters = Collections.unmodifiableList(Arrays.asList(
+            (RecordFilter<CuPassingRecord>) new CertifiedUserFilter()));
 
     @Override
-    public List<RecordFilter> getFilters() {
+    public List<RecordFilter<CuPassingRecord>> getFilters() {
         return filters ;
     }
 
     @Override
-    public RecordReader<String> getRecordReader() {
+    public RecordReader<CuPassingRecord, String> getRecordReader() {
         return reader;
     }    
 }

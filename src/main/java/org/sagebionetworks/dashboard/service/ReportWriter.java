@@ -17,24 +17,24 @@ import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Service;
 
 @Service("reportWriter")
-public class ReportWriter implements MetricWriter<String>{
+public class ReportWriter implements MetricWriter<AccessRecord, String>{
 
     @Override
-    public void writeMetric(final AccessRecord record, final Metric<String> metric) {
-        writeMetric(record, metric, Collections.<RecordFilter> emptyList());
+    public void writeMetric(final AccessRecord record, final Metric<AccessRecord, String> metric) {
+        writeMetric(record, metric, Collections.<RecordFilter<AccessRecord>> emptyList());
     }
 
     @Override
-    public void writeMetric(AccessRecord record, Metric<String> metric,
-            List<RecordFilter> additionalFilters) {
+    public void writeMetric(AccessRecord record, Metric<AccessRecord, String> metric,
+            List<RecordFilter<AccessRecord>> additionalFilters) {
         // Apply the filters first
-        List<RecordFilter> filters = metric.getFilters();
-        for (RecordFilter filter : filters) {
+        List<RecordFilter<AccessRecord>> filters = metric.getFilters();
+        for (RecordFilter<AccessRecord> filter : filters) {
             if (!filter.matches(record)) {
                 return;
             }
         }
-        for (RecordFilter filter : additionalFilters) {
+        for (RecordFilter<AccessRecord> filter : additionalFilters) {
             if (!filter.matches(record)) {
                 return;
             }
@@ -45,7 +45,7 @@ public class ReportWriter implements MetricWriter<String>{
         final String metricId = nameIdDao.getId(metricName);
         final Long t = record.getTimestamp();
         final DateTime timestamp = new DateTime(t.longValue());
-        final RecordReader<String> reader = metric.getRecordReader();
+        final RecordReader<AccessRecord, String> reader = metric.getRecordReader();
         final String value = reader.read(record);
         final String entityId = getEntityId(record.getUri());
 
@@ -78,4 +78,5 @@ public class ReportWriter implements MetricWriter<String>{
         }
         return res;
     }
+
 }

@@ -1,3 +1,5 @@
 package org.sagebionetworks.dashboard.metric;
 
-public abstract class DayCountMetric extends AnnotatedMetric<String> {}
+import org.sagebionetworks.dashboard.parse.AccessRecord;
+
+public abstract class DayCountMetric extends AnnotatedMetric<AccessRecord, String> {}

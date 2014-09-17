@@ -2,7 +2,7 @@ package org.sagebionetworks.dashboard.parse;
 
 import java.util.regex.Pattern;
 
-public class ClientFilter implements RecordFilter {
+public class ClientFilter implements RecordFilter<AccessRecord> {
 
     private static final Pattern PATTERN_WEB = Pattern.compile(".*web-client.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern PATTERN_PYTHON = Pattern.compile(".*python.*", Pattern.CASE_INSENSITIVE);

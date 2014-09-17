@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.EntityIdReader;
 import org.sagebionetworks.dashboard.parse.MethodFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
@@ -12,7 +13,7 @@ import org.sagebionetworks.dashboard.parse.UriEntityFilter;
 public class EntityWriteMetricTest {
     @Test
     public void test() {
-        UniqueCountMetric metric = new EntityWriteMetric();
+        UniqueCountMetric<AccessRecord, String> metric = new EntityWriteMetric();
         assertEquals("entityWriteMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof EntityIdReader);
         assertEquals(4, metric.getFilters().size());

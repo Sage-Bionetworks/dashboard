@@ -1,6 +1,6 @@
 package org.sagebionetworks.dashboard.parse;
 
-public class ClientSummaryReader implements RecordReader<String> {
+public class ClientSummaryReader implements RecordReader<AccessRecord, String> {
 
     @Override
     public String read(AccessRecord record) {
@@ -19,5 +19,5 @@ public class ClientSummaryReader implements RecordReader<String> {
         return clientReader.read(record);
     }
 
-    private final RecordReader<String> clientReader = new ClientReader();
+    private final RecordReader<AccessRecord, String> clientReader = new ClientReader();
 }

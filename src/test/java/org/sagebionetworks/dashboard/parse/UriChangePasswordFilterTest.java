@@ -8,7 +8,7 @@ import org.junit.Test;
 public class UriChangePasswordFilterTest {
     @Test
     public void test() {
-        RecordFilter filter = new UriChangePasswordFilter();
+        RecordFilter<AccessRecord> filter = new UriChangePasswordFilter();
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1/user/password");

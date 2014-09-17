@@ -59,7 +59,7 @@ public class SimpleCountWriterIntegTest {
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new ErrorCountMetric();
+        Metric<AccessRecord, String> metric = new ErrorCountMetric();
         simpleCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2013, 10, 1, 0, 0);

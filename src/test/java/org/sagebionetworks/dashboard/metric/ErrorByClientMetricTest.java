@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.ClientReader;
 import org.sagebionetworks.dashboard.parse.ErrorFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
@@ -11,7 +12,7 @@ import org.sagebionetworks.dashboard.parse.ProdFilter;
 public class ErrorByClientMetricTest {
     @Test
     public void test() {
-        UniqueCountMetric metric = new ErrorByClientMetric();
+        UniqueCountMetric<AccessRecord, String> metric = new ErrorByClientMetric();
         assertEquals("errorByClientMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof ClientReader);
         assertEquals(3, metric.getFilters().size());

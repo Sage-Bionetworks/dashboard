@@ -15,7 +15,7 @@ public class ErrorCountMetricTest {
     public void test() {
         SimpleCountMetric metric = new ErrorCountMetric();
         assertEquals("errorCountMetric", metric.getName());
-        RecordReader<String> reader = metric.getRecordReader();
+        RecordReader<AccessRecord, String> reader = metric.getRecordReader();
         AccessRecord record = new RepoRecord();
         assertEquals("", reader.read(record));
         assertEquals(3, metric.getFilters().size());

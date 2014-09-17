@@ -45,7 +45,7 @@ public class CuPassingRecordFetcher {
     /*
      * gets a list all userIds from one metric
      */
-    private Set<String> getUserIds(Metric<String> metric) {
+    private Set<String> getUserIds(Metric<?, ?> metric) {
         String metricId = nameIdDao.getId(metric.getName());
         Set<String> keys = uniqueCountDao.getAllKeys(metricId);
         Set<String> userIds = new HashSet<String>();

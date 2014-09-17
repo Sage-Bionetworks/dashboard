@@ -8,7 +8,7 @@ import org.junit.Test;
 public class UriWiki2FilterTest {
     @Test
     public void test() {
-        RecordFilter filter = new UriWiki2Filter();
+        RecordFilter<AccessRecord> filter = new UriWiki2Filter();
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1/evaluation/2352496");

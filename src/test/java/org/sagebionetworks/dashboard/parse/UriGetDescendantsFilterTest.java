@@ -8,7 +8,7 @@ import org.junit.Test;
 public class UriGetDescendantsFilterTest {
     @Test
     public void test() {
-        RecordFilter filter = new UriGetDescendantsFilter();
+        RecordFilter<AccessRecord> filter = new UriGetDescendantsFilter();
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1/entity/syn123");

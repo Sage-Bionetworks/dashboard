@@ -1,6 +1,6 @@
 package org.sagebionetworks.dashboard.parse;
 
-public class UserDataReader implements RecordReader<String> {
+public class UserDataReader implements RecordReader<AccessRecord, String> {
 
     @Override
     public String read(AccessRecord record) {

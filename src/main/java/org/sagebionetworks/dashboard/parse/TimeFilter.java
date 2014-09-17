@@ -1,6 +1,6 @@
 package org.sagebionetworks.dashboard.parse;
 
-public class TimeFilter implements RecordFilter{
+public class TimeFilter implements RecordFilter<AccessRecord>{
 
     public TimeFilter(long timestamp) {
         this.timestamp = timestamp;

@@ -1,6 +1,6 @@
 package org.sagebionetworks.dashboard.parse;
 
-public class MethodFilter implements RecordFilter {
+public class MethodFilter implements RecordFilter<AccessRecord> {
 
     public MethodFilter(String... methods) {
         this.methods = methods;

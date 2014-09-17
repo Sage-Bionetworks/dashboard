@@ -3,7 +3,7 @@ package org.sagebionetworks.dashboard.dao;
 import java.util.List;
 
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
-import org.sagebionetworks.dashboard.parse.Response;
+import org.sagebionetworks.dashboard.parse.CuResponseRecord;
 
 /**
  * Caches data retrieved directly from Synapse.
@@ -26,7 +26,7 @@ public interface SynapseDao {
     CuPassingRecord getCuPassingRecord(String userId);
 
     /** Gets the list of responses that are submitted by a given user */
-    List<Response> getResponses(String userId);
+    List<CuResponseRecord> getResponses(String userId);
 
     /** Refresh the list of users. */
     void refreshUsers();

@@ -20,7 +20,7 @@ public class ProjectIdReaderTest {
  
         AccessRecord record = mock(AccessRecord.class);
         @SuppressWarnings("unchecked")
-        RecordReader<String> entityIdReader = (RecordReader<String>)mock(RecordReader.class);
+        RecordReader<AccessRecord, String> entityIdReader = (RecordReader<AccessRecord, String>)mock(RecordReader.class);
         when(entityIdReader.read(record)).thenReturn(entityId);
 
         SynapseDao synapseDao = mock(SynapseDao.class);

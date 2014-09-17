@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 /**
  * This class represent a Certified User Quiz Passing Record.
  */
-public class CuPassingRecord {
+public class CuPassingRecord implements Record{
 
     public CuPassingRecord(boolean isPassed, String userId, DateTime timestamp, int score) {
 
@@ -13,6 +13,11 @@ public class CuPassingRecord {
         this.userId = userId;
         this.timestamp = timestamp;
         this.score = score;
+    }
+
+    @Override
+    public Long getTimestamp() {
+        return timestamp.getMillis();
     }
 
     public boolean isPassed() {

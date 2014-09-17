@@ -1,3 +1,5 @@
 package org.sagebionetworks.dashboard.metric;
 
-public abstract class QuestionMetric extends UniqueCountMetric {}
+import org.sagebionetworks.dashboard.parse.CuResponseRecord;
+
+public abstract class QuestionMetric extends UniqueCountMetric<CuResponseRecord, String> {}

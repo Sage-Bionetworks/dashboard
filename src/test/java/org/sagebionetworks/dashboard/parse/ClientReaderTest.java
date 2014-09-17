@@ -8,7 +8,7 @@ public class ClientReaderTest {
     @Test
     public void test() {
         RepoRecord record = new RepoRecord();
-        RecordReader<String> reader = new ClientReader();
+        RecordReader<AccessRecord, String> reader = new ClientReader();
         assertEquals("null-client", reader.read(record));
         record.setUserAgent("PYTHON client 1.0");
         assertEquals("python client 1.0", reader.read(record));

@@ -6,8 +6,9 @@ import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
 import org.sagebionetworks.dashboard.metric.CertifiedUserQuizSubmitMetric;
 import org.sagebionetworks.dashboard.metric.QuestionFailMetric;
 import org.sagebionetworks.dashboard.metric.QuestionPassMetric;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
-import org.sagebionetworks.dashboard.parse.Response;
+import org.sagebionetworks.dashboard.parse.CuResponseRecord;
 import org.springframework.stereotype.Service;
 
 @Service("updateCuPassingRecordService")
@@ -17,7 +18,13 @@ public class UpdateCuPassingRecordService {
     private CertifiedUserMetric certifiedUsersMetric;
 
     @Resource
-    private UniqueCountWriter uniqueCountWriter;
+    private UniqueCountWriter<CuPassingRecord> uniqueCountWriterForPassingRecord;
+
+    @Resource
+    private UniqueCountWriter<CuResponseRecord> uniqueCountWriterForResponseRecord;
+
+    @Resource
+    private UniqueCountWriter<AccessRecord> uniqueCountWriterForAccessRecord;
 
     @Resource
     private QuestionPassMetric questionPassMetric;
@@ -32,21 +39,21 @@ public class UpdateCuPassingRecordService {
      */
     public void updateCertifiedUsers(CuPassingRecord record) {
         if (record != null && record.isPassed()) {
-            uniqueCountWriter.writeCertifiedUsersMetric(record, certifiedUsersMetric);
+            uniqueCountWriterForPassingRecord.writeCertifiedUsersMetric(record, certifiedUsersMetric);
         }
     }
 
     /**
      * process a given passing record and update certified users metric
      */
-    public void updateResponses(Response record) {
+    public void updateResponses(CuResponseRecord record) {
         if (record == null) {
             return;
         }
         if (record.isCorrect()) {
-            uniqueCountWriter.writeResponse(record, questionPassMetric, true);
+            uniqueCountWriterForResponseRecord.writeResponse(record, questionPassMetric, true);
         } else {
-            uniqueCountWriter.writeResponse(record, questionFailMetric, false);
+            uniqueCountWriterForResponseRecord.writeResponse(record, questionFailMetric, false);
         }
     }
 
@@ -54,6 +61,6 @@ public class UpdateCuPassingRecordService {
      * remove the user whom takes the test in staging, but not in production
      */
     public void removeSubmission(String userId) {
-        uniqueCountWriter.removeValue(userId, submissionMetric.getName());
+        uniqueCountWriterForAccessRecord.removeValue(userId, submissionMetric.getName());
     }
 }

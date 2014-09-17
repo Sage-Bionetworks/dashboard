@@ -57,7 +57,7 @@ public class FileDownloadReportMetricTest {
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new FileDownloadReportMetric();
+        Metric<AccessRecord, String> metric = new FileDownloadReportMetric();
         reportWriter.writeMetric(records.get(0), metric);
         
         List<UserDataPoint> results = 
@@ -76,7 +76,7 @@ public class FileDownloadReportMetricTest {
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new FileDownloadReportMetric();
+        Metric<AccessRecord, String> metric = new FileDownloadReportMetric();
         reportWriter.writeMetric(records.get(0), metric);
         
         metricReader.getAllReport(metric.getName(), "1960975");

@@ -56,10 +56,10 @@ public class RepoUpdateService {
     private TimeSeriesWriter timeSeriesWriter;
 
     @Resource
-    private Collection<UniqueCountMetric> uniqueCountMetrics;
+    private Collection<UniqueCountMetric<AccessRecord, String>> uniqueCountMetrics;
 
     @Resource
-    private UniqueCountWriter uniqueCountWriter;
+    private UniqueCountWriter<AccessRecord> uniqueCountWriter;
 
     @Resource
     private Collection<DayCountMetric> dayCountMetrics;
@@ -160,7 +160,7 @@ public class RepoUpdateService {
                 @Override
                 public void run() {
                     try {
-                        simpleCountWriter.writeMetric(record, metric);
+                        simpleCountWriter.writeMetric((AccessRecord) record, metric);
                     } catch (Throwable e){
                         callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                     }
@@ -172,20 +172,22 @@ public class RepoUpdateService {
                 @Override
                 public void run() {
                     try {
-                        timeSeriesWriter.writeMetric(record, metric);
+                        timeSeriesWriter.writeMetric((AccessRecord) record, metric);
                     } catch (Throwable e){
                         callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                     }
                 }
             });
         }
-        for (final UniqueCountMetric metric: uniqueCountMetrics) {
+        for (final UniqueCountMetric<AccessRecord, String> metric: uniqueCountMetrics) {
             if (!ignoreMetrics.contains(metric.getName())) {
                 tasks.add(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            uniqueCountWriter.writeMetric(record, metric);
+                            if (record instanceof AccessRecord) {
+                                uniqueCountWriter.writeMetric(record, metric);
+                            }
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                         }
@@ -199,7 +201,7 @@ public class RepoUpdateService {
                     @Override
                     public void run() {
                         try {
-                            dayCountWriter.writeMetric(record, metric);
+                            dayCountWriter.writeMetric((AccessRecord) record, metric);
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                         }
@@ -212,7 +214,7 @@ public class RepoUpdateService {
                 @Override
                 public void run() {
                     try {
-                        reportWriter.writeMetric(record, metric);
+                        reportWriter.writeMetric((AccessRecord) record, metric);
                     } catch (Throwable e){
                         callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                     }

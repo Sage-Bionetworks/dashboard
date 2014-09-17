@@ -7,7 +7,7 @@ import org.junit.Test;
 public class UserIdFilterTest {
     @Test
     public void test() {
-        RecordFilter filter = new UserIdFilter();
+        RecordFilter<AccessRecord> filter = new UserIdFilter();
 
         RepoRecord record = new RepoRecord();
         assertTrue(filter.matches(record));

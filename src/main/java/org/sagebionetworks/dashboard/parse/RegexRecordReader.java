@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Reads the first matching pattern from a specific field.
  */
-public abstract class RegexRecordReader implements RecordReader<String> {
+public abstract class RegexRecordReader implements RecordReader<AccessRecord, String> {
 
     private final Pattern pattern;
 

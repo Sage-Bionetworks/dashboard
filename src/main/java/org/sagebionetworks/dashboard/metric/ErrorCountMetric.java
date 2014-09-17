@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 @Component("errorCountMetric")
 public class ErrorCountMetric extends SimpleCountMetric {
 
-    private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
+    private final List<RecordFilter<AccessRecord>> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new ErrorFilter(), new UserIdFilter()));
 
-    private final RecordReader<String> reader = new RecordReader<String>() {
+    private final RecordReader<AccessRecord, String> reader = new RecordReader<AccessRecord, String>() {
         @Override
         public String read(AccessRecord record) {
             return "";
@@ -26,12 +26,12 @@ public class ErrorCountMetric extends SimpleCountMetric {
     };
 
     @Override
-    public List<RecordFilter> getFilters() {
+    public List<RecordFilter<AccessRecord>> getFilters() {
         return filters;
     }
 
     @Override
-    public RecordReader<String> getRecordReader() {
+    public RecordReader<AccessRecord, String> getRecordReader() {
         return reader;
     }
 }

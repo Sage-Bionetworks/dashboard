@@ -35,7 +35,7 @@ public class CertifiedUserQuizRequestMetricTest {
     private StringRedisTemplate redisTemplate;
 
     @Resource
-    private UniqueCountWriter uniqueCountWriter;
+    private UniqueCountWriter<AccessRecord> uniqueCountWriter;
 
     @Resource
     private MetricReader metricReader;
@@ -65,7 +65,7 @@ public class CertifiedUserQuizRequestMetricTest {
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
@@ -87,7 +87,7 @@ public class CertifiedUserQuizRequestMetricTest {
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
@@ -109,7 +109,7 @@ public class CertifiedUserQuizRequestMetricTest {
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
@@ -127,7 +127,7 @@ public class CertifiedUserQuizRequestMetricTest {
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
@@ -145,7 +145,7 @@ public class CertifiedUserQuizRequestMetricTest {
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);

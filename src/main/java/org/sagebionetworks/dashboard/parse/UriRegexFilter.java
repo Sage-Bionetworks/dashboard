@@ -2,7 +2,7 @@ package org.sagebionetworks.dashboard.parse;
 
 import java.util.regex.Pattern;
 
-abstract class UriRegexFilter implements RecordFilter {
+abstract class UriRegexFilter implements RecordFilter<AccessRecord> {
 
     private final Pattern pattern;
 

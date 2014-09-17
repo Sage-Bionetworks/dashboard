@@ -10,7 +10,7 @@ public class MethodFilterTest {
     @Test
     public void test() {
 
-        RecordFilter filter = new MethodFilter("POST");
+        RecordFilter<AccessRecord> filter = new MethodFilter("POST");
 
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));

@@ -8,29 +8,29 @@ import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.metric.Metric;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
+import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 
-abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
+abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter<R, V> {
 
     @Override
-    public void writeMetric(final AccessRecord record, final Metric<T> metric) {
-        writeMetric(record, metric, Collections.<RecordFilter> emptyList());
+    public void writeMetric(final R record, final Metric<R, V> metric) {
+        writeMetric(record, metric, Collections.<RecordFilter<R>> emptyList());
     }
 
     @Override
-    public void writeMetric(final AccessRecord record, final Metric<T> metric,
-            final List<RecordFilter> additionalFilters) {
+    public void writeMetric(final R record, final Metric<R, V> metric,
+            final List<RecordFilter<R>> additionalFilters) {
 
         // Apply the filters first
-        List<RecordFilter> filters = metric.getFilters();
-        for (RecordFilter filter : filters) {
+        List<RecordFilter<R>> filters = metric.getFilters();
+        for (RecordFilter<R> filter : filters) {
             if (!filter.matches(record)) {
                 return;
             }
         }
-        for (RecordFilter filter : additionalFilters) {
+        for (RecordFilter<R> filter : additionalFilters) {
             if (!filter.matches(record)) {
                 return;
             }
@@ -41,8 +41,8 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
         final String metricId = nameIdDao.getId(metricName);
         final Long t = record.getTimestamp();
         final DateTime timestamp = new DateTime(t.longValue());
-        final RecordReader<T> reader = metric.getRecordReader();
-        final T value = reader.read(record);
+        final RecordReader<R, V> reader = metric.getRecordReader();
+        final V value = reader.read(record);
 
         // Write the metric
         if (value != null) {
@@ -50,7 +50,7 @@ abstract class AbstractMetricWriter<T> implements MetricWriter<T> {
         }
     }
 
-    abstract void write(String metricId, DateTime timestamp, T value);
+    abstract void write(String metricId, DateTime timestamp, V value);
 
     @Resource
     private NameIdDao nameIdDao;

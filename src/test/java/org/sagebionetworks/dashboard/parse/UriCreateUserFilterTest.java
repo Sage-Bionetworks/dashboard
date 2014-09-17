@@ -9,7 +9,7 @@ public class UriCreateUserFilterTest {
 
     @Test
     public void test() {
-        RecordFilter filter = new UriCreateUserFilter();
+        RecordFilter<AccessRecord> filter = new UriCreateUserFilter();
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1/userProfile");

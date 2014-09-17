@@ -9,7 +9,7 @@ public class LatencyReaderTest {
     @Test
     public void test() {
         RepoRecord record = new RepoRecord();
-        RecordReader<Long> reader = new LatencyReader();
+        RecordReader<AccessRecord, Long> reader = new LatencyReader();
         assertNull(reader.read(record));
         record.setLatency(123L);
         assertEquals(123L, reader.read(record).longValue());

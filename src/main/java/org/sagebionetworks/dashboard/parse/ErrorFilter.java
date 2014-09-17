@@ -3,7 +3,7 @@ package org.sagebionetworks.dashboard.parse;
 /**
  * Matches when there is an error in the record.
  */
-public class ErrorFilter implements RecordFilter {
+public class ErrorFilter implements RecordFilter<AccessRecord> {
     @Override
     public boolean matches(AccessRecord record) {
         String status = record.getStatus();

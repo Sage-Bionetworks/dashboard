@@ -8,7 +8,7 @@ import org.junit.Test;
 public class UriFileUploadFilterTest {
     @Test
     public void test() {
-        RecordFilter filter = new UriFileUploadFilter();
+        RecordFilter<AccessRecord> filter = new UriFileUploadFilter();
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1/fileHandle");

@@ -1,7 +1,8 @@
 package org.sagebionetworks.dashboard.parse;
 
-public class CertifiedUserIdReader implements RecordReader<String> {
+public class CertifiedUserIdReader implements RecordReader<CuPassingRecord, String> {
 
+    @Override
     public String read(CuPassingRecord record) {
         final String userId = record.userId();
         if (userId == null || userId.isEmpty()) {
@@ -10,8 +11,4 @@ public class CertifiedUserIdReader implements RecordReader<String> {
         return userId;
     }
 
-    @Override
-    public String read(AccessRecord record) {
-        throw new RuntimeException("Method is not supported.");
-    }
 }
