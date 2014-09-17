@@ -14,7 +14,7 @@ import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.springframework.stereotype.Component;
 
 @Component("fileDownloadReportMetric")
-public class FileDownloadReportMetric extends UniqueCountMetric<AccessRecord, String>{
+public class FileDownloadReportMetric extends ReportMetric{
 
     private List<RecordFilter<AccessRecord>> filters = Collections.unmodifiableList(Arrays.asList(
                 new ProdFilter(), new UriFileDownloadFilter(), new UserIdFilter()));
