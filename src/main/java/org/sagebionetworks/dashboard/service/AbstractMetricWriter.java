@@ -16,12 +16,17 @@ abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter
 
     @Override
     public void writeMetric(final R record, final Metric<R, V> metric) {
-        writeMetric(record, metric, Collections.<RecordFilter<R>> emptyList());
+        writeMetric(record, metric, Collections.<RecordFilter<R>> emptyList(), "");
+    }
+
+    @Override
+    public void writeMetric(final R record, final Metric<R, V> metric, final String additionalKey) {
+        writeMetric(record, metric, Collections.<RecordFilter<R>> emptyList(), additionalKey);
     }
 
     @Override
     public void writeMetric(final R record, final Metric<R, V> metric,
-            final List<RecordFilter<R>> additionalFilters) {
+            final List<RecordFilter<R>> additionalFilters, final String additionalKey) {
 
         // Apply the filters first
         List<RecordFilter<R>> filters = metric.getFilters();
@@ -46,7 +51,7 @@ abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter
 
         // Write the metric
         if (value != null) {
-            write(metricId, timestamp, value);
+            write(metricId + ":" + additionalKey, timestamp, value);
         }
     }
 

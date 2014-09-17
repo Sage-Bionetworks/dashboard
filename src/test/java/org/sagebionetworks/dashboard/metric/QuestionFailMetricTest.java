@@ -59,7 +59,7 @@ public class QuestionFailMetricTest {
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionFailMetric();
-        uniqueCountWriter.writeResponse(record, metric, false);
+        uniqueCountWriter.writeMetric(record, metric, "1");
 
         DateTime dtFrom = new DateTime(2014, 01, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 07, 30, 0, 0);
@@ -77,7 +77,7 @@ public class QuestionFailMetricTest {
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionFailMetric();
-        uniqueCountWriter.writeResponse(record, metric, false);
+        uniqueCountWriter.writeMetric(record, metric, "1");
 
         DateTime dtFrom = new DateTime(2014, 01, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 07, 30, 0, 0);

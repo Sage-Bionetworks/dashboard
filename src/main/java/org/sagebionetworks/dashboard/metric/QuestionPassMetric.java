@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.sagebionetworks.dashboard.parse.CuResponseIdReader;
 import org.sagebionetworks.dashboard.parse.CuResponseRecord;
-import org.sagebionetworks.dashboard.parse.QuestionIndexReader;
 import org.sagebionetworks.dashboard.parse.QuestionPassFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
@@ -16,7 +16,7 @@ public class QuestionPassMetric extends QuestionMetric {
 
     private List<RecordFilter<CuResponseRecord>> filters = Collections.unmodifiableList(Arrays.asList(
             (RecordFilter<CuResponseRecord>) new QuestionPassFilter()));;
-    private RecordReader<CuResponseRecord, String> reader = new QuestionIndexReader();
+    private RecordReader<CuResponseRecord, String> reader = new CuResponseIdReader();
 
     @Override
     public List<RecordFilter<CuResponseRecord>> getFilters() {

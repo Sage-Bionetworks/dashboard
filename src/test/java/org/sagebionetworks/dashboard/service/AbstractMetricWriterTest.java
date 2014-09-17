@@ -62,7 +62,7 @@ public class AbstractMetricWriterTest {
         AbstractMetricWriter<AccessRecord, String> writer = new StubMetricWriter();
         ReflectionTestUtils.setField(writer, "nameIdDao", nameIdDao);
 
-        writer.writeMetric(record, metric, additionalFilters);
+        writer.writeMetric(record, metric, additionalFilters, "");
 
         // Test order of filter calls -- must call in order
         InOrder inorder = inOrder(filter1, filter2, filter3, filter4);

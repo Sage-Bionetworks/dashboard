@@ -21,12 +21,12 @@ public class ReportWriter implements MetricWriter<AccessRecord, String>{
 
     @Override
     public void writeMetric(final AccessRecord record, final Metric<AccessRecord, String> metric) {
-        writeMetric(record, metric, Collections.<RecordFilter<AccessRecord>> emptyList());
+        writeMetric(record, metric, Collections.<RecordFilter<AccessRecord>> emptyList(), "");
     }
 
     @Override
     public void writeMetric(AccessRecord record, Metric<AccessRecord, String> metric,
-            List<RecordFilter<AccessRecord>> additionalFilters) {
+            List<RecordFilter<AccessRecord>> additionalFilters, String additionalKey) {
         // Apply the filters first
         List<RecordFilter<AccessRecord>> filters = metric.getFilters();
         for (RecordFilter<AccessRecord> filter : filters) {
@@ -77,6 +77,13 @@ public class ReportWriter implements MetricWriter<AccessRecord, String>{
             res = res.substring(3);
         }
         return res;
+    }
+
+    @Override
+    public void writeMetric(AccessRecord record,
+            Metric<AccessRecord, String> metric, String additionalKey) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

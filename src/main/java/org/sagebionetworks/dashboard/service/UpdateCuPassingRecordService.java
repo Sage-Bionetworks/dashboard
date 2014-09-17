@@ -39,7 +39,7 @@ public class UpdateCuPassingRecordService {
      */
     public void updateCertifiedUsers(CuPassingRecord record) {
         if (record != null && record.isPassed()) {
-            uniqueCountWriterForPassingRecord.writeCertifiedUsersMetric(record, certifiedUsersMetric);
+            uniqueCountWriterForPassingRecord.writeMetric(record, certifiedUsersMetric);
         }
     }
 
@@ -50,11 +50,12 @@ public class UpdateCuPassingRecordService {
         if (record == null) {
             return;
         }
-        if (record.isCorrect()) {
-            uniqueCountWriterForResponseRecord.writeResponse(record, questionPassMetric, true);
-        } else {
+        //if (record.isCorrect()) {
+            uniqueCountWriterForResponseRecord.writeMetric(record,
+                    questionPassMetric, Integer.toString(record.questionIndex()));
+        /*} else {
             uniqueCountWriterForResponseRecord.writeResponse(record, questionFailMetric, false);
-        }
+        }*/
     }
 
     /**

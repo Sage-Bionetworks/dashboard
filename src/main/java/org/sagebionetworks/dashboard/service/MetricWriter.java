@@ -10,5 +10,8 @@ public interface MetricWriter<R extends Record, V> {
 
     void writeMetric(R record, Metric<R, V> metric);
 
-    void writeMetric(R record, Metric<R, V> metric, List<RecordFilter<R>> additionalFilters);
+    void writeMetric(R record, Metric<R, V> metric, String additionalKey);
+
+    void writeMetric(R record, Metric<R, V> metric,
+            List<RecordFilter<R>> additionalFilters, String additionalKey);
 }

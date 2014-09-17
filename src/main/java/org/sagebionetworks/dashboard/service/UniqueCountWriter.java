@@ -1,23 +1,11 @@
 package org.sagebionetworks.dashboard.service;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
-import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
-import org.sagebionetworks.dashboard.metric.QuestionMetric;
-import org.sagebionetworks.dashboard.parse.CertifiedUserFilter;
-import org.sagebionetworks.dashboard.parse.CertifiedUserIdReader;
-import org.sagebionetworks.dashboard.parse.CuPassingRecord;
-import org.sagebionetworks.dashboard.parse.QuestionFailFilter;
-import org.sagebionetworks.dashboard.parse.QuestionIndexReader;
-import org.sagebionetworks.dashboard.parse.QuestionPassFilter;
 import org.sagebionetworks.dashboard.parse.Record;
-import org.sagebionetworks.dashboard.parse.RecordFilter;
-import org.sagebionetworks.dashboard.parse.CuResponseRecord;
 import org.springframework.stereotype.Service;
 
 @Service("uniqueCountWriter")
@@ -28,7 +16,7 @@ public class UniqueCountWriter<R extends Record> extends AbstractMetricWriter<R,
         uniqueCountDao.put(metricId, id, timestamp);
     }
 
-    public void writeCertifiedUsersMetric(CuPassingRecord record, CertifiedUserMetric metric) {
+    /*public void writeCertifiedUsersMetric(CuPassingRecord record, CertifiedUserMetric metric) {
         // Apply the filters first
         List<RecordFilter<CuPassingRecord>> filters = metric.getFilters();
         for (RecordFilter<CuPassingRecord> filter : filters) {
@@ -49,9 +37,9 @@ public class UniqueCountWriter<R extends Record> extends AbstractMetricWriter<R,
         if (value != null) {
             write(metricId, timestamp, value);
         }
-    }
+    }*/
 
-    public void writeResponse(CuResponseRecord record, QuestionMetric metric, boolean passed) {
+    /*public void writeResponse(CuResponseRecord record, QuestionMetric metric, boolean passed) {
         // Apply the filters first
         List<RecordFilter<CuResponseRecord>> filters = metric.getFilters();
         for (RecordFilter<CuResponseRecord> filter : filters) {
@@ -79,7 +67,7 @@ public class UniqueCountWriter<R extends Record> extends AbstractMetricWriter<R,
         if (questionIndex != null) {
             write(metricId + ":" + questionIndex, record.timestamp(), responseId);
         }
-    }
+    }*/
 
     public void removeValue(String userId, String metricName) {
         uniqueCountDao.removeValue(userId, nameIdDao.getId(metricName));
