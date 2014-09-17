@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -25,6 +26,11 @@ public class AbstractMetricWriterTest {
         @Override
         void write(String metricId, String additionalKey, DateTime timestamp,
                 String id) {}
+
+        @Override
+        Collection<Metric<AccessRecord, String>> getMetrics() {
+            return null;
+        }
     }
 
     @Test
