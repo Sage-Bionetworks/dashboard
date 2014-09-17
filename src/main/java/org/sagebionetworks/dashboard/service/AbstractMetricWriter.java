@@ -54,8 +54,6 @@ abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter
         }
     }
 
-    abstract void write(String metricId, DateTime timestamp, V value);
-
     @Resource
     private NameIdDao nameIdDao;
 

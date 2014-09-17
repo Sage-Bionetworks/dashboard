@@ -10,11 +10,6 @@ import org.springframework.stereotype.Service;
 @Service("dayCountWriter")
 public class DayCountWriter extends AbstractMetricWriter<AccessRecord, String> {
 
-    @Override
-    void write(String metricId, DateTime timestamp, String id) {
-        write(metricId, "", timestamp, id);
-    }
-
     @Resource
     private UniqueCountDao dayCountDao;
 

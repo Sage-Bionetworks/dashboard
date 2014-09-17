@@ -23,14 +23,8 @@ public class AbstractMetricWriterTest {
 
     public static class StubMetricWriter extends AbstractMetricWriter<AccessRecord, String> {
         @Override
-        void write(String metricId, DateTime timestamp, String value) {}
-
-        @Override
         void write(String metricId, String additionalKey, DateTime timestamp,
-                String id) {
-            // TODO Auto-generated method stub
-            
-        }
+                String id) {}
     }
 
     @Test

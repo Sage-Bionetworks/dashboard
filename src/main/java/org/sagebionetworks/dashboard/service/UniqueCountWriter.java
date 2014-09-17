@@ -11,11 +11,6 @@ import org.springframework.stereotype.Service;
 @Service("uniqueCountWriter")
 public class UniqueCountWriter<R extends Record> extends AbstractMetricWriter<R, String> {
 
-    @Override
-    void write(String metricId, DateTime timestamp, String id) {
-        uniqueCountDao.put(metricId, "", id, timestamp);
-    }
-
     public void removeValue(String userId, String metricName) {
         uniqueCountDao.removeValue(userId, nameIdDao.getId(metricName));
     }
