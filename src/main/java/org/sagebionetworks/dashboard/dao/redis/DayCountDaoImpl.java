@@ -32,6 +32,14 @@ public class DayCountDaoImpl extends AbstractUniqueCountDao {
         put(metricId, shortId, month, timestamp);
     }
 
+    @Override
+    public void put(String metricId, String additionalKey, String id,
+            DateTime timestamp) {
+        String shortId = nameIdDao.getId(id);
+        put(metricId + additionalKey, shortId, week, timestamp);
+        put(metricId + additionalKey, shortId, month, timestamp);
+    }
+
     private void put(String metricId, String shortId, Interval interval, DateTime timestamp) {
         final String bitCountKey = getBitCountKey(metricId, shortId, interval, timestamp);
         final int day = getDay(interval, timestamp);

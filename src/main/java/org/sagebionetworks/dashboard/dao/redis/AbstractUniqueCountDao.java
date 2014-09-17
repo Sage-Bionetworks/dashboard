@@ -135,6 +135,7 @@ abstract class AbstractUniqueCountDao implements UniqueCountDao {
         Set<String> res = new HashSet<String>();
         for (String value : values) {
             res.add(nameIdDao.getName(value));
+            System.out.println("get All Values: " + value);
         }
         return res;
     }

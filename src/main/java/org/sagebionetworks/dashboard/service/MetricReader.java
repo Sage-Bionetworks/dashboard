@@ -121,6 +121,7 @@ public class MetricReader {
         Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + entityId);
         Set<UserDataPoint> res = new HashSet<UserDataPoint>();
         for (String key : keys) {
+            System.out.println("metric reader: " + key);
             res.addAll(convertToUserDataPoint(uniqueCountDao.getAllValues(key)));
         }
         return new ArrayList<UserDataPoint>(res);
@@ -130,7 +131,8 @@ public class MetricReader {
             Set<String> data) {
         List<UserDataPoint> results = new ArrayList<UserDataPoint>();
         for (String value : data) {
-            results.add(new UserDataPoint(nameIdDao.getName(value)));
+            //results.add(new UserDataPoint(nameIdDao.getName(value)));
+            results.add(new UserDataPoint(value));
         }
         Collections.sort(results, new Comparator<UserDataPoint>() {
             @Override

@@ -61,8 +61,7 @@ public class FileDownloadReportMetricTest {
         Metric<AccessRecord, String> metric = new FileDownloadReportMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric, ":" + AccessRecordUtil.getEntityId(records.get(0).getUri()));
         
-        List<UserDataPoint> results = 
-                metricReader.getAllReport(metric.getName(), "1960975");
+        List<UserDataPoint> results = metricReader.getAllReport(metric.getName(), "1960975");
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals("1404855949372", results.get(0).timestamp());

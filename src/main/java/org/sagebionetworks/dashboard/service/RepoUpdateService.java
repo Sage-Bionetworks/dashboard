@@ -68,8 +68,8 @@ public class RepoUpdateService {
     @Resource
     private DayCountWriter dayCountWriter;
 
-    @Resource
-    private Collection<ReportMetric> reportMetrics;
+    //@Resource
+    //private Collection<ReportMetric> reportMetrics;
 
     //@Resource
     //private ReportWriter reportWriter;

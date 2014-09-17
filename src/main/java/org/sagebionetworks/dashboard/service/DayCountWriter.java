@@ -17,4 +17,10 @@ public class DayCountWriter extends AbstractMetricWriter<AccessRecord, String> {
 
     @Resource
     private UniqueCountDao dayCountDao;
+
+    @Override
+    void write(String metricId, String additionalKey, DateTime timestamp,
+            String id) {
+        dayCountDao.put(metricId + additionalKey, id, timestamp);
+    }
 }

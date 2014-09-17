@@ -23,6 +23,9 @@ public interface UniqueCountDao {
      */
     void put(String metricId, String id, DateTime timestamp);
 
+    void put(String metricId, String additionalKey, String id,
+            DateTime timestamp);
+
     /**
      * Gets the list of counts for a particular ID over a period of time. For example,
      * the list of session counts for a user over a period of time.
@@ -82,4 +85,5 @@ public interface UniqueCountDao {
      * remove value from metric
      */
     void removeValue(String value, String metricId);
+
 }

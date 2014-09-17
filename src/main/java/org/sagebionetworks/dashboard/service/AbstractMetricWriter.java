@@ -24,7 +24,6 @@ abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter
         writeMetric(record, metric, Collections.<RecordFilter<R>> emptyList(), additionalKey);
     }
 
-    @Override
     public void writeMetric(final R record, final Metric<R, V> metric,
             final List<RecordFilter<R>> additionalFilters, final String additionalKey) {
 
@@ -51,7 +50,7 @@ abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter
 
         // Write the metric
         if (value != null) {
-            write(metricId + additionalKey, timestamp, value);
+            write(metricId, additionalKey, timestamp, value);
         }
     }
 
@@ -59,4 +58,6 @@ abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter
 
     @Resource
     private NameIdDao nameIdDao;
+
+    abstract void write(String metricId, String additionalKey, DateTime timestamp, V value);
 }

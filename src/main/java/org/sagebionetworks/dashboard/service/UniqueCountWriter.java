@@ -25,4 +25,10 @@ public class UniqueCountWriter<R extends Record> extends AbstractMetricWriter<R,
 
     @Resource
     private NameIdDao nameIdDao;
+
+    @Override
+    void write(String metricId, String additionalKey, DateTime timestamp,
+            String value) {
+        uniqueCountDao.put(metricId, additionalKey, value, timestamp);
+    }
 }

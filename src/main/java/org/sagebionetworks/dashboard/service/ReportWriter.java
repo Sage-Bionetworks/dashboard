@@ -16,7 +16,7 @@ import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Service;
 
-@Service("reportWriter")
+//@Service("reportWriter")
 public class ReportWriter implements MetricWriter<AccessRecord, String>{
 
     @Override
@@ -24,7 +24,6 @@ public class ReportWriter implements MetricWriter<AccessRecord, String>{
         writeMetric(record, metric, Collections.<RecordFilter<AccessRecord>> emptyList(), "");
     }
 
-    @Override
     public void writeMetric(AccessRecord record, Metric<AccessRecord, String> metric,
             List<RecordFilter<AccessRecord>> additionalFilters, String additionalKey) {
         // Apply the filters first
@@ -56,11 +55,11 @@ public class ReportWriter implements MetricWriter<AccessRecord, String>{
     }
 
     void write(String metricId, DateTime timestamp, String entityId, String userData) {
-        fileDownloadDao.put(metricId, entityId, timestamp, userData);
+        //fileDownloadDao.put(metricId, entityId, timestamp, userData);
     }
 
-    @Resource
-    private FileDownloadDao fileDownloadDao;
+    //@Resource
+    //private FileDownloadDao fileDownloadDao;
 
     @Resource
     private NameIdDao nameIdDao;
