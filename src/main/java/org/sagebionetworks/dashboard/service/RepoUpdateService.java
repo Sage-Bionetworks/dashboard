@@ -160,7 +160,7 @@ public class RepoUpdateService {
                 @Override
                 public void run() {
                     try {
-                        simpleCountWriter.writeMetric((AccessRecord) record, metric);
+                        simpleCountWriter.writeMetric(record, metric);
                     } catch (Throwable e){
                         callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                     }
@@ -172,7 +172,7 @@ public class RepoUpdateService {
                 @Override
                 public void run() {
                     try {
-                        timeSeriesWriter.writeMetric((AccessRecord) record, metric);
+                        timeSeriesWriter.writeMetric(record, metric);
                     } catch (Throwable e){
                         callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                     }
@@ -199,7 +199,7 @@ public class RepoUpdateService {
                     @Override
                     public void run() {
                         try {
-                            dayCountWriter.writeMetric((AccessRecord) record, metric);
+                            dayCountWriter.writeMetric(record, metric);
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                         }
@@ -212,7 +212,7 @@ public class RepoUpdateService {
                 @Override
                 public void run() {
                     try {
-                        reportWriter.writeMetric((AccessRecord) record, metric);
+                        reportWriter.writeMetric(record, metric);
                     } catch (Throwable e){
                         callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                     }
