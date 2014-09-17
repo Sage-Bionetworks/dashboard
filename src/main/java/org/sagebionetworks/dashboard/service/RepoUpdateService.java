@@ -31,6 +31,7 @@ import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateResult;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateStatus;
+import org.sagebionetworks.dashboard.util.AccessRecordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -185,6 +186,10 @@ public class RepoUpdateService {
                     @Override
                     public void run() {
                         try {
+                            if (metric.getName().equals("fileDownloadReportMetric")) {
+                                uniqueCountWriter.writeMetric(record, metric,
+                                        AccessRecordUtil.getEntityId(record.getUri()));
+                            }
                             uniqueCountWriter.writeMetric(record, metric);
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
@@ -207,7 +212,7 @@ public class RepoUpdateService {
                 });
             }
         }
-        for (final ReportMetric metric : reportMetrics) {
+        /*for (final ReportMetric metric : reportMetrics) {
             tasks.add(new Runnable() {
                 @Override
                 public void run() {
@@ -218,7 +223,7 @@ public class RepoUpdateService {
                     }
                 }
             });
-        }
+        }*/
         for (Runnable task : tasks) {
             threadPool.submit(task);
         }
