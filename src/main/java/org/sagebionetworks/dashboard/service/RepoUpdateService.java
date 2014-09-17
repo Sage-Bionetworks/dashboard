@@ -185,9 +185,7 @@ public class RepoUpdateService {
                     @Override
                     public void run() {
                         try {
-                            if (record instanceof AccessRecord) {
-                                uniqueCountWriter.writeMetric(record, metric);
-                            }
+                            uniqueCountWriter.writeMetric(record, metric);
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                         }
