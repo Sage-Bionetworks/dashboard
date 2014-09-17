@@ -39,9 +39,6 @@ public class MetricReader {
     @Resource
     private SimpleCountDao simpleCountDao;
 
-    //@Resource
-    //private FileDownloadDao fileDownloadDao;
-
     public List<TimeDataPoint> getTimeSeries(String metricName, DateTime from, DateTime to, Statistic s, Interval a) {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
