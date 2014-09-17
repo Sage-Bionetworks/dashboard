@@ -189,8 +189,9 @@ public class RepoUpdateService {
                             if (metric.getName().equals("fileDownloadReportMetric")) {
                                 uniqueCountWriter.writeMetric(record, metric,
                                         AccessRecordUtil.getEntityId(record.getUri()));
+                            } else {
+                                uniqueCountWriter.writeMetric(record, metric);
                             }
-                            uniqueCountWriter.writeMetric(record, metric);
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                         }

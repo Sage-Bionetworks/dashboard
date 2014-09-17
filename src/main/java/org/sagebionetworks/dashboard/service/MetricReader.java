@@ -1,6 +1,9 @@
 package org.sagebionetworks.dashboard.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -116,12 +119,32 @@ public class MetricReader {
         if (entityId.startsWith("syn")) {
             entityId = entityId.substring(3);
         }
-        Set<String> keys = fileDownloadDao.getAllKeys(metricId + ":" + entityId);
+        Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + entityId);
         Set<UserDataPoint> res = new HashSet<UserDataPoint>();
         for (String key : keys) {
-            res.addAll(fileDownloadDao.get(key));
+            res.addAll(convertToUserDataPoint(uniqueCountDao.getAllValues(key)));
         }
         return new ArrayList<UserDataPoint>(res);
+    }
+
+    private Collection<? extends UserDataPoint> convertToUserDataPoint(
+            Set<String> data) {
+        List<UserDataPoint> results = new ArrayList<UserDataPoint>();
+        for (String value : data) {
+            results.add(new UserDataPoint(nameIdDao.getName(value)));
+        }
+        Collections.sort(results, new Comparator<UserDataPoint>() {
+            @Override
+            public int compare(UserDataPoint udata1, UserDataPoint udata2) {
+                int res = udata1.userId().compareTo(udata2.userId());
+                if (res != 0) {
+                    return res;
+                } else {
+                    return udata1.timestamp().compareTo(udata2.timestamp());
+                }
+            }
+        });
+        return results;
     }
 
     /*

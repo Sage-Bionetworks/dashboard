@@ -20,6 +20,7 @@ import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.MetricReader;
 import org.sagebionetworks.dashboard.service.UniqueCountWriter;
+import org.sagebionetworks.dashboard.util.AccessRecordUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -58,7 +59,7 @@ public class FileDownloadReportMetricTest {
         assertNotNull(records);
         assertEquals(1, records.size());
         Metric<AccessRecord, String> metric = new FileDownloadReportMetric();
-        uniqueCountWriter.writeMetric(records.get(0), metric);
+        uniqueCountWriter.writeMetric(records.get(0), metric, AccessRecordUtil.getEntityId(records.get(0).getUri()));
         
         List<UserDataPoint> results = 
                 metricReader.getAllReport(metric.getName(), "1960975");
@@ -77,7 +78,7 @@ public class FileDownloadReportMetricTest {
         assertNotNull(records);
         assertEquals(1, records.size());
         Metric<AccessRecord, String> metric = new FileDownloadReportMetric();
-        uniqueCountWriter.writeMetric(records.get(0), metric);
+        uniqueCountWriter.writeMetric(records.get(0), metric, AccessRecordUtil.getEntityId(records.get(0).getUri()));
         
         metricReader.getAllReport(metric.getName(), "1960975");
     }
