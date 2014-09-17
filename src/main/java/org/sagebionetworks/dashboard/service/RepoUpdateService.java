@@ -71,8 +71,8 @@ public class RepoUpdateService {
     @Resource
     private Collection<ReportMetric> reportMetrics;
 
-    @Resource
-    private ReportWriter reportWriter;
+    //@Resource
+    //private ReportWriter reportWriter;
 
     private final RecordParser parser = new RepoRecordParser();
 
