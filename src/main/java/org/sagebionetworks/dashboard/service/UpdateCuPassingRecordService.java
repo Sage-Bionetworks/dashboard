@@ -50,12 +50,8 @@ public class UpdateCuPassingRecordService {
         if (record == null) {
             return;
         }
-        //if (record.isCorrect()) {
-            uniqueCountWriterForResponseRecord.writeMetric(record,
+        uniqueCountWriterForResponseRecord.writeMetric(record,
                     questionPassMetric, ":" + Integer.toString(record.questionIndex()));
-        /*} else {
-            uniqueCountWriterForResponseRecord.writeResponse(record, questionFailMetric, false);
-        }*/
     }
 
     /**
