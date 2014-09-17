@@ -26,11 +26,11 @@ import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
 import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
 import org.sagebionetworks.dashboard.model.WriteRecordResult;
 import org.sagebionetworks.dashboard.parse.AccessRecord;
+import org.sagebionetworks.dashboard.parse.EntityIdReader;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateResult;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateStatus;
-import org.sagebionetworks.dashboard.util.AccessRecordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -181,7 +181,7 @@ public class RepoUpdateService {
                         try {
                             if (metric.getName().equals("fileDownloadReportMetric")) {
                                 uniqueCountWriter.writeMetric(record, metric,
-                                        ":" + AccessRecordUtil.getEntityId(record.getUri()));
+                                        ":" + (new EntityIdReader()).read(record));
                             } else {
                                 uniqueCountWriter.writeMetric(record, metric);
                             }
