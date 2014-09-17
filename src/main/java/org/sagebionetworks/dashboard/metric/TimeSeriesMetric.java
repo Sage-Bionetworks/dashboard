@@ -1,3 +1,5 @@
 package org.sagebionetworks.dashboard.metric;
 
-public abstract class TimeSeriesMetric extends AnnotatedMetric<Long> {}
+import org.sagebionetworks.dashboard.parse.AccessRecord;
+
+public abstract class TimeSeriesMetric extends AnnotatedMetric<AccessRecord, Long> {}

@@ -10,7 +10,7 @@ public class ErrorFilterTest {
     @Test
     public void test() {
 
-        RecordFilter filter = new ErrorFilter();
+        RecordFilter<AccessRecord> filter = new ErrorFilter();
 
         // When the status is null or empty
         RepoRecord record = new RepoRecord();

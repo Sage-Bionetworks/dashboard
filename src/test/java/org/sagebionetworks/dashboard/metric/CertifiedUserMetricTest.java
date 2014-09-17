@@ -31,7 +31,7 @@ public class CertifiedUserMetricTest {
     private StringRedisTemplate redisTemplate;
 
     @Resource
-    private UniqueCountWriter uniqueCountWriter;
+    private UniqueCountWriter<CuPassingRecord> uniqueCountWriter;
 
     @Resource
     private MetricReader metricReader;

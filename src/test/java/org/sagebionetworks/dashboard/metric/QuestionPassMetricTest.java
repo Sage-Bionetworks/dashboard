@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.sagebionetworks.dashboard.dao.redis.RedisTestUtil;
 import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.parse.Response;
+import org.sagebionetworks.dashboard.parse.CuResponseRecord;
 import org.sagebionetworks.dashboard.service.MetricReader;
 import org.sagebionetworks.dashboard.service.UniqueCountWriter;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -31,7 +31,7 @@ public class QuestionPassMetricTest {
     private StringRedisTemplate redisTemplate;
 
     @Resource
-    private UniqueCountWriter uniqueCountWriter;
+    private UniqueCountWriter<CuResponseRecord> uniqueCountWriter;
 
     @Resource
     private MetricReader metricReader;
@@ -51,7 +51,7 @@ public class QuestionPassMetricTest {
     @Test
     public void testCorrectRecord() {
 
-        Response record = new Response(1, 1, new DateTime(2014, 5, 20, 12, 0, 0, 0), true);
+        CuResponseRecord record = new CuResponseRecord(1, 1, new DateTime(2014, 5, 20, 12, 0, 0, 0), true);
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionPassMetric();
@@ -69,7 +69,7 @@ public class QuestionPassMetricTest {
     @Test(expected=IllegalArgumentException.class)
     public void testIncorrectRecord() {
 
-        Response record = new Response(1, 1, new DateTime(2014, 5, 20, 12, 0, 0, 0), false);
+        CuResponseRecord record = new CuResponseRecord(1, 1, new DateTime(2014, 5, 20, 12, 0, 0, 0), false);
 
         assertNotNull(record);
         QuestionMetric metric = new QuestionPassMetric();

@@ -18,7 +18,7 @@ import org.sagebionetworks.dashboard.dao.CachedDao;
 import org.sagebionetworks.dashboard.dao.redis.RedisTestUtil;
 import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.MetricReader;
@@ -35,7 +35,7 @@ public class CertifiedUserQuizRequestMetricTest {
     private StringRedisTemplate redisTemplate;
 
     @Resource
-    private UniqueCountWriter uniqueCountWriter;
+    private UniqueCountWriter<AccessRecord> uniqueCountWriter;
 
     @Resource
     private MetricReader metricReader;
@@ -62,10 +62,10 @@ public class CertifiedUserQuizRequestMetricTest {
         String line = "\"1\",\"3\",\"1403827200000\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTest\",\"1118328\",,\"2014-06-23\",\"GET\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
 
         Reader reader = new StringReader(line);
-        List<Record> records = parser.parse(reader);
+        List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
@@ -84,10 +84,10 @@ public class CertifiedUserQuizRequestMetricTest {
         String line = "\"1\",\"3\",\"1403827200001\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTest\",\"1118328\",,\"2014-06-23\",\"GET\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
 
         Reader reader = new StringReader(line);
-        List<Record> records = parser.parse(reader);
+        List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
@@ -106,10 +106,10 @@ public class CertifiedUserQuizRequestMetricTest {
         String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTestResponse\",\"1118328\",,\"2014-06-23\",\"GET\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
 
         Reader reader = new StringReader(line);
-        List<Record> records = parser.parse(reader);
+        List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
@@ -124,10 +124,10 @@ public class CertifiedUserQuizRequestMetricTest {
         String line = "\"1\",\"3\",\"1403557060405\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTest\",\"1118328\",,\"2014-06-23\",\"POST\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
 
         Reader reader = new StringReader(line);
-        List<Record> records = parser.parse(reader);
+        List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
@@ -142,10 +142,10 @@ public class CertifiedUserQuizRequestMetricTest {
         String line = "\"1\",\"3\",\"1403827199999\",,\"repo-prod.prod.sagebase.org\",\"25808\",\"Synpase-Java-Client/develop-SNAPSHOT  Synapse-Web-Client/develop-SNAPSHOT\",\"domain=SYNAPSE\",\"b6415a25-e71a-4de9-8a1f-c26873a0449d\",,\"/repo/v1/certifiedUserTest\",\"1118328\",,\"2014-06-23\",\"GET\",\"def12efa1aaf9fe8:2a2ab516:146a8217e19:-7ffd\",\"000000047\",\"prod\",\"true\",\"200\"";
 
         Reader reader = new StringReader(line);
-        List<Record> records = parser.parse(reader);
+        List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);

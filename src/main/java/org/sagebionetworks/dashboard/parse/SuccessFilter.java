@@ -3,9 +3,9 @@ package org.sagebionetworks.dashboard.parse;
 /**
  * Matches when the record is successful.
  */
-public class SuccessFilter implements RecordFilter {
+public class SuccessFilter implements RecordFilter<AccessRecord> {
     @Override
-    public boolean matches(Record record) {
+    public boolean matches(AccessRecord record) {
         String status = record.getStatus();
         if (status == null || status.isEmpty()) {
             return false; // Success or not we don't know

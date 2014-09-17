@@ -2,7 +2,7 @@ package org.sagebionetworks.dashboard.parse;
 
 import java.util.regex.Pattern;
 
-abstract class UriRegexFilter implements RecordFilter {
+abstract class UriRegexFilter implements RecordFilter<AccessRecord> {
 
     private final Pattern pattern;
 
@@ -14,7 +14,7 @@ abstract class UriRegexFilter implements RecordFilter {
     }
 
     @Override
-    public boolean matches(Record record) {
+    public boolean matches(AccessRecord record) {
         String uri = record.getUri();
         if (uri == null) {
             return false; // Otherwise Matcher will throw an NPE

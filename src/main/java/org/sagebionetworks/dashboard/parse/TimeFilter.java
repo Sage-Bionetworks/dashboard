@@ -1,13 +1,13 @@
 package org.sagebionetworks.dashboard.parse;
 
-public class TimeFilter implements RecordFilter{
+public class TimeFilter implements RecordFilter<AccessRecord>{
 
     public TimeFilter(long timestamp) {
         this.timestamp = timestamp;
     }
 
     @Override
-    public boolean matches(Record record) {
+    public boolean matches(AccessRecord record) {
         return record.getTimestamp() >= timestamp;
     }
 

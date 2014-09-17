@@ -10,7 +10,7 @@ public class ProdFilterTest {
     @Test
     public void test() {
 
-        RecordFilter filter = new ProdFilter();
+        RecordFilter<AccessRecord> filter = new ProdFilter();
 
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));

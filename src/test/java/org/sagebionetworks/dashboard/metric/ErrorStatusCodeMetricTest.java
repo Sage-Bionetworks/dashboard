@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.ErrorFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.StatusCodeReader;
@@ -11,7 +12,7 @@ import org.sagebionetworks.dashboard.parse.StatusCodeReader;
 public class ErrorStatusCodeMetricTest {
     @Test
     public void test() {
-        UniqueCountMetric metric = new ErrorStatusCodeMetric();
+        UniqueCountMetric<AccessRecord, String> metric = new ErrorStatusCodeMetric();
         assertEquals("errorStatusCodeMetric", metric.getName());
         assertTrue(metric.getRecordReader() instanceof StatusCodeReader);
         assertEquals(3, metric.getFilters().size());

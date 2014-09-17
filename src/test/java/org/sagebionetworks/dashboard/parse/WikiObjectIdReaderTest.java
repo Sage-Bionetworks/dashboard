@@ -8,7 +8,7 @@ import org.junit.Test;
 public class WikiObjectIdReaderTest {
     @Test
     public void test() {
-        RecordReader<String> reader = new WikiObjectIdReader();
+        RecordReader<AccessRecord, String> reader = new WikiObjectIdReader();
         RepoRecord record = new RepoRecord();
         assertNull(reader.read(record));
         record.setObjectId("12345");

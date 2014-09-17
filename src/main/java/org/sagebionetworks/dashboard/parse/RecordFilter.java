@@ -1,5 +1,5 @@
 package org.sagebionetworks.dashboard.parse;
 
-public interface RecordFilter {
-    boolean matches(Record record);
+public interface RecordFilter<R extends Record> {
+    boolean matches(R record);
 }

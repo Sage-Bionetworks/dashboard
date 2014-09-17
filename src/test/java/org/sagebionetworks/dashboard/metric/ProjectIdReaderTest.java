@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.SynapseDao;
-import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -18,9 +18,9 @@ public class ProjectIdReaderTest {
         final String entityId = "entity ID";
         final String projectId = "project ID";
  
-        Record record = mock(Record.class);
+        AccessRecord record = mock(AccessRecord.class);
         @SuppressWarnings("unchecked")
-        RecordReader<String> entityIdReader = (RecordReader<String>)mock(RecordReader.class);
+        RecordReader<AccessRecord, String> entityIdReader = (RecordReader<AccessRecord, String>)mock(RecordReader.class);
         when(entityIdReader.read(record)).thenReturn(entityId);
 
         SynapseDao synapseDao = mock(SynapseDao.class);

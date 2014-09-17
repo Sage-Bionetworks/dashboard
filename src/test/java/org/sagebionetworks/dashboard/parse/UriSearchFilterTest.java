@@ -8,7 +8,7 @@ import org.junit.Test;
 public class UriSearchFilterTest {
     @Test
     public void test() {
-        RecordFilter filter = new UriSearchFilter();
+        RecordFilter<AccessRecord> filter = new UriSearchFilter();
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1");

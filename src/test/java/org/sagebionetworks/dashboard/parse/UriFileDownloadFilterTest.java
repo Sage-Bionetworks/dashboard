@@ -8,7 +8,7 @@ import org.junit.Test;
 public class UriFileDownloadFilterTest {
     @Test
     public void test() {
-        RecordFilter filter = new UriFileDownloadFilter();
+        RecordFilter<AccessRecord> filter = new UriFileDownloadFilter();
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1/entity/syn123");

@@ -12,7 +12,7 @@ public class QueryStringIdReader extends RegexRecordReader {
     }
 
     @Override
-    String readString(Record record) {
+    String readString(AccessRecord record) {
         return record.getQueryString();
     }
 }

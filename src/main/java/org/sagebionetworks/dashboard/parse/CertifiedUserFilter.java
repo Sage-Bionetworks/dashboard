@@ -1,13 +1,9 @@
 package org.sagebionetworks.dashboard.parse;
 
-public class CertifiedUserFilter implements RecordFilter{
-
-    public boolean matches(CuPassingRecord record) {
-        return record.isPassed();
-    }
+public class CertifiedUserFilter implements RecordFilter<CuPassingRecord>{
 
     @Override
-    public boolean matches(Record record) {
-        throw new RuntimeException("Method is not supported.");
+    public boolean matches(CuPassingRecord record) {
+        return record.isPassed();
     }
 }

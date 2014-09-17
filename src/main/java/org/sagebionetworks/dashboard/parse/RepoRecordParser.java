@@ -44,8 +44,8 @@ public class RepoRecordParser implements RecordParser {
     }
 
     @Override
-    public List<Record> parse(Reader r) {
-        List<Record> records = new ArrayList<Record>();
+    public List<AccessRecord> parse(Reader r) {
+        List<AccessRecord> records = new ArrayList<AccessRecord>();
         CSVReader reader = null;
         try {
             reader = new CSVReader(r);

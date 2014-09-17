@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.MethodUriReader;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
@@ -12,20 +13,20 @@ import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.springframework.stereotype.Component;
 
 @Component("topMethodMetric")
-public class TopMethodMetric extends UniqueCountMetric {
+public class TopMethodMetric extends UniqueCountMetric<AccessRecord, String> {
 
-    private final List<RecordFilter> filters = Collections.unmodifiableList(Arrays.asList(
+    private final List<RecordFilter<AccessRecord>> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new UserIdFilter()));
 
-    private final RecordReader<String> reader = new MethodUriReader();
+    private final RecordReader<AccessRecord, String> reader = new MethodUriReader();
 
     @Override
-    public List<RecordFilter> getFilters() {
+    public List<RecordFilter<AccessRecord>> getFilters() {
         return filters;
     }
 
     @Override
-    public RecordReader<String> getRecordReader() {
+    public RecordReader<AccessRecord, String> getRecordReader() {
         return reader;
     }
 }

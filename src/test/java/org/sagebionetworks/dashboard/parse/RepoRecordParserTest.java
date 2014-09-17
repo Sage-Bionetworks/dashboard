@@ -16,7 +16,7 @@ public class RepoRecordParserTest {
         RecordParser parser = new RepoRecordParser();
         String line = ",\"1\",\"1383058800713\",,\"repo-prod-18.prod.sagebase.org\",\"18096\",\"Synpase-Java-Client/2013-10-17-fcdf7fe-730  Synapse-Web-Client/18.0-9-g47c6675\",,\"742d6c03-121c-44d4-be19-021c20766d3a\",,\"/repo/v1/version\",\"273950\",,\"2013-10-29\",\"GET\",\"62248c222722313a:-6a4fdffe:141d8bc9b96:-7ffd\",\"000000018\",\"prod\",\"true\",\"200\"";
         StringReader reader = new StringReader(line);
-        List<Record> records = parser.parse(reader);
+        List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
         assertEquals("742d6c03-121c-44d4-be19-021c20766d3a", records.get(0).getSessionId());

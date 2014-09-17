@@ -4,10 +4,11 @@ import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.springframework.stereotype.Service;
 
 @Service("timeSeriesWriter")
-public class TimeSeriesWriter extends AbstractMetricWriter<Long> {
+public class TimeSeriesWriter extends AbstractMetricWriter<AccessRecord, Long> {
 
     @Override
     void write(String metricId, DateTime timestamp, Long value) {

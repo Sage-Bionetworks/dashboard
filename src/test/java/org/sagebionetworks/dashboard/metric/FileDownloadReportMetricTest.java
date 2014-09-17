@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sagebionetworks.dashboard.dao.redis.RedisTestUtil;
 import org.sagebionetworks.dashboard.model.UserDataPoint;
-import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.MetricReader;
@@ -54,10 +54,10 @@ public class FileDownloadReportMetricTest {
         RecordParser parser = new RepoRecordParser();
         String line = ",\"37\",\"1404855949372\",,\"repo-prod.prod.sagebase.org\",\"58400\",\"Synpase-Java-Client/48.0-9-gc12ca7b\",\"redirect=false\",\"b698f0fa-1b0a-4dc2-bdee-b1606a9dc881\",,\"/repo/v1/entity/syn1960975/version/1/file\",\"1584359\",,\"2014-07-08\",\"GET\",\"1562bb43b38576e9:30376851:146cb357393:-7ffd\",\"000000048\",\"prod\",\"true\",\"200\"";
         Reader reader = new StringReader(line);
-        List<Record> records = parser.parse(reader);
+        List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new FileDownloadReportMetric();
+        Metric<AccessRecord, String> metric = new FileDownloadReportMetric();
         reportWriter.writeMetric(records.get(0), metric);
         
         List<UserDataPoint> results = 
@@ -73,10 +73,10 @@ public class FileDownloadReportMetricTest {
         RecordParser parser = new RepoRecordParser();
         String line = ",\"37\",\"1404855949372\",,\"repo-prod.prod.sagebase.org\",\"58400\",\"Synpase-Java-Client/48.0-9-gc12ca7b\",\"redirect=false\",\"b698f0fa-1b0a-4dc2-bdee-b1606a9dc881\",,\"/repo/v1/entity/syn1960975/bundle\",\"1584359\",,\"2014-07-08\",\"GET\",\"1562bb43b38576e9:30376851:146cb357393:-7ffd\",\"000000048\",\"prod\",\"true\",\"200\"";
         Reader reader = new StringReader(line);
-        List<Record> records = parser.parse(reader);
+        List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<String> metric = new FileDownloadReportMetric();
+        Metric<AccessRecord, String> metric = new FileDownloadReportMetric();
         reportWriter.writeMetric(records.get(0), metric);
         
         metricReader.getAllReport(metric.getName(), "1960975");

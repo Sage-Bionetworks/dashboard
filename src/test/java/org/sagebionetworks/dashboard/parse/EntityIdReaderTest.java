@@ -8,7 +8,7 @@ import org.junit.Test;
 public class EntityIdReaderTest {
     @Test
     public void test() {
-        RecordReader<String> reader = new EntityIdReader();
+        RecordReader<AccessRecord, String> reader = new EntityIdReader();
         RepoRecord record = new RepoRecord();
         assertNull(reader.read(record));
         record.setObjectId("12345");

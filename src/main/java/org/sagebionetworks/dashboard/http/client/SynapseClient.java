@@ -28,7 +28,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
-import org.sagebionetworks.dashboard.parse.Response;
+import org.sagebionetworks.dashboard.parse.CuResponseRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -193,7 +193,7 @@ public class SynapseClient {
         return new CuPassingRecord(isPassed, userId, timestamp, score);
     }
 
-    public List<Response> getResponses(String userId, String session) {
+    public List<CuResponseRecord> getResponses(String userId, String session) {
         if (userId == null) {
             return null;
         }
@@ -203,7 +203,7 @@ public class SynapseClient {
         get.addHeader(new BasicHeader("sessionToken", session));
         JsonNode root = executeRequest(get);
 
-        List<Response> res = new ArrayList<Response>();
+        List<CuResponseRecord> res = new ArrayList<CuResponseRecord>();
         if (root == null || root.get("totalNumberOfResults").intValue() == 0) {
             return res;
         }
@@ -218,7 +218,7 @@ public class SynapseClient {
                 JsonNode response = responses.next();
                 boolean isCorrect = response.get("isCorrect").booleanValue();
                 int questionIndex = response.get("question").get("questionIndex").intValue();
-                Response resp = new Response(respId, questionIndex, timestamp, isCorrect);
+                CuResponseRecord resp = new CuResponseRecord(respId, questionIndex, timestamp, isCorrect);
                 res.add(resp);
             }
         }

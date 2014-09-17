@@ -8,7 +8,7 @@ import org.junit.Test;
 public class UriEntityFilterTest {
     @Test
     public void test() {
-        RecordFilter filter = new UriEntityFilter();
+        RecordFilter<AccessRecord> filter = new UriEntityFilter();
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1/entity/syn2203318");

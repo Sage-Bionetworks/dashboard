@@ -8,10 +8,10 @@ import java.util.HashSet;
 /**
  * Filter out records for some specific userId
  */
-public class UserIdFilter implements RecordFilter{
+public class UserIdFilter implements RecordFilter<AccessRecord>{
 
     @Override
-    public boolean matches(Record record) {
+    public boolean matches(AccessRecord record) {
         return !(userIds.contains(record.getUserId()));
     }
 

@@ -15,12 +15,13 @@ import org.sagebionetworks.dashboard.parse.CuPassingRecord;
 import org.sagebionetworks.dashboard.parse.QuestionFailFilter;
 import org.sagebionetworks.dashboard.parse.QuestionIndexReader;
 import org.sagebionetworks.dashboard.parse.QuestionPassFilter;
+import org.sagebionetworks.dashboard.parse.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
-import org.sagebionetworks.dashboard.parse.Response;
+import org.sagebionetworks.dashboard.parse.CuResponseRecord;
 import org.springframework.stereotype.Service;
 
 @Service("uniqueCountWriter")
-public class UniqueCountWriter extends AbstractMetricWriter<String> {
+public class UniqueCountWriter<R extends Record> extends AbstractMetricWriter<R, String> {
 
     @Override
     void write(String metricId, DateTime timestamp, String id) {
@@ -29,8 +30,8 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
 
     public void writeCertifiedUsersMetric(CuPassingRecord record, CertifiedUserMetric metric) {
         // Apply the filters first
-        List<RecordFilter> filters = metric.getFilters();
-        for (RecordFilter filter : filters) {
+        List<RecordFilter<CuPassingRecord>> filters = metric.getFilters();
+        for (RecordFilter<CuPassingRecord> filter : filters) {
             CertifiedUserFilter cuFilter = (CertifiedUserFilter) filter;
             if (!cuFilter.matches(record)) {
                 return;
@@ -50,10 +51,10 @@ public class UniqueCountWriter extends AbstractMetricWriter<String> {
         }
     }
 
-    public void writeResponse(Response record, QuestionMetric metric, boolean passed) {
+    public void writeResponse(CuResponseRecord record, QuestionMetric metric, boolean passed) {
         // Apply the filters first
-        List<RecordFilter> filters = metric.getFilters();
-        for (RecordFilter filter : filters) {
+        List<RecordFilter<CuResponseRecord>> filters = metric.getFilters();
+        for (RecordFilter<CuResponseRecord> filter : filters) {
             if (passed) {
                 QuestionPassFilter qpFilter = (QuestionPassFilter) filter;
                 if (!qpFilter.matches(record)) {

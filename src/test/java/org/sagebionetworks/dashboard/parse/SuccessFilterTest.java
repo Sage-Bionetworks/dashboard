@@ -9,7 +9,7 @@ public class SuccessFilterTest {
     @Test
     public void test() {
 
-        RecordFilter filter = new SuccessFilter();
+        RecordFilter<AccessRecord> filter = new SuccessFilter();
 
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));

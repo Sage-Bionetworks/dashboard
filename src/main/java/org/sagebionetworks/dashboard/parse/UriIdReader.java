@@ -12,7 +12,7 @@ public class UriIdReader extends RegexRecordReader {
     }
 
     @Override
-    String readString(Record record) {
+    String readString(AccessRecord record) {
         String uri = record.getUri();
         if (uri != null) {
             uri = uri.replace("v1", "").replace("wiki2", "");

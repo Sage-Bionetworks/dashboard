@@ -1,13 +1,9 @@
 package org.sagebionetworks.dashboard.parse;
 
-public class QuestionFailFilter implements RecordFilter{
+public class QuestionFailFilter implements RecordFilter<CuResponseRecord>{
 
     @Override
-    public boolean matches(Record record) {
-        throw new RuntimeException("Method is not supported.");
-    }
-
-    public boolean matches(Response record) {
+    public boolean matches(CuResponseRecord record) {
         return !record.isCorrect();
     }
 }

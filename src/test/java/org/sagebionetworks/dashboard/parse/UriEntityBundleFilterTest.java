@@ -10,7 +10,7 @@ public class UriEntityBundleFilterTest {
     @Test
     public void test() {
 
-        RecordFilter filter = new UriEntityBundleFilter();
+        RecordFilter<AccessRecord> filter = new UriEntityBundleFilter();
 
         RepoRecord record = new RepoRecord();
         assertFalse(filter.matches(record));
