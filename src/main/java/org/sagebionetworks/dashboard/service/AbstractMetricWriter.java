@@ -51,7 +51,7 @@ abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter
 
         // Write the metric
         if (value != null) {
-            write(metricId + ":" + additionalKey, timestamp, value);
+            write(metricId + additionalKey, timestamp, value);
         }
     }
 
