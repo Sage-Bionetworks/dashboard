@@ -71,8 +71,8 @@ public class RepoUpdateService {
     @Resource
     private Collection<ReportMetric> reportMetrics;
 
-    @Resource
-    private ReportWriter reportWriter;
+    //@Resource
+    //private ReportWriter reportWriter;
 
     private final RecordParser parser = new RepoRecordParser();
 
@@ -188,7 +188,7 @@ public class RepoUpdateService {
                         try {
                             if (metric.getName().equals("fileDownloadReportMetric")) {
                                 uniqueCountWriter.writeMetric(record, metric,
-                                        AccessRecordUtil.getEntityId(record.getUri()));
+                                        ":" + AccessRecordUtil.getEntityId(record.getUri()));
                             } else {
                                 uniqueCountWriter.writeMetric(record, metric);
                             }
