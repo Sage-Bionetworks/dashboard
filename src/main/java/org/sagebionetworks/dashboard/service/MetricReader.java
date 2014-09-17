@@ -1,6 +1,9 @@
 package org.sagebionetworks.dashboard.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +13,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
-import org.sagebionetworks.dashboard.dao.FileDownloadDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
@@ -36,9 +38,6 @@ public class MetricReader {
 
     @Resource
     private SimpleCountDao simpleCountDao;
-
-    @Resource
-    private FileDownloadDao fileDownloadDao;
 
     public List<TimeDataPoint> getTimeSeries(String metricName, DateTime from, DateTime to, Statistic s, Interval a) {
         if (metricName == null || metricName.isEmpty()) {
@@ -96,18 +95,6 @@ public class MetricReader {
         return simpleCountDao.get(metricId, from, to);
     }
 
-    public List<UserDataPoint> getFileDownloadReport(String metricName,
-            String entityId, DateTime timestamp, Interval interval) {
-        if (metricName == null || metricName.isEmpty()) {
-            throw new IllegalArgumentException("Metric name cannot be null or empty.");
-        }
-        String metricId = getMetricId(metricName);
-        if (entityId.startsWith("syn")) {
-            entityId = entityId.substring(3);
-        }
-        return fileDownloadDao.get(metricId, entityId, timestamp, interval);
-    }
-
     public List<UserDataPoint> getAllReport(String metricName, String entityId) {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
@@ -116,12 +103,33 @@ public class MetricReader {
         if (entityId.startsWith("syn")) {
             entityId = entityId.substring(3);
         }
-        Set<String> keys = fileDownloadDao.getAllKeys(metricId + ":" + entityId);
+        Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + entityId);
         Set<UserDataPoint> res = new HashSet<UserDataPoint>();
         for (String key : keys) {
-            res.addAll(fileDownloadDao.get(key));
+            res.addAll(convertToUserDataPoint(uniqueCountDao.getAllValues(key)));
         }
         return new ArrayList<UserDataPoint>(res);
+    }
+
+    private Collection<? extends UserDataPoint> convertToUserDataPoint(
+            Set<String> data) {
+        List<UserDataPoint> results = new ArrayList<UserDataPoint>();
+        for (String value : data) {
+            //results.add(new UserDataPoint(nameIdDao.getName(value)));
+            results.add(new UserDataPoint(value));
+        }
+        Collections.sort(results, new Comparator<UserDataPoint>() {
+            @Override
+            public int compare(UserDataPoint udata1, UserDataPoint udata2) {
+                int res = udata1.userId().compareTo(udata2.userId());
+                if (res != 0) {
+                    return res;
+                } else {
+                    return udata1.timestamp().compareTo(udata2.timestamp());
+                }
+            }
+        });
+        return results;
     }
 
     /*

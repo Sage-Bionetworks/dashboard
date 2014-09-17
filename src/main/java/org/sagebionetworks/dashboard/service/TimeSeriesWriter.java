@@ -17,4 +17,11 @@ public class TimeSeriesWriter extends AbstractMetricWriter<AccessRecord, Long> {
 
     @Resource
     private TimeSeriesDao timeSeriesDao;
+
+    @Override
+    void write(String metricId, String additionalKey, DateTime timestamp,
+            Long value) {
+        timeSeriesDao.put(metricId + additionalKey, timestamp, value);
+    }
+
 }

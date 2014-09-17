@@ -20,4 +20,10 @@ public class SimpleCountWriter extends AbstractMetricWriter<AccessRecord, String
 
     @Resource
     private SimpleCountDao simpleCountDao;
+
+    @Override
+    void write(String metricId, String additionalKey, DateTime timestamp,
+            String id) {
+        simpleCountDao.put(metricId + additionalKey, timestamp);
+    }
 }

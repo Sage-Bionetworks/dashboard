@@ -21,7 +21,6 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SessionDedupeDao;
 import org.sagebionetworks.dashboard.metric.DayCountMetric;
-import org.sagebionetworks.dashboard.metric.ReportMetric;
 import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
 import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
 import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
@@ -31,6 +30,7 @@ import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateResult;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateStatus;
+import org.sagebionetworks.dashboard.util.AccessRecordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -66,12 +66,6 @@ public class RepoUpdateService {
 
     @Resource
     private DayCountWriter dayCountWriter;
-
-    @Resource
-    private Collection<ReportMetric> reportMetrics;
-
-    @Resource
-    private ReportWriter reportWriter;
 
     private final RecordParser parser = new RepoRecordParser();
 
@@ -160,7 +154,7 @@ public class RepoUpdateService {
                 @Override
                 public void run() {
                     try {
-                        simpleCountWriter.writeMetric((AccessRecord) record, metric);
+                        simpleCountWriter.writeMetric(record, metric);
                     } catch (Throwable e){
                         callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                     }
@@ -172,7 +166,7 @@ public class RepoUpdateService {
                 @Override
                 public void run() {
                     try {
-                        timeSeriesWriter.writeMetric((AccessRecord) record, metric);
+                        timeSeriesWriter.writeMetric(record, metric);
                     } catch (Throwable e){
                         callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                     }
@@ -185,7 +179,12 @@ public class RepoUpdateService {
                     @Override
                     public void run() {
                         try {
-                            uniqueCountWriter.writeMetric(record, metric);
+                            if (metric.getName().equals("fileDownloadReportMetric")) {
+                                uniqueCountWriter.writeMetric(record, metric,
+                                        ":" + AccessRecordUtil.getEntityId(record.getUri()));
+                            } else {
+                                uniqueCountWriter.writeMetric(record, metric);
+                            }
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                         }
@@ -199,25 +198,13 @@ public class RepoUpdateService {
                     @Override
                     public void run() {
                         try {
-                            dayCountWriter.writeMetric((AccessRecord) record, metric);
+                            dayCountWriter.writeMetric(record, metric);
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                         }
                     }
                 });
             }
-        }
-        for (final ReportMetric metric : reportMetrics) {
-            tasks.add(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        reportWriter.writeMetric((AccessRecord) record, metric);
-                    } catch (Throwable e){
-                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
-                    }
-                }
-            });
         }
         for (Runnable task : tasks) {
             threadPool.submit(task);

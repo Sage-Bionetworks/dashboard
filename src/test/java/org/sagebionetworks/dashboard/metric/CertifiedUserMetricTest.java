@@ -58,7 +58,7 @@ public class CertifiedUserMetricTest {
 
         assertNotNull(record);
         CertifiedUserMetric metric = new CertifiedUserMetric();
-        uniqueCountWriter.writeCertifiedUsersMetric(record, metric);
+        uniqueCountWriter.writeMetric(record, metric);
 
         DateTime dtFrom = new DateTime(2014, 01, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 07, 30, 0, 0);
@@ -76,7 +76,7 @@ public class CertifiedUserMetricTest {
 
         assertNotNull(record);
         CertifiedUserMetric metric = new CertifiedUserMetric();
-        uniqueCountWriter.writeCertifiedUsersMetric(record, metric);
+        uniqueCountWriter.writeMetric(record, metric);
 
         DateTime dtFrom = new DateTime(2014, 01, 1, 0, 0);
         DateTime dtTo = new DateTime(2014, 07, 30, 0, 0);

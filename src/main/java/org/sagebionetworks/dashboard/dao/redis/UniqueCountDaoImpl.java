@@ -21,10 +21,15 @@ public class UniqueCountDaoImpl extends AbstractUniqueCountDao {
 
     @Override
     public void put(String metricId, String id, DateTime timestamp) {
+        put(metricId, "", id, timestamp);
+    }
+
+    @Override
+    public void put(String metricId, String additionalKey, String id, DateTime timestamp) {
         String shortId = nameIdDao.getId(id);
-        put(metricId, shortId, day, timestamp);
-        put(metricId, shortId, week, timestamp);
-        put(metricId, shortId, month, timestamp);
+        put(metricId + additionalKey, shortId, day, timestamp);
+        put(metricId + additionalKey, shortId, week, timestamp);
+        put(metricId + additionalKey, shortId, month, timestamp);
     }
 
     private void put(String metricId, String shortId, Interval interval, DateTime timestamp) {
