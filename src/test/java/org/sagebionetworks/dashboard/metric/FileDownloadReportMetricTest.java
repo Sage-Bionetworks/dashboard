@@ -59,7 +59,7 @@ public class FileDownloadReportMetricTest {
         assertNotNull(records);
         assertEquals(1, records.size());
         Metric<AccessRecord, String> metric = new FileDownloadReportMetric();
-        uniqueCountWriter.writeMetric(records.get(0), metric, AccessRecordUtil.getEntityId(records.get(0).getUri()));
+        uniqueCountWriter.writeMetric(records.get(0), metric, ":" + AccessRecordUtil.getEntityId(records.get(0).getUri()));
         
         List<UserDataPoint> results = 
                 metricReader.getAllReport(metric.getName(), "1960975");
@@ -78,7 +78,7 @@ public class FileDownloadReportMetricTest {
         assertNotNull(records);
         assertEquals(1, records.size());
         Metric<AccessRecord, String> metric = new FileDownloadReportMetric();
-        uniqueCountWriter.writeMetric(records.get(0), metric, AccessRecordUtil.getEntityId(records.get(0).getUri()));
+        uniqueCountWriter.writeMetric(records.get(0), metric, ":" + AccessRecordUtil.getEntityId(records.get(0).getUri()));
         
         metricReader.getAllReport(metric.getName(), "1960975");
     }
