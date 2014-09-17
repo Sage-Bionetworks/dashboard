@@ -98,18 +98,6 @@ public class MetricReader {
         return simpleCountDao.get(metricId, from, to);
     }
 
-    /*public List<UserDataPoint> getFileDownloadReport(String metricName,
-            String entityId, DateTime timestamp, Interval interval) {
-        if (metricName == null || metricName.isEmpty()) {
-            throw new IllegalArgumentException("Metric name cannot be null or empty.");
-        }
-        String metricId = getMetricId(metricName);
-        if (entityId.startsWith("syn")) {
-            entityId = entityId.substring(3);
-        }
-        return uniqueCountDao.getUnique(metricId, entityId, timestamp, interval);
-    }*/
-
     public List<UserDataPoint> getAllReport(String metricName, String entityId) {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
@@ -121,7 +109,6 @@ public class MetricReader {
         Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + entityId);
         Set<UserDataPoint> res = new HashSet<UserDataPoint>();
         for (String key : keys) {
-            System.out.println("metric reader: " + key);
             res.addAll(convertToUserDataPoint(uniqueCountDao.getAllValues(key)));
         }
         return new ArrayList<UserDataPoint>(res);

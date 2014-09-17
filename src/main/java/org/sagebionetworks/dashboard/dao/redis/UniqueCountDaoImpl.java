@@ -37,8 +37,6 @@ public class UniqueCountDaoImpl extends AbstractUniqueCountDao {
 
     private void put(String metricId, String shortId, Interval interval, DateTime timestamp) {
         String key = getKey(metricId, interval, timestamp);
-        System.out.println(key);
-        System.out.println(shortId);
         zsetOps.incrementScore(key, shortId, 1.0d);
         Date expireAt = DateTime.now().plusDays(EXPIRE_DAYS).toDate();
         redisTemplate.expireAt(key, expireAt);
