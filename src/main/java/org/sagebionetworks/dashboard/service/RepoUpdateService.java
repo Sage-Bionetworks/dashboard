@@ -30,7 +30,6 @@ import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateResult;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateStatus;
-import org.sagebionetworks.dashboard.util.AccessRecordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -45,27 +44,27 @@ public class RepoUpdateService {
 
     @Resource
     private Collection<SimpleCountMetric> simpleCountMetrics;
-
+/*
     @Resource
-    private SimpleCountWriter simpleCountWriter;
+    private SimpleCountWriter simpleCountWriter;*/
 
     @Resource
     private Collection<TimeSeriesMetric> timeSeriesMetrics;
-
-    @Resource
-    private TimeSeriesWriter timeSeriesWriter;
+//
+//    @Resource
+//    private TimeSeriesWriter timeSeriesWriter;
 
     @Resource
     private Collection<UniqueCountMetric<AccessRecord, String>> uniqueCountMetrics;
-
-    @Resource
-    private UniqueCountWriter<AccessRecord> uniqueCountWriter;
+//
+//    @Resource
+//    private UniqueCountWriter<AccessRecord> uniqueCountWriter;
 
     @Resource
     private Collection<DayCountMetric> dayCountMetrics;
-
-    @Resource
-    private DayCountWriter dayCountWriter;
+//
+//    @Resource
+//    private DayCountWriter dayCountWriter;
 
     private final RecordParser parser = new RepoRecordParser();
 
@@ -154,7 +153,7 @@ public class RepoUpdateService {
                 @Override
                 public void run() {
                     try {
-                        simpleCountWriter.writeMetric(record, metric);
+                        metric.write(record);
                     } catch (Throwable e){
                         callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                     }
@@ -166,7 +165,7 @@ public class RepoUpdateService {
                 @Override
                 public void run() {
                     try {
-                        timeSeriesWriter.writeMetric(record, metric);
+                        metric.write(record);
                     } catch (Throwable e){
                         callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                     }
@@ -179,12 +178,7 @@ public class RepoUpdateService {
                     @Override
                     public void run() {
                         try {
-                            if (metric.getName().equals("fileDownloadReportMetric")) {
-                                uniqueCountWriter.writeMetric(record, metric,
-                                        ":" + AccessRecordUtil.getEntityId(record.getUri()));
-                            } else {
-                                uniqueCountWriter.writeMetric(record, metric);
-                            }
+                            metric.write(record);
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                         }
@@ -198,7 +192,7 @@ public class RepoUpdateService {
                     @Override
                     public void run() {
                         try {
-                            dayCountWriter.writeMetric(record, metric);
+                            metric.write(record);
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                         }
