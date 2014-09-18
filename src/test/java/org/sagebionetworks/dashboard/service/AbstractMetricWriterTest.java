@@ -27,16 +27,15 @@ public class AbstractMetricWriterTest {
                 String id) {}
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void test() {
 
         // Set up mocks
         AccessRecord record = mock(AccessRecord.class);
 
-        @SuppressWarnings("unchecked")
         Metric<AccessRecord, String> metric = mock(Metric.class);
         when(metric.getName()).thenReturn("metric");
-        @SuppressWarnings("unchecked")
         RecordReader<AccessRecord, String> reader = mock(RecordReader.class);
         when(reader.read(record)).thenReturn("value");
         when(metric.getRecordReader()).thenReturn(reader);
