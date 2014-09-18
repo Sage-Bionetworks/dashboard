@@ -11,6 +11,7 @@ import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.UserIdFilter;
+import org.sagebionetworks.dashboard.service.UniqueCountWriter;
 import org.springframework.stereotype.Component;
 
 @Component("topProjectMetric")
@@ -22,6 +23,9 @@ public class TopProjectMetric extends UniqueCountMetric<AccessRecord, String> {
     private final List<RecordFilter<AccessRecord>> filters = Collections.unmodifiableList(Arrays.asList(
             new ProdFilter(), new UserIdFilter()));
 
+    @Resource
+    private UniqueCountWriter<AccessRecord> uniqueCountWriter;
+
     @Override
     public List<RecordFilter<AccessRecord>> getFilters() {
         return filters;
@@ -30,5 +34,10 @@ public class TopProjectMetric extends UniqueCountMetric<AccessRecord, String> {
     @Override
     public RecordReader<AccessRecord, String> getRecordReader() {
         return projectIdReader;
+    }
+
+    @Override
+    public void write(AccessRecord record) {
+        uniqueCountWriter.writeMetric(record, this);
     }
 }

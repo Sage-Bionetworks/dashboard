@@ -28,4 +28,9 @@ public class QuestionFailMetric extends QuestionMetric {
         return reader;
     }
 
+    @Override
+    public void write(CuResponseRecord record) {
+        // do nothing for now
+    }
+
 }

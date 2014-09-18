@@ -18,4 +18,6 @@ public interface Metric<R extends Record, V> {
     List<RecordFilter<R>> getFilters();
 
     RecordReader<R, V> getRecordReader();
+
+    void write(R record);
 }
