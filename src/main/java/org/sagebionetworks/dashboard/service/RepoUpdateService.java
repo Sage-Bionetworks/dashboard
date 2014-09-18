@@ -6,12 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -20,16 +15,14 @@ import java.util.zip.GZIPInputStream;
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SessionDedupeDao;
-import org.sagebionetworks.dashboard.metric.DayCountMetric;
-import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
-import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
-import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
+import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.model.WriteRecordResult;
 import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateResult;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateStatus;
+import org.sagebionetworks.dashboard.util.MetricCollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -42,24 +35,12 @@ public class RepoUpdateService {
     @Resource
     private SessionDedupeDao sessionDedupeDao;
 
-    @Resource
-    private Collection<SimpleCountMetric> simpleCountMetrics;
-
-    @Resource
-    private Collection<TimeSeriesMetric> timeSeriesMetrics;
-
-    @Resource
-    private Collection<UniqueCountMetric<AccessRecord, String>> uniqueCountMetrics;
-
-    @Resource
-    private Collection<DayCountMetric> dayCountMetrics;
-
     private final RecordParser parser = new RepoRecordParser();
 
-    // Ignore metrics that are not parsed from records
+/*    // Ignore metrics that are not parsed from records
     private final Set<String> ignoreMetrics = Collections.unmodifiableSet(new HashSet<String>(
             Arrays.asList("certifiedUserMetric", "questionPassMetric", "questionFailMetric", "topProjectMetric", "topProjectByDayMetric")));
-
+*/
     private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
 
     public void update(InputStream in, String filePath, 
@@ -135,8 +116,13 @@ public class RepoUpdateService {
      */
     private void updateRecord(final AccessRecord record, final String file, 
             final int line, final UpdateRecordCallback callback) {
+
         List<Runnable> tasks = new ArrayList<Runnable>();
-        for (final SimpleCountMetric metric : simpleCountMetrics) {
+        MetricCollectionUtil.reset();
+
+        while (MetricCollectionUtil.hasNext()) {
+            @SuppressWarnings("unchecked")
+            final Metric<AccessRecord,?> metric = (Metric<AccessRecord, ?>) MetricCollectionUtil.nextMetric();
             tasks.add(new Runnable() {
                 @Override
                 public void run() {
@@ -148,46 +134,7 @@ public class RepoUpdateService {
                 }
             });
         }
-        for (final TimeSeriesMetric metric : timeSeriesMetrics) {
-            tasks.add(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        metric.write(record);
-                    } catch (Throwable e){
-                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
-                    }
-                }
-            });
-        }
-        for (final UniqueCountMetric<AccessRecord, String> metric: uniqueCountMetrics) {
-            if (!ignoreMetrics.contains(metric.getName())) {
-                tasks.add(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            metric.write(record);
-                        } catch (Throwable e){
-                            callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
-                        }
-                    }
-                });
-            }
-        }
-        for (final DayCountMetric metric : dayCountMetrics) {
-            if (!ignoreMetrics.contains(metric.getName())) {
-                tasks.add(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            metric.write(record);
-                        } catch (Throwable e){
-                            callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
-                        }
-                    }
-                });
-            }
-        }
+
         for (Runnable task : tasks) {
             threadPool.submit(task);
         }
