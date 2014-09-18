@@ -6,7 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -37,10 +41,10 @@ public class RepoUpdateService {
 
     private final RecordParser parser = new RepoRecordParser();
 
-/*    // Ignore metrics that are not parsed from records
+    // Ignore metrics that are not parsed from records
     private final Set<String> ignoreMetrics = Collections.unmodifiableSet(new HashSet<String>(
             Arrays.asList("certifiedUserMetric", "questionPassMetric", "questionFailMetric", "topProjectMetric", "topProjectByDayMetric")));
-*/
+
     private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
 
     public void update(InputStream in, String filePath, 
@@ -123,16 +127,18 @@ public class RepoUpdateService {
         while (MetricCollectionUtil.hasNext()) {
             @SuppressWarnings("unchecked")
             final Metric<AccessRecord,?> metric = (Metric<AccessRecord, ?>) MetricCollectionUtil.nextMetric();
-            tasks.add(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        metric.write(record);
-                    } catch (Throwable e){
-                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
+            if (!ignoreMetrics.contains(metric.getName())) {
+                tasks.add(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            metric.write(record);
+                        } catch (Throwable e){
+                            callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         for (Runnable task : tasks) {
