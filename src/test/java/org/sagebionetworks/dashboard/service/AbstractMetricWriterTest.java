@@ -52,6 +52,8 @@ public class AbstractMetricWriterTest {
         AbstractMetricWriter<AccessRecord, String> writer = new StubMetricWriter();
         ReflectionTestUtils.setField(writer, "nameIdDao", nameIdDao);
 
+        writer.writeMetric(record, metric);
+
         verify(nameIdDao, times(1)).getId("metric");
         verify(reader, times(1)).read(record);
     }

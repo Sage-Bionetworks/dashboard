@@ -44,27 +44,15 @@ public class RepoUpdateService {
 
     @Resource
     private Collection<SimpleCountMetric> simpleCountMetrics;
-/*
-    @Resource
-    private SimpleCountWriter simpleCountWriter;*/
 
     @Resource
     private Collection<TimeSeriesMetric> timeSeriesMetrics;
-//
-//    @Resource
-//    private TimeSeriesWriter timeSeriesWriter;
 
     @Resource
     private Collection<UniqueCountMetric<AccessRecord, String>> uniqueCountMetrics;
-//
-//    @Resource
-//    private UniqueCountWriter<AccessRecord> uniqueCountWriter;
 
     @Resource
     private Collection<DayCountMetric> dayCountMetrics;
-//
-//    @Resource
-//    private DayCountWriter dayCountWriter;
 
     private final RecordParser parser = new RepoRecordParser();
 
