@@ -26,7 +26,7 @@ import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateResult;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateStatus;
-import org.sagebionetworks.dashboard.util.MetricCollectionUtil;
+import org.sagebionetworks.dashboard.util.MetricCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -122,11 +122,9 @@ public class RepoUpdateService {
             final int line, final UpdateRecordCallback callback) {
 
         List<Runnable> tasks = new ArrayList<Runnable>();
-        MetricCollectionUtil.reset();
+        MetricCollection metricCollection = new MetricCollection();
 
-        while (MetricCollectionUtil.hasNext()) {
-            @SuppressWarnings("unchecked")
-            final Metric<AccessRecord,?> metric = (Metric<AccessRecord, ?>) MetricCollectionUtil.nextMetric();
+        for (final Metric<AccessRecord, ?> metric : metricCollection) {
             if (!ignoreMetrics.contains(metric.getName())) {
                 tasks.add(new Runnable() {
                     @Override
