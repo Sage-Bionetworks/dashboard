@@ -7,8 +7,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -19,14 +21,17 @@ import java.util.zip.GZIPInputStream;
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SessionDedupeDao;
+import org.sagebionetworks.dashboard.metric.DayCountMetric;
 import org.sagebionetworks.dashboard.metric.Metric;
+import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
+import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
+import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
 import org.sagebionetworks.dashboard.model.WriteRecordResult;
 import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateResult;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateStatus;
-import org.sagebionetworks.dashboard.util.MetricCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,6 +40,18 @@ import org.springframework.stereotype.Service;
 public class RepoUpdateService {
 
     private final Logger logger = LoggerFactory.getLogger(RepoUpdateService.class);
+
+    @Resource
+    private  Collection<SimpleCountMetric> simpleCountMetrics;
+
+    @Resource
+    private  Collection<TimeSeriesMetric> timeSeriesMetrics;
+
+    @Resource
+    private  Collection<UniqueCountMetric<AccessRecord, String>> uniqueCountMetrics;
+
+    @Resource
+    private  Collection<DayCountMetric> dayCountMetrics;
 
     @Resource
     private SessionDedupeDao sessionDedupeDao;
@@ -143,6 +160,55 @@ public class RepoUpdateService {
             threadPool.submit(task);
         }
     }
+
+    class MetricCollection implements Iterable<Metric<AccessRecord, ?>>{
+
+        private Iterator<SimpleCountMetric> simpleCountMetricPointer;
+        private  Iterator<TimeSeriesMetric> timeSeriesMetricPointer;
+        private  Iterator<UniqueCountMetric<AccessRecord, String>> uniqueCountMetricPointer;
+        private  Iterator<DayCountMetric> dayCountMetricPointer;
+
+        // reset all the pointers
+        public MetricCollection() {
+            simpleCountMetricPointer = simpleCountMetrics.iterator();
+            timeSeriesMetricPointer = timeSeriesMetrics.iterator();
+            uniqueCountMetricPointer = uniqueCountMetrics.iterator();
+            dayCountMetricPointer = dayCountMetrics.iterator();
+        }
+
+        @Override
+        public Iterator<Metric<AccessRecord, ?>> iterator() {
+            return new MetricCollectionIterator();
+        }
+
+        class MetricCollectionIterator implements Iterator<Metric<AccessRecord, ?>> {
+
+            @Override
+            public boolean hasNext() {
+                return dayCountMetricPointer.hasNext();
+            }
+
+            @Override
+            public Metric<AccessRecord, ?> next() {
+                if (simpleCountMetricPointer.hasNext()) {
+                    return simpleCountMetricPointer.next();
+                }
+                if (timeSeriesMetricPointer.hasNext()) {
+                    return timeSeriesMetricPointer.next();
+                }
+                if (uniqueCountMetricPointer.hasNext()) {
+                    return uniqueCountMetricPointer.next();
+                }
+                return dayCountMetricPointer.next();
+            }
+
+            @Override
+            public void remove() {
+                // do nothing
+            }
+        }
+    }
+
 
     private boolean isDone() {
         ThreadPoolExecutor pool = (ThreadPoolExecutor)threadPool;
