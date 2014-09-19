@@ -20,17 +20,13 @@ import java.util.zip.GZIPInputStream;
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SessionDedupeDao;
-import org.sagebionetworks.dashboard.metric.DayCountMetric;
-import org.sagebionetworks.dashboard.metric.SimpleCountMetric;
-import org.sagebionetworks.dashboard.metric.TimeSeriesMetric;
-import org.sagebionetworks.dashboard.metric.UniqueCountMetric;
+import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.model.WriteRecordResult;
 import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateResult;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateStatus;
-import org.sagebionetworks.dashboard.util.AccessRecordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -41,31 +37,10 @@ public class RepoUpdateService {
     private final Logger logger = LoggerFactory.getLogger(RepoUpdateService.class);
 
     @Resource
+    private Collection<Metric<AccessRecord, ?>> metricCollection;
+
+    @Resource
     private SessionDedupeDao sessionDedupeDao;
-
-    @Resource
-    private Collection<SimpleCountMetric> simpleCountMetrics;
-
-    @Resource
-    private SimpleCountWriter simpleCountWriter;
-
-    @Resource
-    private Collection<TimeSeriesMetric> timeSeriesMetrics;
-
-    @Resource
-    private TimeSeriesWriter timeSeriesWriter;
-
-    @Resource
-    private Collection<UniqueCountMetric<AccessRecord, String>> uniqueCountMetrics;
-
-    @Resource
-    private UniqueCountWriter<AccessRecord> uniqueCountWriter;
-
-    @Resource
-    private Collection<DayCountMetric> dayCountMetrics;
-
-    @Resource
-    private DayCountWriter dayCountWriter;
 
     private final RecordParser parser = new RepoRecordParser();
 
@@ -148,43 +123,16 @@ public class RepoUpdateService {
      */
     private void updateRecord(final AccessRecord record, final String file, 
             final int line, final UpdateRecordCallback callback) {
+
         List<Runnable> tasks = new ArrayList<Runnable>();
-        for (final SimpleCountMetric metric : simpleCountMetrics) {
-            tasks.add(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        simpleCountWriter.writeMetric(record, metric);
-                    } catch (Throwable e){
-                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
-                    }
-                }
-            });
-        }
-        for (final TimeSeriesMetric metric : timeSeriesMetrics) {
-            tasks.add(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        timeSeriesWriter.writeMetric(record, metric);
-                    } catch (Throwable e){
-                        callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
-                    }
-                }
-            });
-        }
-        for (final UniqueCountMetric<AccessRecord, String> metric: uniqueCountMetrics) {
+
+        for (final Metric<AccessRecord, ?> metric : metricCollection) {
             if (!ignoreMetrics.contains(metric.getName())) {
                 tasks.add(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            if (metric.getName().equals("fileDownloadReportMetric")) {
-                                uniqueCountWriter.writeMetric(record, metric,
-                                        ":" + AccessRecordUtil.getEntityId(record.getUri()));
-                            } else {
-                                uniqueCountWriter.writeMetric(record, metric);
-                            }
+                            metric.write(record);
                         } catch (Throwable e){
                             callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
                         }
@@ -192,20 +140,7 @@ public class RepoUpdateService {
                 });
             }
         }
-        for (final DayCountMetric metric : dayCountMetrics) {
-            if (!ignoreMetrics.contains(metric.getName())) {
-                tasks.add(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            dayCountWriter.writeMetric(record, metric);
-                        } catch (Throwable e){
-                            callback.handle(new WriteRecordResult(false, metric.getName(), file, line));
-                        }
-                    }
-                });
-            }
-        }
+
         for (Runnable task : tasks) {
             threadPool.submit(task);
         }

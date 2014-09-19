@@ -10,11 +10,6 @@ import org.springframework.stereotype.Service;
 @Service("timeSeriesWriter")
 public class TimeSeriesWriter extends AbstractMetricWriter<AccessRecord, Long> {
 
-    @Override
-    void write(String metricId, DateTime timestamp, Long value) {
-        timeSeriesDao.put(metricId, timestamp, value);
-    }
-
     @Resource
     private TimeSeriesDao timeSeriesDao;
 

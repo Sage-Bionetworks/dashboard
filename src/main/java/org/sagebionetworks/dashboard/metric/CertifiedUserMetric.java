@@ -27,5 +27,10 @@ public class CertifiedUserMetric extends UniqueCountMetric<CuPassingRecord, Stri
     @Override
     public RecordReader<CuPassingRecord, String> getRecordReader() {
         return reader;
-    }    
+    }
+
+    @Override
+    public void write(CuPassingRecord record) {
+        // do nothing for now - to simplify the logic
+    }
 }

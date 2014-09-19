@@ -1,6 +1,5 @@
 package org.sagebionetworks.dashboard.service;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,25 +15,15 @@ abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter
 
     @Override
     public void writeMetric(final R record, final Metric<R, V> metric) {
-        writeMetric(record, metric, Collections.<RecordFilter<R>> emptyList(), "");
+        writeMetric(record, metric, "");
     }
 
     @Override
     public void writeMetric(final R record, final Metric<R, V> metric, final String additionalKey) {
-        writeMetric(record, metric, Collections.<RecordFilter<R>> emptyList(), additionalKey);
-    }
-
-    public void writeMetric(final R record, final Metric<R, V> metric,
-            final List<RecordFilter<R>> additionalFilters, final String additionalKey) {
 
         // Apply the filters first
         List<RecordFilter<R>> filters = metric.getFilters();
         for (RecordFilter<R> filter : filters) {
-            if (!filter.matches(record)) {
-                return;
-            }
-        }
-        for (RecordFilter<R> filter : additionalFilters) {
             if (!filter.matches(record)) {
                 return;
             }
@@ -53,8 +42,6 @@ abstract class AbstractMetricWriter<R extends Record, V> implements MetricWriter
             write(metricId, additionalKey, timestamp, value);
         }
     }
-
-    abstract void write(String metricId, DateTime timestamp, V value);
 
     @Resource
     private NameIdDao nameIdDao;

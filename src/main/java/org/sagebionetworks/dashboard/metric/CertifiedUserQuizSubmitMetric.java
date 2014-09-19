@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.MethodFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
@@ -12,6 +14,7 @@ import org.sagebionetworks.dashboard.parse.TimeFilter;
 import org.sagebionetworks.dashboard.parse.UriCuqSubmitFilter;
 import org.sagebionetworks.dashboard.parse.UserIdFilter;
 import org.sagebionetworks.dashboard.parse.UserIdReader;
+import org.sagebionetworks.dashboard.service.UniqueCountWriter;
 import org.springframework.stereotype.Component;
 
 @Component("certifiedUserQuizSubmitMetric")
@@ -23,6 +26,9 @@ public class CertifiedUserQuizSubmitMetric extends UniqueCountMetric<AccessRecor
             new MethodFilter("post"), new UriCuqSubmitFilter(), new TimeFilter(1403827200000L),
             new UserIdFilter()));
 
+    @Resource
+    private UniqueCountWriter<AccessRecord> uniqueCountWriter;
+
     @Override
     public List<RecordFilter<AccessRecord>> getFilters() {
         return filters ;
@@ -31,5 +37,10 @@ public class CertifiedUserQuizSubmitMetric extends UniqueCountMetric<AccessRecor
     @Override
     public RecordReader<AccessRecord, String> getRecordReader() {
         return reader;
-    }   
+    }
+
+    @Override
+    public void write(AccessRecord record) {
+        uniqueCountWriter.writeMetric(record, this);
+    }
 }
