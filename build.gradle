@@ -1,6 +1,6 @@
 group = 'org.sagebionetworks'
 project.ext.baseName = 'dashboard'
-version = '0.6.0-' + (new Date()).format(
+version = '0.6.1-' + (new Date()).format(
         'yyyyMMddHHmmss', TimeZone.getTimeZone("UTC"))
 
 /*** Java ***/
@@ -28,7 +28,6 @@ dependencies {
     compile 'com.amazonaws:aws-java-sdk:1.8.9.1'
     compile 'org.apache.httpcomponents:httpclient:4.3.5'
     compile 'org.postgresql:postgresql:9.3-1102-jdbc41'
-    compile 'org.jasypt:jasypt:1.9.2'
     compile 'org.slf4j:slf4j-api:' + slf4jVersion
     runtime 'ch.qos.logback:logback-classic:1.1.2'
     runtime 'ch.qos.logback:logback-core:1.1.2'
