@@ -10,5 +10,7 @@ env:
   - secure: YUd0fsnw4bDyhuVeSJ7ueXPSkfNuZRdd/xyVVl0FoTkKDzqJ+JdepU4OAQEXlfkHzBepTqpt+Qb8pyKfTRlg2DbVkwx2juRzFOpv+y5l52cOUjLK4yXc6FoRkndpi875wg+ux/bxXLamVatd909s60XPdEg3NOItxPB3uDdZPyo=
   - secure: WW+PdAUt8ktw/U0uVaxOSnq33QvxLuSeJ/OiPRi2fomoZSlpRALhXK7/Cw5Z15js1c6nOg+9ezXKiDyBIFza9yPIXDnf47TFXU2hSXeSH77BELif8v88Lq/l5GquhFIINB5L4A0FpTWZ+tJ3fsa7ksbyIWXwdfeMyGOB2OOFIqM=
   - secure: sFFwJaY4SifeWs4fpm01GrlxCSTbyC3k1xXXIKrLNsI1LTcBPeqi9tlflbDW9keXz36ke7zFOfbYvuJZXUpHUCL45lBlgZOiJBEzKX5HB1fcrLFu/25ec2WDJ6ms0ns4Or0RKEYFIseSFgs4xFngwngCwNrQevX8jmMaN4RV52w=
+before_script:
+- psql -U postgres -f 'dw-bootstrap.sql'
 after_success:
 - ./gradlew artifactoryPublish
