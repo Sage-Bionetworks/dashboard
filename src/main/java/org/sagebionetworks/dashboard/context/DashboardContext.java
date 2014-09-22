@@ -40,8 +40,8 @@ public class DashboardContext {
         logger.info("Prod: " + prod);
 
         nameValueMap = new HashMap<String, String>();
-        nameValueMap.put("dw.username", "");
-        nameValueMap.put("dw.password", "");
+        nameValueMap.put("dw.username", "dashboard");
+        nameValueMap.put("dw.password", "dashboard");
         nameValueMap.put("aws.access.key", "");
         nameValueMap.put("aws.secret.key", "");
         nameValueMap.put("access.record.bucket", "");
