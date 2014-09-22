@@ -1,0 +1,2 @@
+CREATE ROLE dashboard WITH LOGIN ENCRYPTED PASSWORD 'dashboard';
+CREATE DATABASE dashboard OWNER dashboard ENCODING 'UTF8';
