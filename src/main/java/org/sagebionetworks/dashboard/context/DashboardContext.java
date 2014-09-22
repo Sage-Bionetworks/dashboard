@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jasypt.encryption.pbe.PBEStringEncryptor;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
-import org.jasypt.properties.EncryptableProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -26,10 +23,8 @@ public class DashboardContext {
 
     // The following two variables are loaded from either the environment or the command line
     private static final String PROD = "prod";
-    private static final String PWD = "pwd";
 
     private final boolean prod;
-    private final PBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
     private final Map<String, String> nameValueMap;
 
     public DashboardContext() {
@@ -44,16 +39,9 @@ public class DashboardContext {
         prod = Boolean.parseBoolean(readEnvOrProperty(PROD));
         logger.info("Prod: " + prod);
 
-        String pwd = readEnvOrProperty(PWD);
-        if (pwd == null || pwd.isEmpty()) {
-            logger.warn("Missing descryptor passward.");
-        } else {
-            encryptor.setPassword(pwd);
-        }
-
         nameValueMap = new HashMap<String, String>();
-        nameValueMap.put("dw.username", "");
-        nameValueMap.put("dw.password", "");
+        nameValueMap.put("dw.username", "dashboard");
+        nameValueMap.put("dw.password", "dashboard");
         nameValueMap.put("aws.access.key", "");
         nameValueMap.put("aws.secret.key", "");
         nameValueMap.put("access.record.bucket", "");
@@ -143,7 +131,7 @@ public class DashboardContext {
             return;
         }
         try {
-            Properties properties = new EncryptableProperties(encryptor);
+            Properties properties = new Properties();
             properties.load(inputStream);
             inputStream.close();
             populateNameValueMap(new PropertyReader(properties));
