@@ -1,22 +1,24 @@
-CREATE TABLE IF NOT EXISTS ACCESS_RECORD (
-    OBJECT_ID   VARCHAR,
-    ELAPSE_MS   INT,
-    TIMESTAMP   TIMESTAMP,
-    VIA         VARCHAR,
-    HOST        VARCHAR,
-    THREAD_ID   VARCHAR,
-    USER_AGENT  VARCHAR,
-    QUERY       VARCHAR,
-    SESSION_ID  VARCHAR,
-    FORWARDED_FOR   VARCHAR,
-    REQUEST_URL VARCHAR,
-    USER_ID     VARCHAR,
-    ORIGIN      VARCHAR,
-    DATE        DATE,
-    METHOD      VARCHAR,
-    VM_ID       VARCHAR,
-    STACK       INT,
-    INSTANCE    VARCHAR,
-    SUCCESS     BOOLEAN,
-    RESPONSES_STATUS    INT
-)
+CREATE TABLE IF NOT EXISTS access_record (
+    object_id       varchar(12),
+    entity_id       integer,
+    elapse_ms       bigint          NOT NULL,
+    timestamp       timestamp       NOT NULL,
+    host            varchar(30),
+    thread_id       integer         NOT NULL,
+    user_agent      varchar(100),
+    query           varchar(200),
+    session_id      varchar(36)     PRIMARY KEY,
+    request_url     varchar(100)    NOT NULL,
+    user_id         integer         NOT NULL,
+    method          varchar(10)     NOT NULL,
+    vm_id           varchar(60),
+    stack           integer         NOT NULL,
+    instance        varchar(10),
+    response_status    integer      NOT NULL
+);
+
+CREATE INDEX user_id_index ON access_record USING btree(user_id);
+
+CREATE INDEX timestamp_index ON access_record USING btree(timestamp);
+
+CREATE INDEX entity_id_index ON access_record USING btree(entity_id);

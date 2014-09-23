@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.dao.postgres;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -9,12 +11,22 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import com.amazonaws.util.IOUtils;
+
 public class DataWarehouseInit {
 
     private final Logger logger = LoggerFactory.getLogger(DataWarehouseInit.class);
 
     public DataWarehouseInit(NamedParameterJdbcTemplate dwTemplate) {
-        boolean inited = dwTemplate.execute("SELECT * FROM information_schema.tables;",
+        InputStream source = ClassLoader.getSystemResourceAsStream("/META-INF/spring/AccessRecordTable.sql");
+        String query = null;
+        try {
+            query = IOUtils.toString(source);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        logger.info(query);
+        boolean inited = dwTemplate.execute(query,//"SELECT * FROM information_schema.tables;",
                 new PreparedStatementCallback<Boolean>() {
             @Override
             public Boolean doInPreparedStatement(PreparedStatement ps)
