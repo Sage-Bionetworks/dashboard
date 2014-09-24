@@ -40,7 +40,7 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
         namedParameters.put("elapse_ms", record.getLatency());
         namedParameters.put("timestamp", record.getTimestamp());
         namedParameters.put("host", record.getHost());
-        namedParameters.put("thread_id", "");
+        namedParameters.put("thread_id", Integer.parseInt(record.getThreadId()));
         namedParameters.put("user_agent", record.getUserAgent());
         namedParameters.put("query", record.getQueryString());
         namedParameters.put("session_id", record.getSessionId());
@@ -54,9 +54,9 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
         }
 
         namedParameters.put("method", record.getMethod());
-        namedParameters.put("vm_id", "");
-        namedParameters.put("stack", record.getStack());
-        namedParameters.put("instance", "");
+        namedParameters.put("vm_id", record.getVM());
+        namedParameters.put("stack", Integer.parseInt(record.getStack()));
+        namedParameters.put("instance", record.getInstance());
         namedParameters.put("response_status", record.getStatus());
 
         dwTemplate.update(query, namedParameters);

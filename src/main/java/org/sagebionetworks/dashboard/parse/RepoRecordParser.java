@@ -93,6 +93,9 @@ public class RepoRecordParser implements RecordParser {
         record.setUserAgent(getString("userAgent", line));
         record.setStack(getString("stack", line));
         record.setHost(getString("host", line));
+        record.setInstance(getString("instance", line));
+        record.setVM(getString("vmId", line));
+        record.setThreadId(getString("threadId", line));
         return record;
     }
 

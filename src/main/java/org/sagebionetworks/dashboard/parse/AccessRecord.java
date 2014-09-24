@@ -12,4 +12,7 @@ public interface AccessRecord extends Record{
     String getUserAgent();
     String getStack();
     String getHost();
+    String getInstance();
+    String getVM();
+    String getThreadId();
 }

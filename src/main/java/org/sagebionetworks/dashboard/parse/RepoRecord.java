@@ -73,6 +73,25 @@ public class RepoRecord implements AccessRecord {
     public void setHost(String host) {
         this.host = host;
     }
+    public String getInstance() {
+        return instance;
+    }
+    public void setInstance(String instance) {
+        this.instance = instance;
+    }
+    public String getVM() {
+        return vmId;
+    }
+    public void setVM(String vmId) {
+        this.vmId = vmId;
+    }
+    public String getThreadId() {
+        return threadId;
+    }
+    public void setThreadId(String threadId){
+        this.threadId = threadId;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -99,4 +118,7 @@ public class RepoRecord implements AccessRecord {
     private String userAgent;
     private String stack;
     private String host;
+    private String instance;
+    private String vmId;
+    private String threadId;
 }
