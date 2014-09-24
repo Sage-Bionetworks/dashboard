@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS access_record (
     query           varchar(200),
     session_id      varchar(36)     PRIMARY KEY,
     request_url     varchar(100)    NOT NULL,
-    user_id         integer         NOT NULL,
+    user_id         integer,
     method          varchar(10)     NOT NULL,
     vm_id           varchar(60),
     stack           integer         NOT NULL,

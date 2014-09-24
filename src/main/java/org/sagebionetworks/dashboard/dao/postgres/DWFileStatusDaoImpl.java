@@ -9,7 +9,9 @@ import javax.annotation.Resource;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.sagebionetworks.dashboard.model.FileFailure;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 
+@Repository("dwFileStatusDao")
 public class DWFileStatusDaoImpl implements FileStatusDao{
 
     @Resource
