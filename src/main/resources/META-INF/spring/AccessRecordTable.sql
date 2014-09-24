@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS access_record (
     response_status    integer      NOT NULL
 );
 
-CREATE INDEX user_id_index ON access_record USING btree(user_id);
+CREATE INDEX ON access_record USING btree(user_id);
 
-CREATE INDEX timestamp_index ON access_record USING btree(timestamp);
+CREATE INDEX ON access_record USING btree(timestamp);
 
-CREATE INDEX entity_id_index ON access_record USING btree(entity_id);
+CREATE INDEX ON access_record USING btree(entity_id);

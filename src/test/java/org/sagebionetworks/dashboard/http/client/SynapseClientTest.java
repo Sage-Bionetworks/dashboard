@@ -86,4 +86,5 @@ public class SynapseClientTest {
         project = synapseClient.getProject("syn2330782", session); // RA Challenge
         assertEquals("syn1734172", project);
     }
+
 }

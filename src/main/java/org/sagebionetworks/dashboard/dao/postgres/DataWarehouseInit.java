@@ -18,24 +18,27 @@ public class DataWarehouseInit {
     private final Logger logger = LoggerFactory.getLogger(DataWarehouseInit.class);
 
     public DataWarehouseInit(NamedParameterJdbcTemplate dwTemplate) {
-        InputStream source = ClassLoader.getSystemResourceAsStream("/META-INF/spring/AccessRecordTable.sql");
+        InputStream source = this.getClass().getResourceAsStream("/META-INF/spring/AccessRecordTable.sql");
+
+        if (source == null) {
+            logger.info("Failed to read the source. Data warehouse initiation failure.");
+            return;
+        }
+
         String query = null;
         try {
             query = IOUtils.toString(source);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info("Failed to convert InputStream into String. Data warehouse initiation failure.");
+            return;
         }
-        logger.info(query);
-        boolean inited = dwTemplate.execute(query,//"SELECT * FROM information_schema.tables;",
-                new PreparedStatementCallback<Boolean>() {
+
+        dwTemplate.execute(query, new PreparedStatementCallback<Boolean>() {
             @Override
             public Boolean doInPreparedStatement(PreparedStatement ps)
                     throws SQLException, DataAccessException {
                 return ps.execute();
             }});
-        if (!inited) {
-            throw new RuntimeException("Data warehouse initiation failure.");
-        }
         logger.info("Data warehouse initialzied.");
     }
 }

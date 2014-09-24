@@ -26,4 +26,5 @@ public class TopProjectMetricTest {
         assertEquals(2, topProjectMetric.getFilters().size());
         assertTrue(topProjectMetric.getFilters().get(0) instanceof ProdFilter);
     }
+
 }
