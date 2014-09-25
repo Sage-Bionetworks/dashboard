@@ -63,13 +63,7 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
         namedParameters.put("instance", Integer.parseInt(record.getInstance()));
         namedParameters.put("response_status", Integer.parseInt(record.getStatus()));
 
-        assertEquals(16, namedParameters.size());
         dwTemplate.update(query, namedParameters);
-    }
-
-    private void assertEquals(int i, int size) {
-        // TODO Auto-generated method stub
-        
     }
 
 }
