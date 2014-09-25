@@ -16,7 +16,7 @@ public class DWFailedRecordDaoImpl implements FailedRecordDao{
     @Resource
     NamedParameterJdbcTemplate dwTemplate;
 
-    private final String query = "INSERT INTO record_status (file_path, line_number, metric, status) VALUES (:file_path,:line_number,:metric,:status);";
+    private static final String query = "INSERT INTO record_status (file_path, line_number, metric, status) VALUES (:file_path,:line_number,:metric,:status);";
 
     @Override
     public void put(WriteRecordResult result) {

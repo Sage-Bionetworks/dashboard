@@ -18,7 +18,7 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
     @Resource
     NamedParameterJdbcTemplate dwTemplate;
 
-    private final String query = "INSERT INTO file_status " + 
+    private static final String query = "INSERT INTO access_record " + 
             "(object_id, entity_id, elapse_ms, timestamp, host, thread_id, " +
             "user_agent, query, session_id, request_url, user_id, method, " +
             "vm_id, stack, instance, response_status) " +
@@ -32,10 +32,14 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
         namedParameters.put("object_id", record.getObjectId());
 
         String entityId = (new EntityIdReader()).read(record);
-        if (entityId.startsWith("syn")) {
-            entityId = entityId.substring(3);
+        if (entityId == null){
+            namedParameters.put("entity_id", null);
+        } else {
+            if (entityId.startsWith("syn")) {
+                entityId = entityId.substring(3);
+            }
+            namedParameters.put("entity_id", Integer.parseInt(entityId));
         }
-        namedParameters.put("entity_id", Integer.parseInt(entityId));
 
         namedParameters.put("elapse_ms", record.getLatency());
         namedParameters.put("timestamp", record.getTimestamp());
@@ -47,7 +51,7 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
         namedParameters.put("request_url", record.getUri());
 
         String userId = (new UserIdReader()).read(record);
-        if (userId == "null-user-id") {
+        if (userId == null || userId == "null-user-id") {
             namedParameters.put("user_id", null);
         } else {
             namedParameters.put("user_id", Integer.parseInt(userId));
@@ -55,11 +59,17 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
 
         namedParameters.put("method", record.getMethod());
         namedParameters.put("vm_id", record.getVM());
-        namedParameters.put("stack", Integer.parseInt(record.getStack()));
-        namedParameters.put("instance", record.getInstance());
-        namedParameters.put("response_status", record.getStatus());
+        namedParameters.put("stack", record.getStack());
+        namedParameters.put("instance", Integer.parseInt(record.getInstance()));
+        namedParameters.put("response_status", Integer.parseInt(record.getStatus()));
 
+        assertEquals(16, namedParameters.size());
         dwTemplate.update(query, namedParameters);
+    }
+
+    private void assertEquals(int i, int size) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

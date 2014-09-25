@@ -17,7 +17,7 @@ public class DWFileStatusDaoImpl implements FileStatusDao{
     @Resource
     NamedParameterJdbcTemplate dwTemplate;
 
-    private final String query = "INSERT INTO file_status (file_path, status) VALUES (:file_path,:status);";
+    private static final String query = "INSERT INTO file_status (file_path, status) VALUES (:file_path,:status);";
 
     @Override
     public boolean isCompleted(String file) {
