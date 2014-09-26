@@ -76,6 +76,7 @@ public class RepoRecordWorkerTest {
         assertNotNull(redisTemplate);
         assertNotNull(fileStatusDao);
         assertNotNull(repoRecordWorker);
+        assertNotNull(dw);
         clearRedis();
         cleanS3();
         String[] success = {

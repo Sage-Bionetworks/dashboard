@@ -1,6 +1,7 @@
 package org.sagebionetworks.dashboard.dao.postgres;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -15,25 +16,37 @@ import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Resource;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.sagebionetworks.dashboard.dao.AccessRecordDao;
 import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RepoRecord;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@ContextConfiguration("classpath:/META-INF/spring/test-context.xml")
+@RunWith(SpringJUnit4ClassRunner.class)
 public class AccessRecordDaoImplTest {
 
     @Resource
     private AccessRecordDao accessRecordDao;
 
+    @Resource
+    private DashboardContext dashboardContext;
+
     private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
+
+    @Before
+    public void before() throws Exception {
+        assertNotNull(dashboardContext);
+        assertNotNull(accessRecordDao);
+    }
 
     @After
     public void cleanup() {
-        try {
-            accessRecordDao.cleanup();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+        accessRecordDao.cleanup();
         threadPool.shutdown();
     }
 
@@ -50,6 +63,7 @@ public class AccessRecordDaoImplTest {
                 }
             });
         }
+        assertEquals(recordList.size(), tasks.size());
 
         for (Runnable task : tasks) {
             threadPool.submit(task);
@@ -64,11 +78,7 @@ public class AccessRecordDaoImplTest {
             throw new RuntimeException(e);
         }
 
-        try {
-            assertEquals(recordList.size()/10, accessRecordDao.count());
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+        assertEquals(recordList.size()/10, accessRecordDao.count());
     }
 
     private boolean isDone() {
