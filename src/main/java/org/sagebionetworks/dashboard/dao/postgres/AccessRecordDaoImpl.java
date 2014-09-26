@@ -39,40 +39,7 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
 
     @Override
     public void put(AccessRecord record) {
-        Map<String, Object> namedParameters = new HashMap<String, Object>();
-        namedParameters.put("object_id", record.getObjectId());
-
-        String entityId = (new EntityIdReader()).read(record);
-        if (entityId == null){
-            namedParameters.put("entity_id", null);
-        } else {
-            if (entityId.startsWith("syn")) {
-                entityId = entityId.substring(3);
-            }
-            namedParameters.put("entity_id", Long.parseLong(entityId));
-        }
-
-        namedParameters.put("elapse_ms", record.getLatency());
-        namedParameters.put("timestamp", record.getTimestamp());
-        namedParameters.put("host", record.getHost());
-        namedParameters.put("thread_id", Integer.parseInt(record.getThreadId()));
-        namedParameters.put("user_agent", record.getUserAgent());
-        namedParameters.put("query", record.getQueryString());
-        namedParameters.put("session_id", record.getSessionId());
-        namedParameters.put("request_url", record.getUri());
-
-        String userId = (new UserIdReader()).read(record);
-        if (userId == null || userId == "null-user-id") {
-            namedParameters.put("user_id", null);
-        } else {
-            namedParameters.put("user_id", Integer.parseInt(userId));
-        }
-
-        namedParameters.put("method", record.getMethod());
-        namedParameters.put("vm_id", record.getVM());
-        namedParameters.put("stack", record.getStack());
-        namedParameters.put("instance", Integer.parseInt(record.getInstance()));
-        namedParameters.put("response_status", Integer.parseInt(record.getStatus()));
+        Map<String, Object> namedParameters = getParameters(record);
 
         try {
             dwTemplate.update(insertRecord, namedParameters);
@@ -92,4 +59,42 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
         logger.info("access_record table is clear. ");
     }
 
+    private Map<String, Object> getParameters(AccessRecord record) {
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("object_id", record.getObjectId());
+
+        String entityId = (new EntityIdReader()).read(record);
+        // entityId can be null or any arbitrary user input string
+        try {
+            if (entityId.startsWith("syn")) {
+                entityId = entityId.substring(3);
+            }
+            namedParameters.put("entity_id", Integer.parseInt(entityId));
+        } catch (Throwable e) {
+            namedParameters.put("entity_id", null);
+        }
+
+        namedParameters.put("elapse_ms", record.getLatency());
+        namedParameters.put("timestamp", record.getTimestamp());
+        namedParameters.put("host", record.getHost());
+        namedParameters.put("thread_id", Long.parseLong(record.getThreadId()));
+        namedParameters.put("user_agent", record.getUserAgent());
+        namedParameters.put("query", record.getQueryString());
+        namedParameters.put("session_id", record.getSessionId());
+        namedParameters.put("request_url", record.getUri());
+
+        String userId = (new UserIdReader()).read(record);
+        try {
+            namedParameters.put("user_id", Integer.parseInt(userId));
+        } catch (Throwable e) {
+            namedParameters.put("user_id", null);
+        }
+
+        namedParameters.put("method", record.getMethod());
+        namedParameters.put("vm_id", record.getVM());
+        namedParameters.put("stack", record.getStack());
+        namedParameters.put("instance", Integer.parseInt(record.getInstance()));
+        namedParameters.put("response_status", Integer.parseInt(record.getStatus()));
+        return namedParameters;
+    }
 }
