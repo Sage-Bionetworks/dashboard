@@ -18,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository("dwAccessRecordDao")
 public class AccessRecordDaoImpl implements AccessRecordDao{
@@ -35,9 +36,12 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
             ":user_agent,:query,:session_id,:request_url,:user_id,:method," +
             ":vm_id,:stack,:instance,:response_status);";
 
-    private static final String clearTable = "DELETE FROM access_record";
+    private static final String clearTable = "DELETE FROM access_record;";
+
+    private static final String count = "SELECT COUNT(*) FROM access_record;";
 
     @Override
+    @Transactional
     public void put(AccessRecord record) {
         Map<String, Object> namedParameters = getParameters(record);
 
@@ -57,6 +61,12 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
                 return ps.execute();
             }});
         logger.info("access_record table is clear. ");
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public long count() {
+        return dwTemplate.getJdbcOperations().queryForInt(count);
     }
 
     private Map<String, Object> getParameters(AccessRecord record) {
@@ -97,4 +107,5 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
         namedParameters.put("response_status", Integer.parseInt(record.getStatus()));
         return namedParameters;
     }
+
 }

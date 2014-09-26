@@ -7,4 +7,6 @@ public interface AccessRecordDao {
     void put(AccessRecord record);
 
     void cleanup();
+
+    long count();
 }
