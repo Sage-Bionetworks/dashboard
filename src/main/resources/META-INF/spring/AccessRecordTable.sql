@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS access_record (
     timestamp       bigint       NOT NULL,
     host            varchar(100),
     thread_id       integer         NOT NULL,
-    user_agent      varchar(100),
+    user_agent      varchar(200),
     query           text,
     session_id      varchar(100)     PRIMARY KEY,
     request_url     varchar(100)    NOT NULL,
