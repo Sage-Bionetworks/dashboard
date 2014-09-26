@@ -49,7 +49,7 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
             if (entityId.startsWith("syn")) {
                 entityId = entityId.substring(3);
             }
-            namedParameters.put("entity_id", Integer.parseInt(entityId));
+            namedParameters.put("entity_id", Long.parseLong(entityId));
         }
 
         namedParameters.put("elapse_ms", record.getLatency());

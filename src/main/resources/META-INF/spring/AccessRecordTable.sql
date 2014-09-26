@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS access_record (
     object_id       varchar(12),
-    entity_id       integer,
+    entity_id       bigint,
     elapse_ms       bigint          NOT NULL,
     timestamp       bigint       NOT NULL,
     host            varchar(100),
