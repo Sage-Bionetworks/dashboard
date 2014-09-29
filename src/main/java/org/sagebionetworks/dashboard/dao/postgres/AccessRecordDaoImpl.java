@@ -25,9 +25,9 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
     private final Logger logger = LoggerFactory.getLogger(AccessRecordDaoImpl.class);
 
     @Resource
-    NamedParameterJdbcTemplate dwTemplate;
+    private NamedParameterJdbcTemplate dwTemplate;
 
-    private static final String insertRecord = "INSERT INTO access_record " + 
+    private static final String INSERT_RECORD = "INSERT INTO access_record " + 
             "(object_id, entity_id, elapse_ms, timestamp, host, thread_id, " +
             "user_agent, query, session_id, request_url, user_id, method, " +
             "vm_id, stack, instance, response_status) " +
@@ -35,9 +35,9 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
             ":user_agent,:query,:session_id,:request_url,:user_id,:method," +
             ":vm_id,:stack,:instance,:response_status);";
 
-    private static final String clearTable = "DELETE FROM access_record;";
+    private static final String CLEAR_TABLE = "DELETE FROM access_record;";
 
-    private static final String count = "SELECT COUNT(*) FROM access_record;";
+    private static final String COUNT = "SELECT COUNT(*) FROM access_record;";
 
     @Override
     @Transactional
@@ -45,7 +45,7 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
         Map<String, Object> namedParameters = getParameters(record);
 
         try {
-            dwTemplate.update(insertRecord, namedParameters);
+            dwTemplate.update(INSERT_RECORD, namedParameters);
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -53,7 +53,7 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
 
     @Override
     public void cleanup() {
-        dwTemplate.execute(clearTable, new PreparedStatementCallback<Boolean>() {
+        dwTemplate.execute(CLEAR_TABLE, new PreparedStatementCallback<Boolean>() {
             @Override
             public Boolean doInPreparedStatement(PreparedStatement ps)
                     throws SQLException, DataAccessException {
@@ -65,7 +65,7 @@ public class AccessRecordDaoImpl implements AccessRecordDao{
     @SuppressWarnings("deprecation")
     @Override
     public long count() {
-        return dwTemplate.getJdbcOperations().queryForInt(count);
+        return dwTemplate.getJdbcOperations().queryForInt(COUNT);
     }
 
     private Map<String, Object> getParameters(AccessRecord record) {
