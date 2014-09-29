@@ -25,4 +25,5 @@ public class TopProjectByDayMetricTest {
         assertEquals(2, topProjectByDayMetric.getFilters().size());
         assertTrue(topProjectByDayMetric.getFilters().get(0) instanceof ProdFilter);
     }
+
 }

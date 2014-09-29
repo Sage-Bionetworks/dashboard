@@ -1,0 +1,25 @@
+CREATE TABLE IF NOT EXISTS access_record (
+    object_id       varchar(12),
+    entity_id       bigint,
+    elapse_ms       bigint          NOT NULL,
+    timestamp       bigint          NOT NULL,
+    host            varchar(100),
+    thread_id       bigint          NOT NULL,
+    user_agent      varchar(200),
+    query           text,
+    session_id      varchar(100)    NOT NULL,
+    request_url     varchar(100)    NOT NULL,
+    user_id         integer,
+    method          varchar(10)     NOT NULL,
+    vm_id           varchar(60),
+    stack           varchar(10),
+    instance        integer         NOT NULL,
+    response_status    integer      NOT NULL,
+    PRIMARY KEY (timestamp, session_id)
+);
+
+CREATE INDEX ON access_record USING btree(user_id);
+
+CREATE INDEX ON access_record USING btree(timestamp);
+
+CREATE INDEX ON access_record USING btree(entity_id);
