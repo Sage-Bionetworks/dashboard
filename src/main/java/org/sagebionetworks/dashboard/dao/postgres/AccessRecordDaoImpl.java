@@ -11,7 +11,6 @@ import org.sagebionetworks.dashboard.dao.AccessRecordDao;
 import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.EntityIdReader;
 import org.sagebionetworks.dashboard.parse.UserIdReader;
-import org.sagebionetworks.dashboard.service.RepoRecordWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -23,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository("dwAccessRecordDao")
 public class AccessRecordDaoImpl implements AccessRecordDao{
 
-    private final Logger logger = LoggerFactory.getLogger(RepoRecordWorker.class);
+    private final Logger logger = LoggerFactory.getLogger(AccessRecordDaoImpl.class);
 
     @Resource
     NamedParameterJdbcTemplate dwTemplate;

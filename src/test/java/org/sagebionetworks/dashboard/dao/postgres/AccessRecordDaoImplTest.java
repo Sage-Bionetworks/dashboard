@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -19,28 +18,23 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.dashboard.context.DashboardContext;
 import org.sagebionetworks.dashboard.dao.AccessRecordDao;
 import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RepoRecord;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@ContextConfiguration("classpath:/META-INF/spring/test-context.xml")
+@ContextConfiguration("classpath:/META-INF/spring/test-postgres-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AccessRecordDaoImplTest {
 
     @Resource
     private AccessRecordDao accessRecordDao;
 
-    @Resource
-    private DashboardContext dashboardContext;
-
     private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
 
     @Before
     public void before() throws Exception {
-        assertNotNull(dashboardContext);
         assertNotNull(accessRecordDao);
     }
 
@@ -78,7 +72,7 @@ public class AccessRecordDaoImplTest {
             throw new RuntimeException(e);
         }
 
-        assertEquals(recordList.size()/10, accessRecordDao.count());
+        assertEquals(recordList.size()/100, accessRecordDao.count());
     }
 
     private boolean isDone() {
@@ -88,11 +82,11 @@ public class AccessRecordDaoImplTest {
 
     private List<AccessRecord> createRecordList() {
         List<AccessRecord> recordList = new ArrayList<>();
-        // 10 000 records
-        for (int i = 0; i< 10000; i++) {
+        // 100 records
+        for (int i = 0; i< 100; i++) {
             AccessRecord record = createNewRecord();
-            // copy each record 10 times
-            for (int j = 0; j < 10; j++) {
+            // copy each record 100 times
+            for (int j = 0; j < 100; j++) {
                 recordList.add(record);
             }
         }
@@ -102,31 +96,30 @@ public class AccessRecordDaoImplTest {
     private AccessRecord createNewRecord() {
         RepoRecord record = new RepoRecord();
 
-        Random randomNumber = new Random();
-        SecureRandom randomString = new SecureRandom();
+        Random random = new Random();
 
-        long elapse_ms = randomNumber.nextLong();
+        long elapse_ms = random.nextLong();
         record.setLatency(elapse_ms);
 
-        long timestamp = randomNumber.nextLong();
+        long timestamp = random.nextLong();
         record.setTimestamp(timestamp);
 
-        String thread_id = Long.toString(randomNumber.nextLong());
+        String thread_id = Long.toString(random.nextLong());
         record.setThreadId(thread_id);
 
         String session_id = UUID.randomUUID().toString();
         record.setSessionId(session_id);
 
-        String request_url = new BigInteger(100, randomString).toString(32);
+        String request_url = new BigInteger(100, random).toString(32);
         record.setUri(request_url);
 
-        String method = new BigInteger(10, randomString).toString(32);
+        String method = new BigInteger(10, random).toString(32);
         record.setMethod(method);
 
-        String instance = Integer.toString(randomNumber.nextInt());
+        String instance = Integer.toString(random.nextInt());
         record.setInstance(instance);
 
-        String response_status = Integer.toString(randomNumber.nextInt());
+        String response_status = Integer.toString(random.nextInt());
         record.setStatus(response_status);
         return record;
     }
