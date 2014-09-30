@@ -1,6 +1,6 @@
 package org.sagebionetworks.dashboard.dao;
 
-import java.util.List;
+import java.util.Set;
 
 import org.sagebionetworks.dashboard.parse.CuResponseRecord;
 
@@ -9,7 +9,7 @@ public interface KeyCachedDao {
     /**
      * @return all keys with metricName and id
      */
-    List<String> getAllKeys(String metricName, String id);
+    Set<String> getAllKeys(String metricName, String id);
 
     /**
      * Metric store the record's data as a member of a key in redis
