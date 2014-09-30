@@ -4,11 +4,12 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.KeyCachedDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.redis.Key;
 import org.sagebionetworks.dashboard.parse.CuResponseRecord;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.sagebionetworks.dashboard.util.PosixTimeUtil;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
@@ -17,9 +18,6 @@ public class KeyCachedDaoImpl implements KeyCachedDao {
 
     @Resource(name="redisTemplate")
     private ZSetOperations<String, String> zsetOps;
-
-    @Resource
-    private StringRedisTemplate redisTemplate;
 
     @Resource
     private NameIdDao nameIdDao;
@@ -31,7 +29,7 @@ public class KeyCachedDaoImpl implements KeyCachedDao {
 
     @Override
     public Set<String> getAllKeys(String metricName, String id) {
-        return redisTemplate.keys(getKey(metricName, id) + END_OF_KEY);
+        return zsetOps.range(getKey(metricName, id) + END_OF_KEY, 0, Integer.MAX_VALUE);
     }
 
     @Override
@@ -42,8 +40,13 @@ public class KeyCachedDaoImpl implements KeyCachedDao {
     }
 
     private String getKeyMember(String metric, CuResponseRecord record) {
+        final Long t = record.getTimestamp();
+        final DateTime timestamp = new DateTime(t.longValue());
+        System.out.println(t);
+        System.out.println(timestamp.getMillis());
+        System.out.println(PosixTimeUtil.floorToMonth(timestamp));
         return UNIQUECOUNT_PREFIX + getKey(metric, Integer.toString(record.questionIndex())) 
-                + Key.SEPARATOR + Long.toString(record.getTimestamp());
+                + Key.SEPARATOR + Long.toString(PosixTimeUtil.floorToMonth(timestamp));
     }
 
     private String getKey(String metricName, String id) {
