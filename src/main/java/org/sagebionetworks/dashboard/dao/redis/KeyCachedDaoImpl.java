@@ -42,8 +42,8 @@ public class KeyCachedDaoImpl implements KeyCachedDao {
     }
 
     private String getKeyMember(String metric, CuResponseRecord record) {
-        return UNIQUECOUNT_PREFIX + getKeyMember(metric, record) + Key.SEPARATOR
-                + Long.toString(record.getTimestamp());
+        return UNIQUECOUNT_PREFIX + getKey(metric, Integer.toString(record.questionIndex())) 
+                + Key.SEPARATOR + Long.toString(record.getTimestamp());
     }
 
     private String getKey(String metricName, String id) {
