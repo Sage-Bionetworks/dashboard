@@ -2,6 +2,7 @@ package org.sagebionetworks.dashboard.service;
 
 import javax.annotation.Resource;
 
+import org.sagebionetworks.dashboard.dao.KeyCachedDao;
 import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
 import org.sagebionetworks.dashboard.metric.CertifiedUserQuizSubmitMetric;
 import org.sagebionetworks.dashboard.metric.QuestionFailMetric;
@@ -34,6 +35,10 @@ public class UpdateCuPassingRecordService {
 
     @Resource
     private CertifiedUserQuizSubmitMetric submissionMetric;
+
+    @Resource
+    private KeyCachedDao keyDao;
+
     /**
      * process a given passing record and update certified users metric
      */
@@ -44,14 +49,21 @@ public class UpdateCuPassingRecordService {
     }
 
     /**
-     * process a given passing record and update certified users metric
+     * process a given response record and update question pass/fail metric
      */
     public void updateResponses(CuResponseRecord record) {
         if (record == null) {
             return;
         }
-        uniqueCountWriterForResponseRecord.writeMetric(record,
+        if (record.isCorrect()) {
+            uniqueCountWriterForResponseRecord.writeMetric(record,
                     questionPassMetric, ":" + Integer.toString(record.questionIndex()));
+        } else {
+            uniqueCountWriterForResponseRecord.writeMetric(record,
+                    questionFailMetric, ":" + Integer.toString(record.questionIndex()));
+        }
+        // cache the key
+        keyDao.put(record, questionPassMetric.getName());
     }
 
     /**
