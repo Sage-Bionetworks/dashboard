@@ -25,17 +25,20 @@ public class KeyCachedDaoImpl implements KeyCachedDao {
     private NameIdDao nameIdDao;
 
     private static final String UNIQUECOUNT_PREFIX = "n:month:uniquecount:";
+    /* use a special character that is not a special character in regular expression 
+       to end the key so that getAllKeys wont return the keys that does not match completely. */
+    private static final String END_OF_KEY = "#";
 
     @Override
     public Set<String> getAllKeys(String metricName, String id) {
-        return redisTemplate.keys(getKey(metricName, id));
+        return redisTemplate.keys(getKey(metricName, id) + END_OF_KEY);
     }
 
     @Override
     public void put(CuResponseRecord record, String metric) {
         String key = getKey(metric, Integer.toString(record.questionIndex()));
         String keyMember = getKeyMember(metric, record);
-        zsetOps.incrementScore(key, keyMember, 1.0d);
+        zsetOps.incrementScore(key + END_OF_KEY, keyMember, 1.0d);
     }
 
     private String getKeyMember(String metric, CuResponseRecord record) {
