@@ -42,9 +42,6 @@ public class KeyCachedDaoImpl implements KeyCachedDao {
     private String getKeyMember(String metric, CuResponseRecord record) {
         final Long t = record.getTimestamp();
         final DateTime timestamp = new DateTime(t.longValue());
-        System.out.println(t);
-        System.out.println(timestamp.getMillis());
-        System.out.println(PosixTimeUtil.floorToMonth(timestamp));
         return UNIQUECOUNT_PREFIX + getKey(metric, Integer.toString(record.questionIndex())) 
                 + Key.SEPARATOR + Long.toString(PosixTimeUtil.floorToMonth(timestamp));
     }
