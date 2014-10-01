@@ -10,33 +10,30 @@ import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.redis.Key;
 import org.sagebionetworks.dashboard.parse.CuResponseRecord;
 import org.sagebionetworks.dashboard.util.PosixTimeUtil;
-import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository("keyCachedDao")
 public class KeyCachedDaoImpl implements KeyCachedDao {
 
     @Resource(name="redisTemplate")
-    private ZSetOperations<String, String> zsetOps;
+    private SetOperations<String, String> zsetOps;
 
     @Resource
     private NameIdDao nameIdDao;
 
     private static final String UNIQUECOUNT_PREFIX = "n:month:uniquecount:";
-    /* use a special character that is not a special character in regular expression 
-       to end the key so that getAllKeys wont return the keys that does not match completely. */
-    private static final String END_OF_KEY = "#";
 
     @Override
     public Set<String> getAllKeys(String metricName, String id) {
-        return zsetOps.range(getKey(metricName, id) + END_OF_KEY, 0, Integer.MAX_VALUE);
+        return zsetOps.members(getKey(metricName, id));
     }
 
     @Override
     public void put(CuResponseRecord record, String metric) {
         String key = getKey(metric, Integer.toString(record.questionIndex()));
         String keyMember = getKeyMember(metric, record);
-        zsetOps.incrementScore(key + END_OF_KEY, keyMember, 1.0d);
+        zsetOps.add(key, keyMember);
     }
 
     private String getKeyMember(String metric, CuResponseRecord record) {
