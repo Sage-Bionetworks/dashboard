@@ -36,6 +36,7 @@ public class AccessRecordDaoImplTest {
     @Before
     public void before() throws Exception {
         assertNotNull(accessRecordDao);
+        accessRecordDao.cleanup();
     }
 
     @After
