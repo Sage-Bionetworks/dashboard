@@ -13,6 +13,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
+import org.sagebionetworks.dashboard.dao.KeyCachedDao;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
@@ -26,6 +27,9 @@ import org.springframework.stereotype.Service;
 
 @Service("metricReader")
 public class MetricReader {
+
+    @Resource
+    private KeyCachedDao keyDao;
 
     @Resource
     private NameIdDao nameIdDao;
@@ -141,10 +145,9 @@ public class MetricReader {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
         }
-        String metricId = getMetricId(metricName);
         Map<String, String> res = new HashMap<String, String>();
         for (String id : ids) {
-            Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + id + ":");
+            Set<String> keys = keyDao.getAllKeys(metricName, id);
             Set<String> values = new HashSet<String>();
             for (String key : keys) {
                 values.addAll(uniqueCountDao.getAllValues(key));

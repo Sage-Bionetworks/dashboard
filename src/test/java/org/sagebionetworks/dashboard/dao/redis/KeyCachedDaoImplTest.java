@@ -54,14 +54,14 @@ public class KeyCachedDaoImplTest extends AbstractRedisDaoTest{
         keyDao.put(pass1, passMetric);
         assertEquals(keyDao.getAllKeys(passMetric, "1").size(), 1);
         assertEquals(new ArrayList<String>(keyDao.getAllKeys(passMetric, "1")),
-                Arrays.asList(prefix + passMetricId + ":1:1401667200"));
+                Arrays.asList(prefix + passMetricId + ":1:1401580800"));
         keyDao.put(pass1, passMetric);
         assertEquals(keyDao.getAllKeys(passMetric, "1").size(), 1);
 
         keyDao.put(fail1, failMetric);
         assertEquals(keyDao.getAllKeys(failMetric, "2").size(), 1);
         assertEquals(new ArrayList<String>(keyDao.getAllKeys(failMetric, "2")),
-                Arrays.asList(prefix + failMetricId + ":2:1401667200"));
+                Arrays.asList(prefix + failMetricId + ":2:1401580800"));
         keyDao.put(fail1, failMetric);
         assertEquals(keyDao.getAllKeys(failMetric, "2").size(), 1);
 
