@@ -115,6 +115,26 @@ public class MetricReader {
         return new ArrayList<UserDataPoint>(res);
     }
 
+    /*
+     * @param metricName (questionPassMetric or questionFailMetric)
+     * @param ids (questionIndex: 0 - 29)
+     * @return a map of id maps to the total unique responses found
+     */
+    public Map<String, String> getTotalCount(String metricName, List<String> ids) {
+        getMetricId(metricName);
+
+        Map<String, String> res = new HashMap<String, String>();
+        for (String id : ids) {
+            Set<String> keys = keyDao.getAllKeys(metricName, id);
+            Set<String> values = new HashSet<String>();
+            for (String key : keys) {
+                values.addAll(uniqueCountDao.getAllValues(key));
+            }
+            res.put(id, Integer.toString(values.size()));
+        }
+        return res;
+    }
+
     private Collection<? extends UserDataPoint> convertToUserDataPoint(
             Set<String> data) {
         List<UserDataPoint> results = new ArrayList<UserDataPoint>();
@@ -134,27 +154,6 @@ public class MetricReader {
             }
         });
         return results;
-    }
-
-    /*
-     * @param metricName (questionPassMetric or questionFailMetric)
-     * @param ids (questionIndex: 0 - 29)
-     * @return a map of id maps to the total unique responses found
-     */
-    public Map<String, String> getTotalCount(String metricName, List<String> ids) {
-        if (metricName == null || metricName.isEmpty()) {
-            throw new IllegalArgumentException("Metric name cannot be null or empty.");
-        }
-        Map<String, String> res = new HashMap<String, String>();
-        for (String id : ids) {
-            Set<String> keys = keyDao.getAllKeys(metricName, id);
-            Set<String> values = new HashSet<String>();
-            for (String key : keys) {
-                values.addAll(uniqueCountDao.getAllValues(key));
-            }
-            res.put(id, Integer.toString(values.size()));
-        }
-        return res;
     }
 
     private String getMetricId(String metricName) {
