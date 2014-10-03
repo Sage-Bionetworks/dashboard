@@ -55,12 +55,15 @@ public class UpdateCuPassingRecordService {
         if (record == null) {
             return;
         }
-        uniqueCountWriterForResponseRecord.writeMetric(record,
-                questionPassMetric, ":" + Integer.toString(record.questionIndex()));
-        uniqueCountWriterForResponseRecord.writeMetric(record,
-                questionFailMetric, ":" + Integer.toString(record.questionIndex()));
-        // cache the key
-        keyDao.put(record, questionPassMetric.getName());
+        if (record.isCorrect()) {
+            uniqueCountWriterForResponseRecord.writeMetric(record,
+                    questionPassMetric, ":" + Integer.toString(record.questionIndex()));
+            keyDao.put(record, questionPassMetric.getName());
+        } else {
+            uniqueCountWriterForResponseRecord.writeMetric(record,
+                    questionFailMetric, ":" + Integer.toString(record.questionIndex()));
+            keyDao.put(record, questionFailMetric.getName());
+        }
     }
 
     /**
