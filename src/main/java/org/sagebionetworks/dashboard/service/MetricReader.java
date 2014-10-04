@@ -121,8 +121,7 @@ public class MetricReader {
      * @return a map of id maps to the total unique responses found
      */
     public Map<String, String> getTotalCount(String metricName, List<String> ids) {
-        getMetricId(metricName);
-
+        metricName = getMetricName(metricName);
         Map<String, String> res = new HashMap<String, String>();
         for (String id : ids) {
             Set<String> keys = keyDao.getAllKeys(metricName, id);
@@ -157,13 +156,18 @@ public class MetricReader {
     }
 
     private String getMetricId(String metricName) {
-        if(!metricName.endsWith("Metric")) {
-            metricName = metricName + "Metric";
-        }
-        if (!nameIdDao.hasName(metricName)) {
+       metricName = getMetricName(metricName);
+       if (!nameIdDao.hasName(metricName)) {
             throw new IllegalArgumentException(metricName + " is an invalid metric name or " + 
                     "metric does not have any data yet");
         }
         return nameIdDao.getId(metricName);
+    }
+
+    private String getMetricName(String metricName) {
+        if(!metricName.endsWith("Metric")) {
+            return metricName + "Metric";
+        }
+        return metricName;
     }
 }
