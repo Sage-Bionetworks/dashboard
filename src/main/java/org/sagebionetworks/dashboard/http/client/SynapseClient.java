@@ -26,7 +26,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.config.DashboardConfig;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
 import org.sagebionetworks.dashboard.parse.CuResponseRecord;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class SynapseClient {
     private final Logger logger = LoggerFactory.getLogger(SynapseClient.class);
 
     @Resource
-    private DashboardContext dashboardContext;
+    private DashboardConfig dashboardConfig;
 
     public SynapseClient() {
         PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
@@ -61,8 +61,8 @@ public class SynapseClient {
      * @return Session token
      */
     public String login() {
-        String usr = dashboardContext.getSynapseUser();
-        String pwd = dashboardContext.getSynapsePassword();
+        String usr = dashboardConfig.getSynapseUser();
+        String pwd = dashboardConfig.getSynapsePassword();
         String login = "{\"email\":\"" + usr + "\", \"password\":\"" + pwd + "\"}";
         HttpEntity entity = new StringEntity(login, ContentType.APPLICATION_JSON);
         HttpPost post = new HttpPost(AUTH_LOGIN);

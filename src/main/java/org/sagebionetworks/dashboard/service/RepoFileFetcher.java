@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
-import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.config.DashboardConfig;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class RepoFileFetcher {
     private static final long BATCH_SIZE = 9L * 1000L * 1000L; // 9 MB per batch
 
     @Resource
-    private DashboardContext dashboardContext;
+    private DashboardConfig dashboardConfig;
 
     @Resource
     private AmazonS3 s3Client;
@@ -78,7 +78,7 @@ public class RepoFileFetcher {
 
         logger.info("Filling the batch for folder " + folder + "...");
 
-        String bucket = dashboardContext.getAccessRecordBucket();
+        String bucket = dashboardConfig.getAccessRecordBucket();
         ListObjectsRequest request = new ListObjectsRequest()
                 .withBucketName(bucket)
                 .withPrefix(folder);

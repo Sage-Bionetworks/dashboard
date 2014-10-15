@@ -8,8 +8,8 @@
                 http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
     <bean id="awsCredentials" class="com.amazonaws.auth.BasicAWSCredentials"
-            c:accessKey="#{dashboardContext.awsAccessKey}"
-            c:secretKey="#{dashboardContext.awsSecretKey}" />
+            c:accessKey="#{dashboardConfig.awsAccessKey}"
+            c:secretKey="#{dashboardConfig.awsSecretKey}" />
 
     <bean id="s3Client" class="com.amazonaws.services.s3.AmazonS3Client"
             c:awsCredentials-ref="awsCredentials" />

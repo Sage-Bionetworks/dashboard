@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.config.DashboardConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class RepoFolderFetcher {
     private static final String STACK_END   = "000001000";
 
     @Resource
-    private DashboardContext dashboardContext;
+    private DashboardConfig dashboardConfig;
 
     @Resource
     private AmazonS3 s3Client;
@@ -53,7 +53,7 @@ public class RepoFolderFetcher {
             throw new IllegalArgumentException("The number of days must be > 0.");
         }
         // Get the list of stacks
-        final String bucket = dashboardContext.getAccessRecordBucket();
+        final String bucket = dashboardConfig.getAccessRecordBucket();
         ListObjectsRequest listStacks = new ListObjectsRequest();
         listStacks.setBucketName(bucket);
         // Using a delimiter switches the listObjects() call to

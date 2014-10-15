@@ -15,7 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.config.DashboardConfig;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -29,7 +29,7 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 public class RepoFolderFetcherTest {
 
     @Resource
-    private DashboardContext dashboardContext;
+    private DashboardConfig dashboardConfig;
 
     @Resource
     private AmazonS3 s3Client;
@@ -48,7 +48,7 @@ public class RepoFolderFetcherTest {
         assertNotNull(repoFolderFetcher);
 
         // Clear S3 objects under this test.
-        final String bucket = dashboardContext.getAccessRecordBucket();
+        final String bucket = dashboardConfig.getAccessRecordBucket();
         final String prefix = getClass().getSimpleName();
         ObjectListing objListing = s3Client.listObjects(bucket, prefix);
         for (S3ObjectSummary obj : objListing.getObjectSummaries()) {
@@ -81,7 +81,7 @@ public class RepoFolderFetcherTest {
     @After
     public void after() throws Exception {
         for (String key : keyList) {
-            s3Client.deleteObject(dashboardContext.getAccessRecordBucket(), key);
+            s3Client.deleteObject(dashboardConfig.getAccessRecordBucket(), key);
         }
     }
 
@@ -104,7 +104,7 @@ public class RepoFolderFetcherTest {
         final ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType("text/html");
         metadata.setContentLength(bytes.length);
-        s3Client.putObject(dashboardContext.getAccessRecordBucket(), key, inputStream, metadata);
+        s3Client.putObject(dashboardConfig.getAccessRecordBucket(), key, inputStream, metadata);
         inputStream.close();
     }
 }
