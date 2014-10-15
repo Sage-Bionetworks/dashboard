@@ -17,16 +17,8 @@ public class DashboardConfig {
         }
     }
 
-    public boolean isProd() {
-        return Stack.PROD.equals(config.getStack());
-    }
-
-    public String getDwUsername() {
-        return config.get("dw.username");
-    }
-
-    public String getDwPassword() {
-        return config.get("dw.password");
+    public String getAccessRecordBucket() {
+        return config.get("access.record.bucket");
     }
 
     public String getAwsAccessKey() {
@@ -37,8 +29,12 @@ public class DashboardConfig {
         return config.get("aws.secret.key");
     }
 
-    public String getAccessRecordBucket() {
-        return config.get("access.record.bucket");
+    public String getDwUsername() {
+        return config.get("dw.username");
+    }
+
+    public String getDwPassword() {
+        return config.get("dw.password");
     }
 
     public String getSynapseUser() {
