@@ -1,6 +1,6 @@
 group = 'org.sagebionetworks'
 ext.name = 'dashboard'
-version = '0.6.2-' + (new Date()).format(
+version = '0.7.0-' + (new Date()).format(
         'yyyyMMddHHmmss', TimeZone.getTimeZone("UTC"))
 
 /*** Java ***/
