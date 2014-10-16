@@ -1,6 +1,6 @@
 group = 'org.sagebionetworks'
-project.ext.baseName = 'dashboard'
-version = '0.6.2-' + (new Date()).format(
+ext.name = 'dashboard'
+version = '0.7.0-' + (new Date()).format(
         'yyyyMMddHHmmss', TimeZone.getTimeZone("UTC"))
 
 /*** Java ***/
@@ -8,16 +8,20 @@ version = '0.6.2-' + (new Date()).format(
 apply plugin: 'java'
 
 jar {
-    group = group
-    baseName = baseName
-    version = version
+    group = project.group
+    baseName = project.ext.name
+    version = project.version
 }
 
 repositories {
     mavenCentral()
+    maven {
+        url "http://sagebionetworks.artifactoryonline.com/sagebionetworks/libs-releases-local"
+    }
 }
 
 dependencies {
+    compile 'org.sagebionetworks:dashboard-core:0.1.1+'
     compile 'org.springframework:spring-context:' + springFrameworkVersion
     compile 'org.springframework:spring-jdbc:' + springFrameworkVersion
     compile 'org.apache.commons:commons-dbcp2:2.0.1'
@@ -83,12 +87,11 @@ buildscript {
          jcenter()
     }
     dependencies {
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.2.4'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
     }
 }
 
-apply plugin: 'artifactory-publish'
-
+apply plugin: 'com.jfrog.artifactory'
 artifactory {
     contextUrl = 'http://sagebionetworks.artifactoryonline.com/sagebionetworks'
     publish {

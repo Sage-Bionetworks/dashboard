@@ -5,7 +5,7 @@ dashboard development environment
 
 ### Set up the required configuration
 
-    $ touch ~/.gradle/gradle.properties
+    $ touch ~/.dashboard/dashboard.config
 
 Add the following lines:
 
@@ -29,7 +29,7 @@ Add the following lines:
 3. At the project root, run `vagrant up`.
 4. Once the box is up, ssh to it `vagrant ssh`.
 5. Go to the shared folder `cd /vagrant`.
-6. Run `./gradlew --info clean build`.
+6. Run `./gradlew clean build`.
 7. Outside the guest, at the host's project folder, run `./gradlew eclipse` to generate the files for importing the project into Eclipse.
 
 If this works, we are done and the steps below can be skipped.
@@ -50,10 +50,12 @@ Only follow the steps below if Vagrant is not working for you.
 
 #### Install PostgreSQL and start the PostgreSQL server
 
+After the installation, PostgreSQL needs to be bootstrapped with the `dashboard` user and `dashboard` database.  See `dw-bootstrap.sql`.
+
 #### Build and run the project
 
     $ cd <project-home>
-    $ ./gradlew --info clean build
+    $ ./gradlew clean build
     ...
     BUILD SUCCESSFUL
     Total time: 1 mins 25.893 secs

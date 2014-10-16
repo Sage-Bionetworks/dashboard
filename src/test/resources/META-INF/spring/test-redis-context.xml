@@ -9,7 +9,7 @@
                 http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
     <context:component-scan base-package="
-            org.sagebionetworks.dashboard.context,
+            org.sagebionetworks.dashboard.config,
             org.sagebionetworks.dashboard.http.client,
             org.sagebionetworks.dashboard.dao.redis" />
 

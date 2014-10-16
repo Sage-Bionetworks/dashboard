@@ -10,8 +10,8 @@
     <bean id="dwDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close"
             p:driverClassName="org.postgresql.Driver"
             p:url="jdbc:postgresql://127.0.0.1:5432/dashboard"
-            p:username="#{dashboardContext.dwUsername}"
-            p:password="#{dashboardContext.dwPassword}" />
+            p:username="#{dashboardConfig.dwUsername}"
+            p:password="#{dashboardConfig.dwPassword}" />
 
     <bean id="dwTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"
             c:dataSource-ref="dwDataSource" />

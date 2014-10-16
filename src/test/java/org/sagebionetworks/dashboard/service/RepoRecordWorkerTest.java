@@ -24,7 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.config.DashboardConfig;
 import org.sagebionetworks.dashboard.dao.AccessRecordDao;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -44,12 +44,11 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RepoRecordWorkerTest {
 
-
     @Resource
     AccessRecordDao dw;
 
     @Resource
-    private DashboardContext dashboardContext;
+    private DashboardConfig dashboardConfig;
 
     @Resource
     private AmazonS3 s3Client;
@@ -71,7 +70,7 @@ public class RepoRecordWorkerTest {
 
     @Before
     public void before() throws Exception {
-        assertNotNull(dashboardContext);
+        assertNotNull(dashboardConfig);
         assertNotNull(s3Client);
         assertNotNull(redisTemplate);
         assertNotNull(fileStatusDao);
@@ -95,7 +94,7 @@ public class RepoRecordWorkerTest {
     @After
     public void after() {
         clearRedis();
-        final String bucket = dashboardContext.getAccessRecordBucket();
+        final String bucket = dashboardConfig.getAccessRecordBucket();
         if (keySuccess != null) {
             s3Client.deleteObject(bucket, keySuccess);
         }
@@ -130,7 +129,7 @@ public class RepoRecordWorkerTest {
      * fail to clean, we do not want to do too much extra work.
      */
     private void cleanS3() throws IOException {
-        final String bucket = dashboardContext.getAccessRecordBucket();
+        final String bucket = dashboardConfig.getAccessRecordBucket();
         final List<KeyVersion> toDelete = new ArrayList<>();
         final DateTime now = DateTime.now(DateTimeZone.UTC);
         final Date yesterday = now.minusDays(1).toDate();
@@ -178,7 +177,7 @@ public class RepoRecordWorkerTest {
         metadata.setContentType("application/x-gzip");
         metadata.setContentLength(bytes.length);
 
-        final String bucket = dashboardContext.getAccessRecordBucket();
+        final String bucket = dashboardConfig.getAccessRecordBucket();
         final String key = "000000023/2014-02-28/" + UUID.randomUUID().toString() + ".csv.gz";
         final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         s3Client.putObject(bucket, key, bais, metadata);

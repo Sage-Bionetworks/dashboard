@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.sagebionetworks.dashboard.context.DashboardContext;
+import org.sagebionetworks.dashboard.config.DashboardConfig;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.sagebionetworks.dashboard.model.FileFailure;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ public class RepoRepairWorker {
     private final Logger logger = LoggerFactory.getLogger(RepoRepairWorker.class);
 
     @Resource
-    private DashboardContext dashboardContext;
+    private DashboardConfig dashboardConfig;
 
     @Resource
     private FileStatusDao fileStatusDao;
@@ -26,7 +26,7 @@ public class RepoRepairWorker {
     private RepoRecordWorker repoRecordWorker;
 
     public void doWork() {
-        final String bucket = dashboardContext.getAccessRecordBucket();
+        final String bucket = dashboardConfig.getAccessRecordBucket();
         final List<FileFailure> failures = fileStatusDao.getFailures();
         for (FileFailure failure : failures) {
             final String key = failure.getFile();
