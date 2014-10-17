@@ -128,9 +128,6 @@ public class RepoUpdateService {
     private void updateRecord(final AccessRecord record, final String file, 
             final int line, final UpdateRecordCallback callback) {
 
-        // put the record in the data warehouse
-        dw.put(record);
-
         List<Runnable> tasks = new ArrayList<Runnable>();
 
         for (final Metric<AccessRecord, ?> metric : metricCollection) {
