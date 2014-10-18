@@ -19,7 +19,6 @@ import java.util.zip.GZIPInputStream;
 
 import javax.annotation.Resource;
 
-import org.sagebionetworks.dashboard.dao.AccessRecordDao;
 import org.sagebionetworks.dashboard.dao.SessionDedupeDao;
 import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.model.WriteRecordResult;
@@ -36,9 +35,6 @@ import org.springframework.stereotype.Service;
 public class RepoUpdateService {
 
     private final Logger logger = LoggerFactory.getLogger(RepoUpdateService.class);
-
-    @Resource
-    private AccessRecordDao dw;
 
     @Resource
     private Collection<Metric<AccessRecord, ?>> metricCollection;
@@ -127,9 +123,6 @@ public class RepoUpdateService {
      */
     private void updateRecord(final AccessRecord record, final String file, 
             final int line, final UpdateRecordCallback callback) {
-
-        // put the record in the data warehouse
-        dw.put(record);
 
         List<Runnable> tasks = new ArrayList<Runnable>();
 
