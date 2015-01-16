@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sagebionetworks.dashboard.config.DashboardConfig;
-import org.sagebionetworks.dashboard.dao.AccessRecordDao;
 import org.sagebionetworks.dashboard.dao.FileStatusDao;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -43,9 +42,6 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 @ContextConfiguration("classpath:/META-INF/spring/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RepoRecordWorkerTest {
-
-    @Resource
-    AccessRecordDao dw;
 
     @Resource
     private DashboardConfig dashboardConfig;
@@ -75,7 +71,6 @@ public class RepoRecordWorkerTest {
         assertNotNull(redisTemplate);
         assertNotNull(fileStatusDao);
         assertNotNull(repoRecordWorker);
-        assertNotNull(dw);
         clearRedis();
         cleanS3();
         String[] success = {
@@ -101,11 +96,6 @@ public class RepoRecordWorkerTest {
         if (keyFailure != null) {
             s3Client.deleteObject(bucket, keyFailure);
         }
-    }
-
-    @After
-    public void cleanupDW(){
-        dw.cleanup();
     }
 
     @Test
