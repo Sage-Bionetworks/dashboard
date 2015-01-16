@@ -12,10 +12,12 @@
             org.sagebionetworks.dashboard.config,
             org.sagebionetworks.dashboard.http.client,
             org.sagebionetworks.dashboard.dao.redis,
+            org.sagebionetworks.dashboard.dao.postgres,
             org.sagebionetworks.dashboard.metric,
             org.sagebionetworks.dashboard.service" />
 
     <import resource="aws.xml" />
     <import resource="redis.xml" />
+    <import resource="postgres.xml" />
 
 </beans>

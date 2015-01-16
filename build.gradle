@@ -31,6 +31,7 @@ dependencies {
     compile 'net.sf.opencsv:opencsv:2.3'
     compile 'com.amazonaws:aws-java-sdk:1.8.11'
     compile 'org.apache.httpcomponents:httpclient:4.3.5'
+    compile 'org.postgresql:postgresql:9.3-1102-jdbc41'
     compile 'org.slf4j:slf4j-api:' + slf4jVersion
     runtime 'ch.qos.logback:logback-classic:1.1.2'
     runtime 'ch.qos.logback:logback-core:1.1.2'
