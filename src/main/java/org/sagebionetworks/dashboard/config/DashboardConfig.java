@@ -55,6 +55,10 @@ public class DashboardConfig {
         return config.get("synapse.password");
     }
 
+    public String getUserWhitelist() {
+        return config.get("user.whitelist");
+    }
+
     private final Logger logger = LoggerFactory.getLogger(DashboardConfig.class);
     private final Config config;
 }
