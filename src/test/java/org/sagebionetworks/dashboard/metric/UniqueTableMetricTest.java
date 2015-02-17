@@ -85,7 +85,7 @@ public class UniqueTableMetricTest {
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<AccessRecord, String> metric = new CertifiedUserQuizRequestMetric();
+        Metric<AccessRecord, String> metric = new UniqueTableMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2014, 06, 1, 0, 0);
