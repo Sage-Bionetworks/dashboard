@@ -1,7 +1,6 @@
 package org.sagebionetworks.dashboard.metric;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -29,7 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @ContextConfiguration("classpath:/META-INF/spring/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class UniqueTableMetricTest {
+public class UpdateTableMetricTest {
 
     @Resource
     private StringRedisTemplate redisTemplate;
@@ -56,14 +55,34 @@ public class UniqueTableMetricTest {
     }
 
     @Test
-    public void validUri() {
+    public void validAppendUri() {
         RecordParser parser = new RepoRecordParser();
-        String line = ",\"17\",\"1423611312727\",,\"repo-prod-76-0.prod.sagebase.org\",\"33860\",\"Synpase-Java-Client/2015-01-30-1577-40e5630  Synapse-Web-Client/76.0-2-g5f246c4\",\"domain=SYNAPSE\",\"6a7616fd-9549-432f-9174-8005ba0d5665\",,\"/repo/v1/entity/syn3163713/table/query/async/get/29639\",\"3323072\",,\"2015-02-10\",\"GET\",\"043ad075351c10aa:4ea2e7a8:14b461f6975:-7ffd\",\"000000076\",\"prod\",\"true\",\"201\"";
+        String line = ",\"17\",\"1423611312727\",,\"repo-prod-76-0.prod.sagebase.org\",\"33860\",\"Synpase-Java-Client/2015-01-30-1577-40e5630  Synapse-Web-Client/76.0-2-g5f246c4\",\"domain=SYNAPSE\",\"6a7616fd-9549-432f-9174-8005ba0d5665\",,\"/repo/v1/entity/syn3163713/table/append/async/start\",\"3323072\",,\"2015-02-10\",\"GET\",\"043ad075351c10aa:4ea2e7a8:14b461f6975:-7ffd\",\"000000076\",\"prod\",\"true\",\"201\"";
         Reader reader = new StringReader(line);
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<AccessRecord, String> metric = new UniqueTableMetric();
+        Metric<AccessRecord, String> metric = new UpdateTableMetric();
+        uniqueCountWriter.writeMetric(records.get(0), metric);
+
+        DateTime dtFrom = new DateTime(2015, 02, 9, 0, 0);
+        DateTime dtTo = new DateTime(2015, 02, 11, 0, 0);
+        List<TimeDataPoint> results = metricReader.getUniqueCount(metric.getName(), Interval.day, dtFrom, dtTo);
+        assertNotNull(results);
+        assertEquals(1, results.size());
+        assertEquals(1423526400000L, results.get(0).timestamp());
+        assertEquals("1", results.get(0).value());
+    }
+
+    @Test
+    public void validDeleteUri() {
+        RecordParser parser = new RepoRecordParser();
+        String line = ",\"17\",\"1423611312727\",,\"repo-prod-76-0.prod.sagebase.org\",\"33860\",\"Synpase-Java-Client/2015-01-30-1577-40e5630  Synapse-Web-Client/76.0-2-g5f246c4\",\"domain=SYNAPSE\",\"6a7616fd-9549-432f-9174-8005ba0d5665\",,\"/repo/v1/entity/syn3163713/table/deleteRows\",\"3323072\",,\"2015-02-10\",\"GET\",\"043ad075351c10aa:4ea2e7a8:14b461f6975:-7ffd\",\"000000076\",\"prod\",\"true\",\"201\"";
+        Reader reader = new StringReader(line);
+        List<AccessRecord> records = parser.parse(reader);
+        assertNotNull(records);
+        assertEquals(1, records.size());
+        Metric<AccessRecord, String> metric = new UpdateTableMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric);
 
         DateTime dtFrom = new DateTime(2015, 02, 9, 0, 0);
