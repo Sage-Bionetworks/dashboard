@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 @Service("repoUpdateService")
 public class RepoUpdateService {
+    private final boolean LOCAL_TESTING = true;
 
     private final Logger logger = LoggerFactory.getLogger(RepoUpdateService.class);
 
@@ -75,7 +76,9 @@ public class RepoUpdateService {
             List<AccessRecord> records = parser.parse(br);
             for (AccessRecord record : records) {
                 lineCount++;
-                if (lineCount >= startLineIncl &&
+                if (LOCAL_TESTING) {
+                    updateRecord(record, filePath, lineCount, recordCallback);
+                } else if (lineCount >= startLineIncl &&
                         !sessionDedupeDao.isProcessed(record.getSessionId())) {
                     updateRecord(record, filePath, lineCount, recordCallback);
                 }

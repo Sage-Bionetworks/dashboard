@@ -6,7 +6,7 @@ public class UriUploadTableFilter extends UriRegexFilter {
 
     public UriUploadTableFilter() {
         // /entity/{id}/table/upload/...
-        super(Pattern.compile("^/repo/v1/entity/syn\\d+/table/upload/",
+        super(Pattern.compile("^/repo/v1/entity/syn\\d+/table/upload/(.*?)",
                 Pattern.CASE_INSENSITIVE));
     }
 }
