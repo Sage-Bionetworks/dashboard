@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.parse.AccessRecord;
-import org.sagebionetworks.dashboard.parse.MethodFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
@@ -23,7 +22,7 @@ public class UniqueTableMetric extends UniqueCountMetric<AccessRecord, String> {
     private static final Pattern SYN_ID = Pattern.compile("syn\\d+", Pattern.CASE_INSENSITIVE);
 
     private final List<RecordFilter<AccessRecord>> filters = 
-            Collections.unmodifiableList(Arrays.asList( new ProdFilter(), new UriTableFilter(), new MethodFilter("POST")));
+            Collections.unmodifiableList(Arrays.asList( new ProdFilter(), new UriTableFilter()));
 
     private final RecordReader<AccessRecord, String> reader = new UriIdReader(SYN_ID);
 
