@@ -17,14 +17,14 @@ import org.sagebionetworks.dashboard.service.UniqueCountWriter;
 import org.springframework.stereotype.Component;
 
 /**
- * This metric captures the number of unique users that use R Client to access a table.
+ * This metric captures the number of unique users that use Python Client to access a table.
  */
-@Component("uniqueUserTableRMetric")
-public class UniqueUserTableRMetric extends UniqueCountMetric<AccessRecord, String> {
+@Component("uniqueUserTablePythonMetric")
+public class UniqueUserTablePythonMetric extends UniqueCountMetric<AccessRecord, String> {
 
     private final List<RecordFilter<AccessRecord>> filters = 
             Collections.unmodifiableList(Arrays.asList( new ProdFilter(),
-                    new UriTableFilter(), ClientFilter.R));
+                    new UriTableFilter(), ClientFilter.PYTHON));
 
     private final RecordReader<AccessRecord, String> reader = new UserIdReader();
 
