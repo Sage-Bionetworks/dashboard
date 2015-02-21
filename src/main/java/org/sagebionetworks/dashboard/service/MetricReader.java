@@ -1,6 +1,7 @@
 package org.sagebionetworks.dashboard.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -83,6 +84,9 @@ public class MetricReader {
         return uniqueCountDao.getUnique(metricId, interval, from, to, min, max);
     }
 
+    /**
+     * @return the session count of key id in metric metricName
+     */
     public List<TimeDataPoint> getCount(String metricName, String id, Interval interval, DateTime from, DateTime to) {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
@@ -115,7 +119,7 @@ public class MetricReader {
         return new ArrayList<UserDataPoint>(res);
     }
 
-    /*
+    /**
      * @param metricName (questionPassMetric or questionFailMetric)
      * @param ids (questionIndex: 0 - 29)
      * @return a map of id maps to the total unique responses found
@@ -132,6 +136,38 @@ public class MetricReader {
             res.put(id, Integer.toString(values.size()));
         }
         return res;
+    }
+
+    /**
+     * return the total count of unique id of a metric
+     */
+    public String getTotalCount(String metricName) {
+        String id = "";
+        Map<String, String> map = getTotalCount(metricName, Arrays.asList(id));
+        return map.get(id);
+    }
+
+    /**
+     * @return all session count for a metric in a specific time range
+     */
+    public String getSessionCount(String metricName, Interval interval, DateTime from, DateTime to) {
+        metricName = getMetricName(metricName);
+        Set<String> keys = keyDao.getAllKeys(metricName, "");
+        long sessionCount = 0;
+        String metricId = getMetricId(metricName);
+        for (String key : keys) {
+            List<TimeDataPoint> list = uniqueCountDao.get(metricId, key, interval, from, to);
+            sessionCount += sum(list);
+        }
+        return Long.toString(sessionCount);
+    }
+
+    private long sum(List<TimeDataPoint> list) {
+        long sum = 0;
+        for (TimeDataPoint data : list) {
+            sum += Long.parseLong(data.value());
+        }
+        return sum;
     }
 
     private Collection<? extends UserDataPoint> convertToUserDataPoint(
