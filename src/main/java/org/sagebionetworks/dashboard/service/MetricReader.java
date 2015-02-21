@@ -18,8 +18,8 @@ import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
-import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
+import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.model.UserDataPoint;
@@ -83,6 +83,9 @@ public class MetricReader {
         return uniqueCountDao.getUnique(metricId, interval, from, to, min, max);
     }
 
+    /**
+     * @return the session count of key id in metric metricName
+     */
     public List<TimeDataPoint> getCount(String metricName, String id, Interval interval, DateTime from, DateTime to) {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
@@ -115,7 +118,7 @@ public class MetricReader {
         return new ArrayList<UserDataPoint>(res);
     }
 
-    /*
+    /**
      * @param metricName (questionPassMetric or questionFailMetric)
      * @param ids (questionIndex: 0 - 29)
      * @return a map of id maps to the total unique responses found
@@ -132,6 +135,48 @@ public class MetricReader {
             res.put(id, Integer.toString(values.size()));
         }
         return res;
+    }
+
+    /**
+     * return the total count of unique id/key of a metric
+     */
+    public String getTotalCount(String metricName) {
+        return  Integer.toString(getAllValues(metricName).size());
+    }
+
+    /*
+     * return the set off all ids/keys of a metric
+     */
+    private Set<String> getAllValues(String metricName) {
+        metricName = getMetricName(metricName);
+        String metricId = getMetricId(metricName);
+        Set<String> keys = uniqueCountDao.getAllKeys(metricId);
+        Set<String> values = new HashSet<String>();
+        for (String key : keys) {
+            values.addAll(uniqueCountDao.getAllValues(key));
+        }
+        return values;
+    }
+
+    /**
+     * @return all session count for a metric in a specific time range
+     */
+    public String getSessionCount(String metricName, Interval interval, DateTime from, DateTime to) {
+        Set<String> ids = getAllValues(metricName);
+        long sessionCount = 0;
+        for (String id : ids) {
+            List<TimeDataPoint> list = getCount(metricName, id, interval, from, to);
+            sessionCount += sum(list);
+        }
+        return Long.toString(sessionCount);
+    }
+
+    private long sum(List<TimeDataPoint> list) {
+        long sum = 0;
+        for (TimeDataPoint data : list) {
+            sum += Long.parseLong(data.value());
+        }
+        return sum;
     }
 
     private Collection<? extends UserDataPoint> convertToUserDataPoint(
