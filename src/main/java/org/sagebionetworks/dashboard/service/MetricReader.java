@@ -1,7 +1,6 @@
 package org.sagebionetworks.dashboard.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,8 +18,8 @@ import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.SimpleCountDao;
 import org.sagebionetworks.dashboard.dao.TimeSeriesDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
-import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.CountDataPoint;
+import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.Statistic;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
 import org.sagebionetworks.dashboard.model.UserDataPoint;
@@ -139,24 +138,34 @@ public class MetricReader {
     }
 
     /**
-     * return the total count of unique id of a metric
+     * return the total count of unique id/key of a metric
      */
     public String getTotalCount(String metricName) {
-        String id = "";
-        Map<String, String> map = getTotalCount(metricName, Arrays.asList(id));
-        return map.get(id);
+        return  Integer.toString(getAllValues(metricName).size());
+    }
+
+    /*
+     * return the set off all ids/keys of a metric
+     */
+    private Set<String> getAllValues(String metricName) {
+        metricName = getMetricName(metricName);
+        String metricId = getMetricId(metricName);
+        Set<String> keys = uniqueCountDao.getAllKeys(metricId);
+        Set<String> values = new HashSet<String>();
+        for (String key : keys) {
+            values.addAll(uniqueCountDao.getAllValues(key));
+        }
+        return values;
     }
 
     /**
      * @return all session count for a metric in a specific time range
      */
     public String getSessionCount(String metricName, Interval interval, DateTime from, DateTime to) {
-        metricName = getMetricName(metricName);
-        Set<String> keys = keyDao.getAllKeys(metricName, "");
+        Set<String> ids = getAllValues(metricName);
         long sessionCount = 0;
-        String metricId = getMetricId(metricName);
-        for (String key : keys) {
-            List<TimeDataPoint> list = uniqueCountDao.get(metricId, key, interval, from, to);
+        for (String id : ids) {
+            List<TimeDataPoint> list = getCount(metricName, id, interval, from, to);
             sessionCount += sum(list);
         }
         return Long.toString(sessionCount);
