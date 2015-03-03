@@ -102,15 +102,15 @@ public class MetricReader {
         return simpleCountDao.get(metricId, from, to);
     }
 
-    public List<UserDataPoint> getAllReport(String metricName, String entityId) {
+    public List<UserDataPoint> getAllReport(String metricName, String input) {
         if (metricName == null || metricName.isEmpty()) {
             throw new IllegalArgumentException("Metric name cannot be null or empty.");
         }
         String metricId = getMetricId(metricName);
-        if (entityId.startsWith("syn")) {
-            entityId = entityId.substring(3);
+        if (input.startsWith("syn")) {
+            input = input.substring(3);
         }
-        Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + entityId);
+        Set<String> keys = uniqueCountDao.getAllKeys(metricId + ":" + input);
         Set<UserDataPoint> res = new HashSet<UserDataPoint>();
         for (String key : keys) {
             res.addAll(convertToUserDataPoint(uniqueCountDao.getAllValues(key)));

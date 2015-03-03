@@ -27,8 +27,5 @@ enum NameSpace {
     bitcount,
 
     /** Simple counts. */
-    count,
-
-    /** File Download Report */
-    fdownload
+    count
 }
