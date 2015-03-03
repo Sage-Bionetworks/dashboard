@@ -55,8 +55,8 @@ public final class PosixTimeUtil {
 
     public static long floorToMonth(DateTime dateTime) {
         final int days = dateTime.getDayOfMonth() - 1;
-        DateTime day1 = dateTime.minusDays(days);
-        return floorToDay(day1);
+        DateTime retDay = dateTime.minusDays(days);
+        return floorToDay(retDay);
     }
 
     public static long floorToSageQuarter(DateTime dateTime) {

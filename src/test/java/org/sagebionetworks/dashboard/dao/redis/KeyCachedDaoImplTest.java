@@ -29,10 +29,10 @@ public class KeyCachedDaoImplTest extends AbstractRedisDaoTest{
     private static final String passMetric = "questionPassMetric";
     private static final String failMetric = "questionFailMetric";
     private static final String prefix = "n:month:uniquecount:";
-    private static final CuResponseRecord pass1 = new CuResponseRecord(1, 1, new DateTime(1403827200000L), true);
-    private static final CuResponseRecord pass2 = new CuResponseRecord(12, 1, new DateTime(1403827200001L), true);
-    private static final CuResponseRecord fail1 = new CuResponseRecord(1, 2, new DateTime(1403827200000L), false);
-    private static final CuResponseRecord fail2 = new CuResponseRecord(12, 2, new DateTime(153827200001L), false);
+    private static final CuResponseRecord pass1 = new CuResponseRecord(1, 1, new DateTime(2014, 06, 27, 0, 0), true);
+    private static final CuResponseRecord pass2 = new CuResponseRecord(12, 1, new DateTime(2014, 06, 27, 0, 1), true);
+    private static final CuResponseRecord fail1 = new CuResponseRecord(1, 2, new DateTime(2014, 06, 27, 0, 0), false);
+    private static final CuResponseRecord fail2 = new CuResponseRecord(12, 2, new DateTime(2014, 07, 27, 0, 1), false);
 
     @Before
     public void before() {

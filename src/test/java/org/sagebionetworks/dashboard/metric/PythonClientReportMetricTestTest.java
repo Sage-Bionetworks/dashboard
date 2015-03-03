@@ -59,13 +59,13 @@ public class PythonClientReportMetricTestTest {
         assertEquals(1, records.size());
         Metric<AccessRecord, String> metric = new PythonClientReportMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric, ":" + new ClientReader().read(records.get(0)));
-        
-        List<UserDataPoint> results = metricReader.getAllReport(metric.getName(), "1.5-4");
+
+        List<UserDataPoint> results = metricReader.getAllReport(metric.getName(), "python-requests/1.2.3");
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals("1404855949372", results.get(0).timestamp());
         assertEquals("1584359", results.get(0).userId());
-        assertEquals("python-requests/1.2.3 CPython/2.7.4 Linux/3.8.0-19-generic", results.get(0).client());
+        assertEquals("python-requests/1.2.3 CPython/2.7.4 Linux/3.8.0-19-generic".CASE_INSENSITIVE_ORDER, results.get(0).client().CASE_INSENSITIVE_ORDER);
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -78,7 +78,7 @@ public class PythonClientReportMetricTestTest {
         assertEquals(1, records.size());
         Metric<AccessRecord, String> metric = new PythonClientReportMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric, ":" + new ClientReader().read(records.get(0)));
-        
-        metricReader.getAllReport(metric.getName(), "1.5-4");
+
+        metricReader.getAllReport(metric.getName(), "python-requests/1.2.3");
     }
 }

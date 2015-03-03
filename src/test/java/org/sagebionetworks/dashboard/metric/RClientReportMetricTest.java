@@ -60,13 +60,13 @@ public class RClientReportMetricTest {
         assertEquals(1, records.size());
         Metric<AccessRecord, String> metric = new RClientReportMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric, ":" + new ClientReader().read(records.get(0)));
-        
-        List<UserDataPoint> results = metricReader.getAllReport(metric.getName(), "1.5-4");
+
+        List<UserDataPoint> results = metricReader.getAllReport(metric.getName(), "*/1.5-4");
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals("1404855949372", results.get(0).timestamp());
         assertEquals("1584359", results.get(0).userId());
-        assertEquals("synapseRClient/1.5-4/Rv3.1.2", results.get(0).client());
+        assertEquals("synapseRClient/1.5-4/Rv3.1.2".toLowerCase(), results.get(0).client());
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -80,6 +80,6 @@ public class RClientReportMetricTest {
         Metric<AccessRecord, String> metric = new RClientReportMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric, ":" + new ClientReader().read(records.get(0)));
         
-        metricReader.getAllReport(metric.getName(), "1.5-4");
+        metricReader.getAllReport(metric.getName(), "synapseRClient/1.5-4");
     }
 }
