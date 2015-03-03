@@ -1,7 +1,6 @@
 package org.sagebionetworks.dashboard.metric;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -27,7 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @ContextConfiguration("classpath:/META-INF/spring/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class RClientReportMetricTest {
+public class PythonClientReportMetricTestTest {
 
     @Resource
     private StringRedisTemplate redisTemplate;
@@ -53,12 +52,12 @@ public class RClientReportMetricTest {
     @Test
     public void validUri() {
         RecordParser parser = new RepoRecordParser();
-        String line = ",\"37\",\"1404855949372\",,\"repo-prod.prod.sagebase.org\",\"58400\",\"synapseRClient/1.5-4/Rv3.1.2\",\"redirect=false\",\"b698f0fa-1b0a-4dc2-bdee-b1606a9dc881\",,\"/repo/v1/entity/syn1960975/version/1/file\",\"1584359\",,\"2014-07-08\",\"GET\",\"1562bb43b38576e9:30376851:146cb357393:-7ffd\",\"000000048\",\"prod\",\"true\",\"200\"";
+        String line = ",\"37\",\"1404855949372\",,\"repo-prod.prod.sagebase.org\",\"58400\",\"python-requests/1.2.3 CPython/2.7.4 Linux/3.8.0-19-generic\",\"redirect=false\",\"b698f0fa-1b0a-4dc2-bdee-b1606a9dc881\",,\"/repo/v1/entity/syn1960975/version/1/file\",\"1584359\",,\"2014-07-08\",\"GET\",\"1562bb43b38576e9:30376851:146cb357393:-7ffd\",\"000000048\",\"prod\",\"true\",\"200\"";
         Reader reader = new StringReader(line);
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<AccessRecord, String> metric = new RClientReportMetric();
+        Metric<AccessRecord, String> metric = new PythonClientReportMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric, ":" + new ClientReader().read(records.get(0)));
         
         List<UserDataPoint> results = metricReader.getAllReport(metric.getName(), "1.5-4");
@@ -66,7 +65,7 @@ public class RClientReportMetricTest {
         assertEquals(1, results.size());
         assertEquals("1404855949372", results.get(0).timestamp());
         assertEquals("1584359", results.get(0).userId());
-        assertEquals("synapseRClient/1.5-4/Rv3.1.2", results.get(0).client());
+        assertEquals("python-requests/1.2.3 CPython/2.7.4 Linux/3.8.0-19-generic", results.get(0).client());
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -77,7 +76,7 @@ public class RClientReportMetricTest {
         List<AccessRecord> records = parser.parse(reader);
         assertNotNull(records);
         assertEquals(1, records.size());
-        Metric<AccessRecord, String> metric = new RClientReportMetric();
+        Metric<AccessRecord, String> metric = new PythonClientReportMetric();
         uniqueCountWriter.writeMetric(records.get(0), metric, ":" + new ClientReader().read(records.get(0)));
         
         metricReader.getAllReport(metric.getName(), "1.5-4");
