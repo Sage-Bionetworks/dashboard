@@ -6,7 +6,7 @@ public class UserDataReader implements RecordReader<AccessRecord, String> {
     public String read(AccessRecord record) {
         Long timestamp = record.getTimestamp();
         String userId = (new UserIdReader()).read(record);
-        String client = (new ClientSummaryReader()).read(record);
+        String client = (new ClientReader()).read(record);
         return Long.toString(timestamp) + ":" + userId + ":" + client;
     }
 }
