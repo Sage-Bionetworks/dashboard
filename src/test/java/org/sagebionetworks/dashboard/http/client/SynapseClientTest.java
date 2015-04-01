@@ -68,7 +68,7 @@ public class SynapseClientTest {
         assertNotNull(session);
         assertFalse(session.isEmpty());
         String benefactor = synapseClient.getBenefactor("syn2330782", session);
-        assertEquals("syn1734172", benefactor);
+        assertEquals("syn2344867", benefactor);
     }
 
     @Test
