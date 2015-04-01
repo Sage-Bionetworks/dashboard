@@ -55,6 +55,10 @@ public class DashboardConfig {
         return config.get("synapse.password");
     }
 
+    public String getGoogleClientId() {
+        return config.get("google.client.id");
+    }
+
     public String getUserWhitelist() {
         return config.get("user.whitelist");
     }
