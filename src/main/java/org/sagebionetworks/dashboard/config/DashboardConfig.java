@@ -59,6 +59,10 @@ public class DashboardConfig {
         return config.get("google.client.id");
     }
 
+    public String getGoogleClientSecret() {
+        return config.get("google.client.secret");
+    }
+
     public String getUserWhitelist() {
         return config.get("user.whitelist");
     }
