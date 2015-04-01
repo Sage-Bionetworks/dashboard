@@ -15,6 +15,6 @@ env:
 before_script:
 - psql -U postgres -f 'dw-bootstrap.sql'
 script:
-- ./gradlew check --debug
+- ./gradlew check --stacktrace
 after_success:
 - ./gradlew artifactoryPublish
