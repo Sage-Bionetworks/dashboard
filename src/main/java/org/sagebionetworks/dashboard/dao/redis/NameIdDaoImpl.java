@@ -6,9 +6,9 @@ import static org.sagebionetworks.dashboard.dao.redis.Key.NAME_ID;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
@@ -164,7 +164,7 @@ public class NameIdDaoImpl implements NameIdDao, CachedDao {
     // 6-char ID has a space of 56,800,235,584 keys
     private final RandomIdGenerator idGenerator = new RandomIdGenerator(6);
 
-    private final Map<String, String> nameIdCache = new HashMap<String, String>();
+    private final Map<String, String> nameIdCache = new ConcurrentHashMap<String, String>();
 
     @Resource
     private StringRedisTemplate redisTemplate;
