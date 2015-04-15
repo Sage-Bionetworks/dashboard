@@ -32,15 +32,6 @@ apt-get --quiet --yes install nfs-common
 # Java
 apt-get --quiet --yes --target-release wheezy-backports install openjdk-7-jdk
 
-# PostgreSQL
-apt-get --quiet --yes install postgresql
-apt-get --quiet --yes install postgresql-client
-echo "listen_addresses = '*'" >> /etc/postgresql/9.1/main/postgresql.conf
-echo "host all all 10.0.0.0/16 trust" >> /etc/postgresql/9.1/main/pg_hba.conf
-su - postgres -c "psql -f /${TARGET_USER}/vagrant-scripts/dw-bootstrap.sql"
-su - ${TARGET_USER}
-service postgresql restart
-
 # Redis
 apt-get --quiet --yes --target-release wheezy-backports install redis-server
 # Comment out binding to specific IPs
