@@ -2,7 +2,7 @@ package org.sagebionetworks.dashboard.metric;
 
 import java.util.List;
 
-import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.model.Record;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 

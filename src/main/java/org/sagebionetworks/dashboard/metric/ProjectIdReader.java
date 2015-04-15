@@ -3,8 +3,8 @@ package org.sagebionetworks.dashboard.metric;
 import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SynapseDao;
+import org.sagebionetworks.dashboard.model.AccessRecord;
 import org.sagebionetworks.dashboard.parse.EntityIdReader;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.stereotype.Component;
 

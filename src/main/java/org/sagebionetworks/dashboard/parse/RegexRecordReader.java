@@ -3,6 +3,8 @@ package org.sagebionetworks.dashboard.parse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
+
 /**
  * Reads the first matching pattern from a specific field.
  */

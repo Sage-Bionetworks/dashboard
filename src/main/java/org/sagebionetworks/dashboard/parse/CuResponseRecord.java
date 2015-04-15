@@ -1,8 +1,9 @@
 package org.sagebionetworks.dashboard.parse;
 
 import org.joda.time.DateTime;
+import org.sagebionetworks.dashboard.model.Record;
 
-public class CuResponseRecord implements Record{
+public class CuResponseRecord implements Record {
 
     public CuResponseRecord(int responseId, int questionIndex, DateTime timestamp, boolean isCorrect) {
         this.responseId = responseId;
@@ -32,5 +33,4 @@ public class CuResponseRecord implements Record{
     private final int questionIndex;
     private final DateTime timestamp;
     private final boolean isCorrect;
-
 }

@@ -8,6 +8,7 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.AccessRecord;
 
 public class RepoRecordParserTest {
 

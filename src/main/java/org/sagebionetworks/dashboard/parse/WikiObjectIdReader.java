@@ -2,6 +2,8 @@ package org.sagebionetworks.dashboard.parse;
 
 import java.util.regex.Pattern;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
+
 public class WikiObjectIdReader implements RecordReader<AccessRecord, String> {
 
     private static final Pattern OBJ_ID = Pattern.compile("(syn)?\\d+", Pattern.CASE_INSENSITIVE);

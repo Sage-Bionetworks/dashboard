@@ -2,6 +2,8 @@ package org.sagebionetworks.dashboard.parse;
 
 import java.util.regex.Pattern;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
+
 public class ClientFilter implements RecordFilter<AccessRecord> {
 
     private static final Pattern PATTERN_WEB = Pattern.compile(".*web-client.*", Pattern.CASE_INSENSITIVE);

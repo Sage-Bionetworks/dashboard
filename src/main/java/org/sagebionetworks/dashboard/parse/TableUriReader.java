@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.parse;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
+
 public class TableUriReader implements RecordReader<AccessRecord, String> {
 
     private final UriRegexFilter UPDATE_FILTER = new UriUpdateTableFilter();

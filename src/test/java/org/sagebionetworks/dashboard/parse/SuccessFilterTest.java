@@ -4,6 +4,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 
 public class SuccessFilterTest {
     @Test
@@ -11,7 +13,7 @@ public class SuccessFilterTest {
 
         RecordFilter<AccessRecord> filter = new SuccessFilter();
 
-        RepoRecord record = new RepoRecord();
+        SynapseRepoRecord record = new SynapseRepoRecord();
         assertFalse(filter.matches(record));
         record.setStatus("");
         assertFalse(filter.matches(record));

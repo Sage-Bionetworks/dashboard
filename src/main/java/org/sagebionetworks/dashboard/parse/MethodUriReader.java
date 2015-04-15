@@ -2,6 +2,8 @@ package org.sagebionetworks.dashboard.parse;
 
 import java.util.regex.Pattern;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
+
 /**
  * Reads the method and the URI together as one string. For example, "get /repo/v1/version".
  * IDs are represented as "{id}" in the string.

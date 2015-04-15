@@ -10,5 +10,4 @@ public class CertifiedUserIdReader implements RecordReader<CuPassingRecord, Stri
         }
         return userId;
     }
-
 }

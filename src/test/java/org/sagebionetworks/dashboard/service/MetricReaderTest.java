@@ -21,7 +21,7 @@ import org.sagebionetworks.dashboard.metric.UniqueTableMetric;
 import org.sagebionetworks.dashboard.metric.UniqueUserTableWebMetric;
 import org.sagebionetworks.dashboard.metric.UploadTableMetric;
 import org.sagebionetworks.dashboard.model.Interval;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
+import org.sagebionetworks.dashboard.model.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.springframework.data.redis.core.StringRedisTemplate;

@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.parse;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
+
 public class UriEntityHeaderFilter implements RecordFilter<AccessRecord> {
     @Override
     public boolean matches(AccessRecord record) {

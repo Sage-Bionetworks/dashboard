@@ -3,13 +3,15 @@ package org.sagebionetworks.dashboard.parse;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 
 public class TableUriReaderTest {
 
     @Test
     public void test() {
         RecordReader<AccessRecord, String> reader = new TableUriReader();
-        RepoRecord record = new RepoRecord();
+        SynapseRepoRecord record = new SynapseRepoRecord();
         record.setUri("/repo/v1/entity/syn3163713/table/append/async/start");
         assertEquals("Update", reader.read(record));
         record.setUri("/repo/v1/entity/syn3163713/table/deleteRows");
