@@ -82,15 +82,15 @@ public class TimeSeriesDaoImpl implements TimeSeriesDao {
             final String metricId, final DateTime timestamp, final long value) {
 
         // n
-        String key = (new KeyAssembler(n, interval, timeseries)).getKey(metricId, timestamp);
+        String key = new KeyAssembler(n, interval, timeseries).getKey(metricId, timestamp);
         valueOps.increment(key, 1L);
         redisTemplate.expireAt(key, DateTime.now().plusDays(EXPIRE_DAYS).toDate());
         // sum
-        key = (new KeyAssembler(sum, interval, timeseries)).getKey(metricId, timestamp);
+        key = new KeyAssembler(sum, interval, timeseries).getKey(metricId, timestamp);
         valueOps.increment(key, value);
         redisTemplate.expireAt(key, DateTime.now().plusDays(EXPIRE_DAYS).toDate());
         // max -- optimistically work around race conditions
-        final String maxKey = (new KeyAssembler(max, interval, timeseries)).getKey(metricId, timestamp);
+        final String maxKey = new KeyAssembler(max, interval, timeseries).getKey(metricId, timestamp);
         String strMax = valueOps.get(maxKey);
         long redisMax = strMax == null ? -1L : Long.parseLong(strMax);
         long max = value;

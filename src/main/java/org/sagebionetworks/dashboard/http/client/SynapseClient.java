@@ -282,7 +282,7 @@ public class SynapseClient {
             // Get as JSON node
             inputStream = entity.getContent();
             inputStreamReader = new InputStreamReader(inputStream, encodingType);
-            JsonNode root = (new ObjectMapper()).readValue(inputStreamReader, JsonNode.class);
+            JsonNode root = OBJ_MAPPER.readValue(inputStreamReader, JsonNode.class);
             return root;
         } catch (IllegalStateException e) {
             throw new RuntimeException(e);
@@ -314,6 +314,7 @@ public class SynapseClient {
     private static final String AUTH = "https://repo-prod.prod.sagebase.org/auth/v1";
     private static final String AUTH_LOGIN = AUTH + "/session";
     private static final String REPO = "https://repo-prod.prod.sagebase.org/repo/v1";
+    private static final ObjectMapper OBJ_MAPPER = new ObjectMapper();
     
     private final HttpClient client;
 }
