@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.parse;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
+
 /**
  * Matches when there is an error in the record.
  */

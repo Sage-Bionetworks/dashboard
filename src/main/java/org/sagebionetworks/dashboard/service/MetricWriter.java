@@ -1,7 +1,7 @@
 package org.sagebionetworks.dashboard.service;
 
 import org.sagebionetworks.dashboard.metric.Metric;
-import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.model.Record;
 
 public interface MetricWriter<R extends Record, V> {
 

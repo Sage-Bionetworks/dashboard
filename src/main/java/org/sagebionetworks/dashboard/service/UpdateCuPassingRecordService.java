@@ -7,7 +7,7 @@ import org.sagebionetworks.dashboard.metric.CertifiedUserMetric;
 import org.sagebionetworks.dashboard.metric.CertifiedUserQuizSubmitMetric;
 import org.sagebionetworks.dashboard.metric.QuestionFailMetric;
 import org.sagebionetworks.dashboard.metric.QuestionPassMetric;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
+import org.sagebionetworks.dashboard.model.AccessRecord;
 import org.sagebionetworks.dashboard.parse.CuPassingRecord;
 import org.sagebionetworks.dashboard.parse.CuResponseRecord;
 import org.springframework.stereotype.Service;

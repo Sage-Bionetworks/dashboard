@@ -3,11 +3,13 @@ package org.sagebionetworks.dashboard.parse;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 
 public class MethodUriReaderTest {
     @Test
     public void test() {
-        RepoRecord record = new RepoRecord();
+        SynapseRepoRecord record = new SynapseRepoRecord();
         RecordReader<AccessRecord, String> reader = new MethodUriReader();
         assertEquals("null-method null-uri", reader.read(record));
         record.setUri("/REPO/v1/SYN12345");

@@ -6,5 +6,4 @@ public class CuResponseIdReader implements RecordReader<CuResponseRecord, String
     public String read(CuResponseRecord record) {
         return Integer.toString(record.responseId());
     }
-
 }

@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 
 public class LatencyReaderTest {
     @Test
     public void test() {
-        RepoRecord record = new RepoRecord();
+        SynapseRepoRecord record = new SynapseRepoRecord();
         RecordReader<AccessRecord, Long> reader = new LatencyReader();
         assertNull(reader.read(record));
         record.setLatency(123L);

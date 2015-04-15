@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.parse;
 
+import org.sagebionetworks.dashboard.model.Record;
+
 public interface RecordReader<R extends Record, V> {
 
     /**

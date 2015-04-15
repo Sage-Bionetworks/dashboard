@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.sagebionetworks.dashboard.parse.AccessRecord;
+import org.sagebionetworks.dashboard.model.AccessRecord;
 import org.sagebionetworks.dashboard.parse.ClientSummaryReader;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
@@ -40,5 +40,4 @@ public class TableClientMetric extends UniqueCountMetric<AccessRecord, String> {
     public void write(AccessRecord record) {
         uniqueCountWriter.writeMetric(record, this);
     }
-
 }

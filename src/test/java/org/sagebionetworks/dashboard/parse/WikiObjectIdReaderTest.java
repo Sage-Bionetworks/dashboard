@@ -4,12 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 
 public class WikiObjectIdReaderTest {
     @Test
     public void test() {
         RecordReader<AccessRecord, String> reader = new WikiObjectIdReader();
-        RepoRecord record = new RepoRecord();
+        SynapseRepoRecord record = new SynapseRepoRecord();
         assertNull(reader.read(record));
         record.setObjectId("12345");
         assertNull(reader.read(record));

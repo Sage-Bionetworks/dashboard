@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
+
 import au.com.bytecode.opencsv.CSVReader;
 
 public class RepoRecordParser implements RecordParser {
@@ -75,8 +78,8 @@ public class RepoRecordParser implements RecordParser {
         }
     }
 
-    private RepoRecord parse(String[] line) {
-        RepoRecord record = new RepoRecord();
+    private SynapseRepoRecord parse(String[] line) {
+        SynapseRepoRecord record = new SynapseRepoRecord();
         String session = getString("sessionId", line);
         if (session == null) {
             throw new RuntimeException("Missing session.");

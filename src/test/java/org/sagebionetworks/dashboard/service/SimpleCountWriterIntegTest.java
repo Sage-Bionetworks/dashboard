@@ -18,7 +18,7 @@ import org.sagebionetworks.dashboard.dao.redis.RedisTestUtil;
 import org.sagebionetworks.dashboard.metric.ErrorCountMetric;
 import org.sagebionetworks.dashboard.metric.Metric;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
+import org.sagebionetworks.dashboard.model.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.springframework.data.redis.core.StringRedisTemplate;

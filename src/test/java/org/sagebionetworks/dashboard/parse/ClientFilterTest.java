@@ -4,11 +4,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 
 public class ClientFilterTest {
     @Test
     public void test() {
-        RepoRecord record = new RepoRecord();
+        SynapseRepoRecord record = new SynapseRepoRecord();
         // Real data of October, 2013
         record.setUserAgent("python-requests/1.2.3 cpython/2.7.1 linux/2.6.18-194.17.4.el5");
         assertTrue(ClientFilter.PYTHON.matches(record));

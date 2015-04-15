@@ -1,11 +1,12 @@
 package org.sagebionetworks.dashboard.parse;
 
 import org.joda.time.DateTime;
+import org.sagebionetworks.dashboard.model.Record;
 
 /**
  * This class represent a Certified User Quiz Passing Record.
  */
-public class CuPassingRecord implements Record{
+public class CuPassingRecord implements Record {
 
     public CuPassingRecord(boolean isPassed, String userId, DateTime timestamp, int score) {
 

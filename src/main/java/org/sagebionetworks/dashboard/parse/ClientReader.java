@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.parse;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
+
 public class ClientReader implements RecordReader<AccessRecord, String> {
 
     @Override

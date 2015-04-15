@@ -1,7 +1,7 @@
 group = 'org.sagebionetworks'
 ext.name = 'dashboard'
-version = '0.7.0-' + (new Date()).format(
-        'yyyyMMddHHmmss', TimeZone.getTimeZone("UTC"))
+version = '0.7.1-' + (new Date()).format(
+        'yyyyMMddHHmm', TimeZone.getTimeZone("UTC"))
 
 /*** Java ***/
 
@@ -21,24 +21,22 @@ repositories {
 }
 
 dependencies {
-    compile 'org.sagebionetworks:dashboard-core:0.1.1+'
+    compile 'org.sagebionetworks:dashboard-core:0.1.5+'
     compile 'org.springframework:spring-context:' + springFrameworkVersion
     compile 'org.springframework:spring-jdbc:' + springFrameworkVersion
-    compile 'org.apache.commons:commons-dbcp2:2.0.1'
+    compile 'org.apache.commons:commons-dbcp2:2.1'
     compile 'org.springframework.data:spring-data-redis:' + springDataRedisVersion
     compile 'redis.clients:jedis:' + jedisVersion
-    compile 'joda-time:joda-time:2.5'
+    compile 'joda-time:joda-time:2.7'
     compile 'net.sf.opencsv:opencsv:2.3'
-    compile 'com.amazonaws:aws-java-sdk:1.8.11'
-    compile 'org.apache.httpcomponents:httpclient:4.3.5'
+    compile 'com.amazonaws:aws-java-sdk-s3:' + awsJavaSdkVersion
+    compile 'org.apache.httpcomponents:httpclient:4.4.1'
     compile 'org.slf4j:slf4j-api:' + slf4jVersion
-    runtime 'ch.qos.logback:logback-classic:1.1.2'
-    runtime 'ch.qos.logback:logback-core:1.1.2'
+    runtime 'ch.qos.logback:logback-classic:' + logbackVersion
+    runtime 'ch.qos.logback:logback-core:' + logbackVersion
     testCompile 'junit:junit:4.11'
     testCompile 'org.mockito:mockito-core:1.9.5'
     testCompile 'org.springframework:spring-test:' + springFrameworkVersion
-    testRuntime 'org.slf4j:slf4j-log4j12:' + slf4jVersion
-    testRuntime 'log4j:log4j:1.2.17'
 }
 
 /*** Eclipse ***/
@@ -121,5 +119,5 @@ publishing {
 /*** Wrapper ***/
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.12'
+    gradleVersion = '2.3'
 }

@@ -4,6 +4,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 
 public class ErrorFilterTest {
 
@@ -13,7 +15,7 @@ public class ErrorFilterTest {
         RecordFilter<AccessRecord> filter = new ErrorFilter();
 
         // When the status is null or empty
-        RepoRecord record = new RepoRecord();
+        SynapseRepoRecord record = new SynapseRepoRecord();
         assertFalse(filter.matches(record));
         record.setStatus("");
         assertFalse(filter.matches(record));

@@ -1,5 +1,7 @@
 package org.sagebionetworks.dashboard.parse;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
+
 public class MethodFilter implements RecordFilter<AccessRecord> {
 
     public MethodFilter(String... methods) {

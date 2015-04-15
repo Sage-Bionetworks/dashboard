@@ -6,9 +6,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.sagebionetworks.dashboard.model.AccessRecord;
 import org.sagebionetworks.dashboard.parse.ErrorFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.sagebionetworks.dashboard.parse.UserIdFilter;

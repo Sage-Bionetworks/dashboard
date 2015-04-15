@@ -18,7 +18,7 @@ import org.sagebionetworks.dashboard.dao.CachedDao;
 import org.sagebionetworks.dashboard.dao.redis.RedisTestUtil;
 import org.sagebionetworks.dashboard.model.Interval;
 import org.sagebionetworks.dashboard.model.TimeDataPoint;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
+import org.sagebionetworks.dashboard.model.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.MetricReader;

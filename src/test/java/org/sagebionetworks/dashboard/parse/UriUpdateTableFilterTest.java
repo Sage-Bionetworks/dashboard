@@ -3,13 +3,15 @@ package org.sagebionetworks.dashboard.parse;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 
 public class UriUpdateTableFilterTest {
 
     @Test
     public void test() {
         RecordFilter<AccessRecord> filter = new UriUpdateTableFilter();
-        RepoRecord record = new RepoRecord();
+        SynapseRepoRecord record = new SynapseRepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1/entity/syn2203318");
         assertFalse(filter.matches(record));
@@ -30,5 +32,4 @@ public class UriUpdateTableFilterTest {
         record.setUri("/repo/v1/entity/syn2203318/table/deleteRows");
         assertTrue(filter.matches(record));
     }
-
 }

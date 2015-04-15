@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.sagebionetworks.dashboard.parse.ErrorFilter;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 import org.sagebionetworks.dashboard.parse.RecordReader;
-import org.sagebionetworks.dashboard.parse.RepoRecord;
 
 public class ErrorCountMetricTest {
     @Test
@@ -16,7 +16,7 @@ public class ErrorCountMetricTest {
         SimpleCountMetric metric = new ErrorCountMetric();
         assertEquals("errorCountMetric", metric.getName());
         RecordReader<AccessRecord, String> reader = metric.getRecordReader();
-        AccessRecord record = new RepoRecord();
+        AccessRecord record = new SynapseRepoRecord();
         assertEquals("", reader.read(record));
         assertEquals(3, metric.getFilters().size());
         assertTrue(metric.getFilters().get(0) instanceof ProdFilter);

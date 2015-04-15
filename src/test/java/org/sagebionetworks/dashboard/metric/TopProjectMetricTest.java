@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
+import org.sagebionetworks.dashboard.model.AccessRecord;
 import org.sagebionetworks.dashboard.parse.ProdFilter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

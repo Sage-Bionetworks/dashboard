@@ -12,7 +12,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.metric.Metric;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
+import org.sagebionetworks.dashboard.model.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordFilter;
 import org.sagebionetworks.dashboard.parse.RecordReader;
 import org.springframework.test.util.ReflectionTestUtils;

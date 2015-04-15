@@ -87,7 +87,7 @@ abstract class AbstractUniqueCountDao implements UniqueCountDao {
             @Override
             public Object doInRedis(RedisConnection conn) throws DataAccessException {
                 StringRedisConnection redisConn = (StringRedisConnection)conn;
-                boolean zCard = (Long.MIN_VALUE == min && Long.MAX_VALUE == max);
+                boolean zCard = Long.MIN_VALUE == min && Long.MAX_VALUE == max;
                 for (KeyPiece k : existingKeys) {
                     if (zCard) {
                         redisConn.zCard(k.key); // O(1)

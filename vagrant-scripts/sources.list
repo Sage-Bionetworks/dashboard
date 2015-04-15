@@ -1,0 +1,10 @@
+deb http://mirrors.kernel.org/debian wheezy main
+deb-src http://mirrors.kernel.org/debian wheezy main
+
+deb http://security.debian.org/ wheezy/updates main
+deb-src http://security.debian.org/ wheezy/updates main
+
+deb http://mirrors.kernel.org/debian wheezy-updates main
+deb-src http://mirrors.kernel.org/debian wheezy-updates main
+
+deb http://mirrors.kernel.org/debian wheezy-backports main

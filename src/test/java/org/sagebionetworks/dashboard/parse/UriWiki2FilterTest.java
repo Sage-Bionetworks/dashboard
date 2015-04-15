@@ -4,12 +4,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 
 public class UriWiki2FilterTest {
     @Test
     public void test() {
         RecordFilter<AccessRecord> filter = new UriWiki2Filter();
-        RepoRecord record = new RepoRecord();
+        SynapseRepoRecord record = new SynapseRepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1/evaluation/2352496");
         assertFalse(filter.matches(record));

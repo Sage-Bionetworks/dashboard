@@ -21,8 +21,8 @@ import javax.annotation.Resource;
 
 import org.sagebionetworks.dashboard.dao.SessionDedupeDao;
 import org.sagebionetworks.dashboard.metric.Metric;
+import org.sagebionetworks.dashboard.model.AccessRecord;
 import org.sagebionetworks.dashboard.model.WriteRecordResult;
-import org.sagebionetworks.dashboard.parse.AccessRecord;
 import org.sagebionetworks.dashboard.parse.RecordParser;
 import org.sagebionetworks.dashboard.parse.RepoRecordParser;
 import org.sagebionetworks.dashboard.service.UpdateFileCallback.UpdateResult;
@@ -148,6 +148,6 @@ public class RepoUpdateService {
 
     private boolean isDone() {
         ThreadPoolExecutor pool = (ThreadPoolExecutor)threadPool;
-        return (pool.getActiveCount() == 0 && pool.getQueue().size() == 0);
+        return pool.getActiveCount() == 0 && pool.getQueue().size() == 0;
     }
 }

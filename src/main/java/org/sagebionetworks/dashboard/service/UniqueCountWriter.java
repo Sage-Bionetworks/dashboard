@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.sagebionetworks.dashboard.dao.NameIdDao;
 import org.sagebionetworks.dashboard.dao.UniqueCountDao;
-import org.sagebionetworks.dashboard.parse.Record;
+import org.sagebionetworks.dashboard.model.Record;
 import org.springframework.stereotype.Service;
 
 @Service("uniqueCountWriter")

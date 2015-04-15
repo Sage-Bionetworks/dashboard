@@ -4,6 +4,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.sagebionetworks.dashboard.model.AccessRecord;
+import org.sagebionetworks.dashboard.model.SynapseRepoRecord;
 
 public class UriEntityBundleFilterTest {
 
@@ -12,7 +14,7 @@ public class UriEntityBundleFilterTest {
 
         RecordFilter<AccessRecord> filter = new UriEntityBundleFilter();
 
-        RepoRecord record = new RepoRecord();
+        SynapseRepoRecord record = new SynapseRepoRecord();
         assertFalse(filter.matches(record));
         record.setUri("/repo/v1/entity/syn2203318");
         assertFalse(filter.matches(record));
