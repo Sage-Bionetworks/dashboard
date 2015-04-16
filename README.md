@@ -6,7 +6,7 @@ dashboard development environment
 ### Set up the required configuration
 
     $ touch ~/.dashboard/dashboard.config
-    $ chmod 700 ~/.dashboard/dashboard.config
+    $ chmod 600 ~/.dashboard/dashboard.config
 
 Add the following lines:
 
@@ -33,7 +33,7 @@ Add the following lines:
 6. Run `./gradlew clean build`.
 7. Outside the guest, at the host's project folder, run `./gradlew eclipse` to generate the files for importing the project into Eclipse.
 8. The package has a command-line interface that can be used to read local copies of access records and populates the Redis cache.
-
+```bash
     $ ./gradlew run -PfilePath=</local/path/to/access/log/files>
     :compileJava UP-TO-DATE
     :processResources UP-TO-DATE
@@ -46,3 +46,4 @@ Add the following lines:
     UpdateResult [filePath=/logs/access-records/22/2013-12-07/04-15-51.csv.gz, lineCount=1, status=SUCCEEDED]
     BUILD SUCCESSFUL
     Total time: 43 mins 7.178 secs
+```
