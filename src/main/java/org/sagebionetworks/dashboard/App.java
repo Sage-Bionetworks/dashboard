@@ -31,7 +31,7 @@ public class App {
             throw new IllegalArgumentException("File " + filePath.getPath() + " does not exist.");
         }
 
-        final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/app-context.xml");
+        final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("/spring/app-context.xml");
         context.registerShutdownHook();
         final RepoUserWorker userWorker = context.getBean(RepoUserWorker.class);
         final Logger logger = org.slf4j.LoggerFactory.getLogger(App.class);

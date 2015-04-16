@@ -6,6 +6,7 @@ dashboard development environment
 ### Set up the required configuration
 
     $ touch ~/.dashboard/dashboard.config
+    $ chmod 700 ~/.dashboard/dashboard.config
 
 Add the following lines:
 
@@ -17,12 +18,12 @@ Add the following lines:
     synapse.user=<Your Synapse admin user account>
     synapse.password=<Your Synapse admin account password>
 
-    dw.username=<Data warehouse user>
-    dw.password=<Data warehouse password>
+    google.client.id=<Your Google account info>
+    google.client.secret=<Your Google account info>
 
 (Alternatively, these parameters can be passed in as command-line arguments which will overwrite the above entries in the Gradle properties file.)
 
-### Virtual development environment via Vagrant
+### Development
 
 1. Download and install [VirtualBox](https://www.virtualbox.org/).
 2. Download and install [Vagrant](http://www.vagrantup.com/).
@@ -31,36 +32,7 @@ Add the following lines:
 5. Go to the shared folder `cd /vagrant`.
 6. Run `./gradlew clean build`.
 7. Outside the guest, at the host's project folder, run `./gradlew eclipse` to generate the files for importing the project into Eclipse.
-
-If this works, we are done and the steps below can be skipped.
-
-### The non-virtual way
-
-Only follow the steps below if Vagrant is not working for you.
-
-#### Install Redis and start the Redis server
-
-    $ wget http://download.redis.io/releases/redis-2.8.6.tar.gz
-    $ tar xzf redis-2.8.6.tar.gz
-    $ cd redis-2.8.6
-    $ make
-    $ src/redis-server
-    $ <ctrl-z>
-    $ bg
-
-#### Install PostgreSQL and start the PostgreSQL server
-
-After the installation, PostgreSQL needs to be bootstrapped with the `dashboard` user and `dashboard` database.  See `dw-bootstrap.sql`.
-
-#### Build and run the project
-
-    $ cd <project-home>
-    $ ./gradlew clean build
-    ...
-    BUILD SUCCESSFUL
-    Total time: 1 mins 25.893 secs
-
-The package has a command-line interface that can be used to read local copies of access records and populates the Redis cache.
+8. The package has a command-line interface that can be used to read local copies of access records and populates the Redis cache.
 
     $ ./gradlew run -PfilePath=</local/path/to/access/log/files>
     :compileJava UP-TO-DATE

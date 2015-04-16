@@ -9,7 +9,7 @@ public class DashboardConfig {
 
     public DashboardConfig() {
         try {
-            final String srcConfigFile = getClass().getResource("/META-INF/dashboard.config").getFile();
+            final String srcConfigFile = getClass().getResource("/dashboard.config").getFile();
             final String userHome = System.getProperty("user.home");
             final String homeConfigFile = userHome + "/.dashboard/dashboard.config";
             config = new DefaultConfig(srcConfigFile, homeConfigFile);

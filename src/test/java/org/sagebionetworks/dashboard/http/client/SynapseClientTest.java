@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@ContextConfiguration("classpath:/META-INF/spring/test-context.xml")
+@ContextConfiguration("classpath:/spring/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SynapseClientTest {
 
