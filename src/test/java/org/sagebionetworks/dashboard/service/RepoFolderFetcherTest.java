@@ -24,7 +24,7 @@ import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-@ContextConfiguration("classpath:/META-INF/spring/test-context.xml")
+@ContextConfiguration("classpath:/spring/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RepoFolderFetcherTest {
 

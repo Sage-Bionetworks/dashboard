@@ -16,12 +16,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@ContextConfiguration("classpath:/META-INF/spring/test-redis-context.xml")
+@ContextConfiguration("classpath:/spring/test-redis-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public abstract class AbstractRedisDaoTest {
 
     private static final ConfigurableApplicationContext context =
-            new ClassPathXmlApplicationContext("/META-INF/spring/test-redis-context.xml");
+            new ClassPathXmlApplicationContext("/spring/test-redis-context.xml");
 
     @BeforeClass
     public static void beforeClass() {
