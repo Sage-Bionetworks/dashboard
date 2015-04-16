@@ -1,15 +1,6 @@
 language: java
 jdk: openjdk7
 services: redis-server
-env:
-  global:
-  - secure: qhj7MQsN3xyuQjnLkiGr+TMb7sSQzOqHGU8eDErtaD5q7EBkoVVPOtAKwV/w/qCnE5pzgtmeEqSy8jCoWl6GN8navmhEhKzLICdd45pcjQSyp54wjPf4lJQqq6g0fBoZJ1qNNruLKfRREF4O/XGRrQJs8/bwXpgfsgfJDO4A5Fc=
-  - secure: IeKRUS0V5tGR+di0ggEVoG9NLlclzXRkCpbwIPor1oNMqZ6GHzMqKh8GcHaWWQFG5vRgQ9m0Tmr4AK435sp3iQUAGiQuv+S4gOijsWhyyl+HtysUYYVSQ/N9/zIquQ7Z4Hq/oRRuja4GP/QnUEaycMBXSDSSo3nJE27CCoD2ezc=
-  - secure: W4m/NxQzzM48BAyFxD8ytwxWaJzQwq/1EA4VxjOZP70nfUfSrcLFNNFQFppAyxYQtpPD5YPtsEFwaC1a5XfKwD35t8Dng58KVru40m4gZ0253sySR/NseWecdDa4v1AHTUjJpzESEZCr//LmnYiThN+ozYfIlIjgbGNKPla4l/Y=
-  - secure: l/t9dXzuJC2rBsin58q1jQxaBcTSK4lkzCPjvHyjJvDMipQhRhpcQPUff214vHI/kzBGNtOr/3kowmeO1PnK66nPi7hGxPPGlXlNC8Ew23mwMyoLWQXyq7MGn8K5QUSUAmCunlEH42PVnj4LjmvIqgyuC2daQfqo2D9CKi2ZqM0=
-  - secure: YUd0fsnw4bDyhuVeSJ7ueXPSkfNuZRdd/xyVVl0FoTkKDzqJ+JdepU4OAQEXlfkHzBepTqpt+Qb8pyKfTRlg2DbVkwx2juRzFOpv+y5l52cOUjLK4yXc6FoRkndpi875wg+ux/bxXLamVatd909s60XPdEg3NOItxPB3uDdZPyo=
-  - secure: WW+PdAUt8ktw/U0uVaxOSnq33QvxLuSeJ/OiPRi2fomoZSlpRALhXK7/Cw5Z15js1c6nOg+9ezXKiDyBIFza9yPIXDnf47TFXU2hSXeSH77BELif8v88Lq/l5GquhFIINB5L4A0FpTWZ+tJ3fsa7ksbyIWXwdfeMyGOB2OOFIqM=
-  - secure: sFFwJaY4SifeWs4fpm01GrlxCSTbyC3k1xXXIKrLNsI1LTcBPeqi9tlflbDW9keXz36ke7zFOfbYvuJZXUpHUCL45lBlgZOiJBEzKX5HB1fcrLFu/25ec2WDJ6ms0ns4Or0RKEYFIseSFgs4xFngwngCwNrQevX8jmMaN4RV52w=
 script:
 - ./gradlew check --stacktrace
 after_success:
